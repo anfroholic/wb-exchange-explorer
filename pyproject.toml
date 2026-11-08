@@ -1,0 +1,13 @@
+[project]
+name = "wbx"
+version = "0.1.0"
+description = "Prototype viewable SVG exchange format for wire bonding"
+requires-python = ">=3.10"
+dependencies = ["lxml", "ezdxf"]
+
+[project.optional-dependencies]
+examples = ["gdstk"]
+dev = ["pytest", "gdstk"]
+
+[tool.setuptools]
+py-modules = ["wbx"]
