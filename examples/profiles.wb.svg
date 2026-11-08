@@ -1,0 +1,321 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbx:0.1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 7700 4220" width="1848" height="1013" wb:version="0.1" wb:units="um" wb:design="WBX profile study" wb:rev="A" wb:rule-wire-gap="60" wb:rule-edge-clear="40">
+  <title>WBX profile study rev A: wire bond profiles as SVG</title>
+  <style>text{font-family:Helvetica,Arial,sans-serif;fill:#222;pointer-events:none}
+.title{font-size:150px;font-weight:bold}.sub{font-size:72px;fill:#555}
+.h{font-size:96px;font-weight:bold}.t{font-size:66px}.tb{font-size:66px;font-weight:bold}.s{font-size:56px;fill:#555}
+.lab{font-size:50px;fill:#333}.wl{font-size:52px;fill:#333}.warn{font-size:56px;fill:#a3341f}
+.m{font-family:Consolas,Menlo,monospace;font-size:50px;white-space:pre;fill:#223}.mc{font-family:Consolas,Menlo,monospace;font-size:50px;white-space:pre;fill:#778}
+.mt{font-family:Consolas,Menlo,monospace;font-size:62px;white-space:pre;fill:#223}
+.bg{fill:#fff}.code{fill:#f4f5f7;stroke:#d8dbe2;stroke-width:4}
+.s-sub{fill:#eef3ea;stroke:#9aa;stroke-width:8}.land{fill:#d9a441}.die{fill:#c9ccd6;stroke:#667;stroke-width:6}.pad{fill:#f7f7fa;stroke:#445;stroke-width:4}
+.l-sub{fill:#eef3ea;stroke:#9aa;stroke-width:6}.l-att{fill:#888}.l-die{fill:#c9ccd6;stroke:#667;stroke-width:6}
+.l-mold{fill:#7aa7c7;fill-opacity:.16;stroke:#7aa7c7;stroke-width:6;stroke-dasharray:40 30}
+.w{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.base{stroke:#bbb;stroke-width:6}.dim{stroke:#777;stroke-width:5;fill:none}.proj{stroke:#99a;stroke-width:5;stroke-dasharray:30 24;pointer-events:none}
+.mark{pointer-events:none}.cp{fill:#fff;stroke:#333;stroke-width:6;pointer-events:none}
+.num{fill:#222;pointer-events:none}.numt{font-size:50px;font-weight:bold;fill:#fff}
+.c-STD25{stroke:#b8860b}.f-STD25{fill:#b8860b}
+.c-PWR33{stroke:#c0392b}.f-PWR33{fill:#c0392b}
+.c-DOWN25{stroke:#2e7d32}.f-DOWN25{fill:#2e7d32}
+.c-WEDGE25{stroke:#2563b0}.f-WEDGE25{fill:#2563b0}
+.c-REV25{stroke:#7b4fa3}.f-REV25{fill:#7b4fa3}
+svg:has(.w-W01:hover) line.w-W01,svg:has(.w-W01:hover) polyline.w-W01{stroke:#ff2fa0}svg:has(.w-W01:hover) rect.w-W01{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W02:hover) line.w-W02,svg:has(.w-W02:hover) polyline.w-W02{stroke:#ff2fa0}svg:has(.w-W02:hover) rect.w-W02{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W03:hover) line.w-W03,svg:has(.w-W03:hover) polyline.w-W03{stroke:#ff2fa0}svg:has(.w-W03:hover) rect.w-W03{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W04:hover) line.w-W04,svg:has(.w-W04:hover) polyline.w-W04{stroke:#ff2fa0}svg:has(.w-W04:hover) rect.w-W04{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W05:hover) line.w-W05,svg:has(.w-W05:hover) polyline.w-W05{stroke:#ff2fa0}svg:has(.w-W05:hover) rect.w-W05{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W06:hover) line.w-W06,svg:has(.w-W06:hover) polyline.w-W06{stroke:#ff2fa0}svg:has(.w-W06:hover) rect.w-W06{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W07:hover) line.w-W07,svg:has(.w-W07:hover) polyline.w-W07{stroke:#ff2fa0}svg:has(.w-W07:hover) rect.w-W07{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W08:hover) line.w-W08,svg:has(.w-W08:hover) polyline.w-W08{stroke:#ff2fa0}svg:has(.w-W08:hover) rect.w-W08{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(.w-W09:hover) line.w-W09,svg:has(.w-W09:hover) polyline.w-W09{stroke:#ff2fa0}svg:has(.w-W09:hover) rect.w-W09{fill:#ffd0e8;stroke:#ff2fa0;stroke-width:12}
+svg:has(g.pf-STD25:hover) line.pf-STD25,svg:has(g.pf-STD25:hover) polyline.pf-STD25{stroke:#ff2fa0}
+svg:has(g.pf-PWR33:hover) line.pf-PWR33,svg:has(g.pf-PWR33:hover) polyline.pf-PWR33{stroke:#ff2fa0}
+svg:has(g.pf-DOWN25:hover) line.pf-DOWN25,svg:has(g.pf-DOWN25:hover) polyline.pf-DOWN25{stroke:#ff2fa0}
+svg:has(g.pf-WEDGE25:hover) line.pf-WEDGE25,svg:has(g.pf-WEDGE25:hover) polyline.pf-WEDGE25{stroke:#ff2fa0}
+svg:has(g.pf-REV25:hover) line.pf-REV25,svg:has(g.pf-REV25:hover) polyline.pf-REV25{stroke:#ff2fa0}</style>
+  <rect x="0" y="0" width="7700" height="4220" class="bg"/>
+  <text x="150" y="190" class="title">Wire bond profiles as SVG</text>
+  <text x="150" y="300" class="sub">WBX v0.1, illustrative data. True scale: 1 SVG unit = 1 µm, x and z alike. Colour = profile. Hover any wire, loop, pad or profile.</text>
+  <line x1="7050" y1="170" x2="7550" y2="170" class="dim" stroke-width="10"/>
+  <line x1="7050" y1="140" x2="7050" y2="200" class="dim"/>
+  <line x1="7550" y1="140" x2="7550" y2="200" class="dim"/>
+  <text x="7300" y="120" class="s" text-anchor="middle">500 µm</text>
+  <!-- PLAN VIEW: elements with wb:kind are the data -->
+  <text x="150" y="560" class="h">1 · Plan view: where the wires go</text>
+  <g inkscape:groupmode="layer" inkscape:label="substrate">
+    <rect x="150" y="650" width="3900" height="1900" class="s-sub" wb:kind="outline" wb:name="SUB"/>
+    <rect x="1310" y="1080" width="140" height="140" class="land w-W01" wb:kind="land" wb:name="L1" wb:net="GND" wb:finish="ENIG">
+      <title>L1 net GND, 140 x 140 µm, ENIG</title>
+    </rect>
+    <rect x="960" y="1360" width="300" height="180" class="land w-W02" wb:kind="land" wb:name="L2" wb:net="A0" wb:finish="ENIG">
+      <title>L2 net A0, 300 x 180 µm, ENIG</title>
+    </rect>
+    <rect x="660" y="1660" width="300" height="180" class="land w-W03" wb:kind="land" wb:name="L3" wb:net="A1" wb:finish="ENIG">
+      <title>L3 net A1, 300 x 180 µm, ENIG</title>
+    </rect>
+    <rect x="260" y="1960" width="300" height="180" class="land w-W04" wb:kind="land" wb:name="L4" wb:net="A2" wb:finish="ENIG">
+      <title>L4 net A2, 300 x 180 µm, ENIG</title>
+    </rect>
+    <rect x="2950" y="1080" width="140" height="140" class="land w-W05" wb:kind="land" wb:name="L5" wb:net="GND" wb:finish="ENIG">
+      <title>L5 net GND, 140 x 140 µm, ENIG</title>
+    </rect>
+    <rect x="3540" y="1300" width="300" height="300" class="land w-W06 w-W07" wb:kind="land" wb:name="L6" wb:net="VBUS" wb:finish="ENIG">
+      <title>L6 net VBUS, 300 x 300 µm, ENIG</title>
+    </rect>
+    <rect x="3340" y="1660" width="300" height="180" class="land w-W08" wb:kind="land" wb:name="L7" wb:net="B0" wb:finish="ENIG">
+      <title>L7 net B0, 300 x 180 µm, ENIG</title>
+    </rect>
+    <rect x="3640" y="1960" width="300" height="180" class="land w-W09" wb:kind="land" wb:name="L8" wb:net="B1" wb:finish="ENIG">
+      <title>L8 net B1, 300 x 180 µm, ENIG</title>
+    </rect>
+  </g>
+  <g transform="translate(1600 2200) scale(1 -1)" wb:kind="die" wb:name="U1" wb:gds-cell="STUDY_DIE" wb:pad-layer="37/0" inkscape:groupmode="layer" inkscape:label="die">
+    <rect x="0" y="0" width="1200" height="1200" class="die" wb:kind="outline"/>
+    <rect x="60" y="1000" width="100" height="100" class="pad w-W01" wb:kind="pad" wb:name="1" wb:net="GND">
+      <title>U1 pad 1 net GND, 100 x 100 µm opening</title>
+    </rect>
+    <rect x="60" y="700" width="100" height="100" class="pad w-W02" wb:kind="pad" wb:name="2" wb:net="A0">
+      <title>U1 pad 2 net A0, 100 x 100 µm opening</title>
+    </rect>
+    <rect x="60" y="400" width="100" height="100" class="pad w-W03" wb:kind="pad" wb:name="3" wb:net="A1">
+      <title>U1 pad 3 net A1, 100 x 100 µm opening</title>
+    </rect>
+    <rect x="60" y="100" width="100" height="100" class="pad w-W04" wb:kind="pad" wb:name="4" wb:net="A2">
+      <title>U1 pad 4 net A2, 100 x 100 µm opening</title>
+    </rect>
+    <rect x="1040" y="1000" width="100" height="100" class="pad w-W05" wb:kind="pad" wb:name="5" wb:net="GND">
+      <title>U1 pad 5 net GND, 100 x 100 µm opening</title>
+    </rect>
+    <rect x="985" y="645" width="210" height="210" class="pad w-W06 w-W07" wb:kind="pad" wb:name="6" wb:net="VBUS">
+      <title>U1 pad 6 net VBUS, 210 x 210 µm opening</title>
+    </rect>
+    <rect x="1040" y="400" width="100" height="100" class="pad w-W08" wb:kind="pad" wb:name="7" wb:net="B0">
+      <title>U1 pad 7 net B0, 100 x 100 µm opening</title>
+    </rect>
+    <rect x="1040" y="100" width="100" height="100" class="pad w-W09" wb:kind="pad" wb:name="8" wb:net="B1">
+      <title>U1 pad 8 net B1, 100 x 100 µm opening</title>
+    </rect>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="wires">
+    <line x1="1710" y1="1150" x2="1380" y2="1150" stroke-width="25" class="w c-DOWN25 w-W01 pf-DOWN25" wb:kind="wire" wb:name="W01" wb:from="U1.1" wb:to="L1" wb:profile="DOWN25" wb:seq="1" wb:tier="2" wb:net="GND">
+      <title>W01 GND: U1.1 to L1, Au 25 µm, DOWN25, span 330 µm, seq 1, tier 2</title>
+    </line>
+    <line x1="1710" y1="1450" x2="1110" y2="1450" stroke-width="25" class="w c-STD25 w-W02 pf-STD25" wb:kind="wire" wb:name="W02" wb:from="U1.2" wb:to="L2" wb:profile="STD25" wb:seq="2" wb:tier="1" wb:net="A0">
+      <title>W02 A0: U1.2 to L2, Au 25 µm, STD25, span 600 µm, seq 2, tier 1</title>
+    </line>
+    <line x1="1710" y1="1750" x2="810" y2="1750" stroke-width="25" class="w c-STD25 w-W03 pf-STD25" wb:kind="wire" wb:name="W03" wb:from="U1.3" wb:to="L3" wb:profile="STD25" wb:seq="3" wb:tier="1" wb:net="A1">
+      <title>W03 A1: U1.3 to L3, Au 25 µm, STD25, span 900 µm, seq 3, tier 1</title>
+    </line>
+    <line x1="1710" y1="2050" x2="410" y2="2050" stroke-width="25" class="w c-STD25 w-W04 pf-STD25" wb:kind="wire" wb:name="W04" wb:from="U1.4" wb:to="L4" wb:profile="STD25" wb:seq="4" wb:tier="1" wb:net="A2">
+      <title>W04 A2: U1.4 to L4, Au 25 µm, STD25, span 1300 µm, seq 4, tier 1</title>
+    </line>
+    <line x1="2690" y1="1150" x2="3020" y2="1150" stroke-width="25" class="w c-DOWN25 w-W05 pf-DOWN25" wb:kind="wire" wb:name="W05" wb:from="U1.5" wb:to="L5" wb:profile="DOWN25" wb:seq="5" wb:tier="2" wb:net="GND">
+      <title>W05 GND: U1.5 to L5, Au 25 µm, DOWN25, span 330 µm, seq 5, tier 2</title>
+    </line>
+    <line x1="2690" y1="1398" x2="3690" y2="1398" stroke-width="33" class="w c-PWR33 w-W06 pf-PWR33" wb:kind="wire" wb:name="W06" wb:from="U1.6" wb:to="L6" wb:profile="PWR33" wb:seq="6" wb:tier="1" wb:net="VBUS">
+      <title>W06 VBUS: U1.6 to L6, Au 33 µm, PWR33, span 1000 µm, seq 6, tier 1</title>
+    </line>
+    <line x1="2690" y1="1502" x2="3690" y2="1502" stroke-width="33" class="w c-PWR33 w-W07 pf-PWR33" wb:kind="wire" wb:name="W07" wb:from="U1.6" wb:to="L6" wb:profile="PWR33" wb:seq="7" wb:tier="1" wb:net="VBUS">
+      <title>W07 VBUS: U1.6 to L6, Au 33 µm, PWR33, span 1000 µm, seq 7, tier 1</title>
+    </line>
+    <line x1="2690" y1="1750" x2="3490" y2="1750" stroke-width="25" class="w c-WEDGE25 w-W08 pf-WEDGE25" wb:kind="wire" wb:name="W08" wb:from="U1.7" wb:to="L7" wb:profile="WEDGE25" wb:seq="8" wb:tier="1" wb:net="B0">
+      <title>W08 B0: U1.7 to L7, Al 25 µm, WEDGE25, span 800 µm, seq 8, tier 1</title>
+    </line>
+    <line x1="2690" y1="2050" x2="3790" y2="2050" stroke-width="25" class="w c-STD25 w-W09 pf-STD25" wb:kind="wire" wb:name="W09" wb:from="U1.8" wb:to="L8" wb:profile="STD25" wb:seq="9" wb:tier="1" wb:net="B1">
+      <title>W09 B1: U1.8 to L8, Au 25 µm, STD25, span 1100 µm, seq 9, tier 1</title>
+    </line>
+  </g>
+  <g class="mark" inkscape:groupmode="layer" inkscape:label="bond marks (derived)">
+    <circle cx="1710" cy="1150" r="32.5" class="f-DOWN25"/>
+    <circle cx="1710" cy="1450" r="32.5" class="f-STD25"/>
+    <circle cx="1710" cy="1750" r="32.5" class="f-STD25"/>
+    <circle cx="1710" cy="2050" r="32.5" class="f-STD25"/>
+    <circle cx="2690" cy="1150" r="32.5" class="f-DOWN25"/>
+    <circle cx="2690" cy="1398" r="42.9" class="f-PWR33"/>
+    <circle cx="2690" cy="1502" r="42.9" class="f-PWR33"/>
+    <rect x="2660" y="1732.5" width="60" height="35" class="f-WEDGE25"/>
+    <circle cx="2690" cy="2050" r="32.5" class="f-STD25"/>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="labels (derived)">
+    <text x="2200" y="1590" class="h" text-anchor="middle">U1</text>
+    <text x="2200" y="1670" class="s" text-anchor="middle">1200 × 1200 µm</text>
+    <text x="1785" y="1167" class="lab">1</text>
+    <text x="1785" y="1467" class="lab">2</text>
+    <text x="1785" y="1767" class="lab">3</text>
+    <text x="1785" y="2067" class="lab">4</text>
+    <text x="2615" y="1167" class="lab" text-anchor="end">5</text>
+    <text x="2560" y="1467" class="lab" text-anchor="end">6</text>
+    <text x="2615" y="1767" class="lab" text-anchor="end">7</text>
+    <text x="2615" y="2067" class="lab" text-anchor="end">8</text>
+    <text x="1292" y="1167" class="lab" text-anchor="end">GND</text>
+    <text x="1450" y="1064" class="wl" text-anchor="end">W01 · DOWN25 · span 330</text>
+    <text x="1035" y="1467" class="lab" text-anchor="middle">A0</text>
+    <text x="960" y="1344" class="wl" text-anchor="start">W02 · STD25 · span 600</text>
+    <text x="735" y="1767" class="lab" text-anchor="middle">A1</text>
+    <text x="660" y="1644" class="wl" text-anchor="start">W03 · STD25 · span 900</text>
+    <text x="335" y="2067" class="lab" text-anchor="middle">A2</text>
+    <text x="260" y="1944" class="wl" text-anchor="start">W04 · STD25 · span 1300</text>
+    <text x="3108" y="1167" class="lab" text-anchor="start">GND</text>
+    <text x="2950" y="1064" class="wl" text-anchor="start">W05 · DOWN25 · span 330</text>
+    <text x="3765" y="1467" class="lab" text-anchor="middle">VBUS</text>
+    <text x="3840" y="1284" class="wl" text-anchor="end">W06, W07 · PWR33 · span 1000</text>
+    <text x="3565" y="1767" class="lab" text-anchor="middle">B0</text>
+    <text x="3640" y="1644" class="wl" text-anchor="end">W08 · WEDGE25 · span 800</text>
+    <text x="3865" y="2067" class="lab" text-anchor="middle">B1</text>
+    <text x="3940" y="1944" class="wl" text-anchor="end">W09 · STD25 · span 1100</text>
+  </g>
+  <!-- SECTION VIEW: rect heights are thicknesses. Loops are derived, computed from wb:moves. -->
+  <line x1="1600" y1="2200" x2="1600" y2="3335" class="proj"/>
+  <line x1="2800" y1="2200" x2="2800" y2="3335" class="proj"/>
+  <text x="150" y="2740" class="h">2 · Section: with height</text>
+  <g transform="translate(0 3640)" wb:kind="stack" inkscape:groupmode="layer" inkscape:label="stack">
+    <rect x="150" y="0" width="3900" height="400" class="l-sub" wb:kind="layer" wb:name="substrate" wb:role="substrate" wb:material="FR4/ENIG">
+      <title>substrate: FR4/ENIG, 400 µm thick, z -400 to 0</title>
+    </rect>
+    <rect x="1580" y="-25" width="1240" height="25" class="l-att" wb:kind="layer" wb:name="attach" wb:role="attach" wb:material="Ag epoxy">
+      <title>attach: Ag epoxy, 25 µm thick, z 0 to 25</title>
+    </rect>
+    <rect x="1600" y="-305" width="1200" height="280" class="l-die" wb:kind="layer" wb:name="U1" wb:role="die" wb:material="Si">
+      <title>U1: Si, 280 µm thick, z 25 to 305</title>
+    </rect>
+    <rect x="200" y="-800" width="3800" height="800" class="l-mold" wb:kind="layer" wb:name="glob" wb:role="mold" wb:material="epoxy">
+      <title>glob: epoxy, 800 µm thick, z 0 to 800</title>
+    </rect>
+    <polyline points="1710,-305 1710,-415 1644,-440 1380,0" stroke-width="25" class="w c-DOWN25 w-W01 pf-DOWN25">
+      <title>W01 evaluated from DOWN25: span 330 µm, drop 305 µm, top z 440, length 694 µm</title>
+    </polyline>
+    <polyline points="1710,-305 1710,-485 1638,-515 1428,-495 1110,0" stroke-width="25" class="w c-STD25 w-W02 pf-STD25">
+      <title>W02 evaluated from STD25: span 600 µm, drop 305 µm, top z 515, length 1057 µm</title>
+    </polyline>
+    <polyline points="1710,-305 1710,-485 1602,-515 1287,-495 810,0" stroke-width="25" class="w c-STD25 w-W03 pf-STD25">
+      <title>W03 evaluated from STD25: span 900 µm, drop 305 µm, top z 515, length 1295 µm</title>
+    </polyline>
+    <polyline points="1710,-305 1710,-485 1554,-515 1099,-495 410,0" stroke-width="25" class="w c-STD25 w-W04 pf-STD25">
+      <title>W04 evaluated from STD25: span 1300 µm, drop 305 µm, top z 515, length 1643 µm</title>
+    </polyline>
+    <polyline points="2690,-305 2690,-415 2756,-440 3020,0" stroke-width="25" class="w c-DOWN25 w-W05 pf-DOWN25">
+      <title>W05 evaluated from DOWN25: span 330 µm, drop 305 µm, top z 440, length 694 µm</title>
+    </polyline>
+    <polyline points="2690,-305 2690,-525 2810,-555 3210,-525 3690,0" stroke-width="33" class="w c-PWR33 w-W06 pf-PWR33">
+      <title>W06 evaluated from PWR33: span 1000 µm, drop 305 µm, top z 555, length 1456 µm</title>
+    </polyline>
+    <polyline points="2690,-305 2690,-525 2810,-555 3210,-525 3690,0" stroke-width="33" class="w c-PWR33 w-W07 pf-PWR33">
+      <title>W07 evaluated from PWR33: span 1000 µm, drop 305 µm, top z 555, length 1456 µm</title>
+    </polyline>
+    <polyline points="2690,-305 2738,-375 2882,-425 3122,-415 3490,0" stroke-width="25" class="w c-WEDGE25 w-W08 pf-WEDGE25">
+      <title>W08 evaluated from WEDGE25: span 800 µm, drop 305 µm, top z 425, length 1032 µm</title>
+    </polyline>
+    <polyline points="2690,-305 2690,-485 2822,-515 3207,-495 3790,0" stroke-width="25" class="w c-STD25 w-W09 pf-STD25">
+      <title>W09 evaluated from STD25: span 1100 µm, drop 305 µm, top z 515, length 1466 µm</title>
+    </polyline>
+    <g class="mark">
+      <circle cx="1710" cy="-305" r="32.5" class="f-DOWN25"/>
+      <circle cx="1710" cy="-305" r="32.5" class="f-STD25"/>
+      <circle cx="1710" cy="-305" r="32.5" class="f-STD25"/>
+      <circle cx="1710" cy="-305" r="32.5" class="f-STD25"/>
+      <circle cx="2690" cy="-305" r="32.5" class="f-DOWN25"/>
+      <circle cx="2690" cy="-305" r="42.9" class="f-PWR33"/>
+      <circle cx="2690" cy="-305" r="42.9" class="f-PWR33"/>
+      <rect x="2660" y="-322.5" width="60" height="35" class="f-WEDGE25"/>
+      <circle cx="2690" cy="-305" r="32.5" class="f-STD25"/>
+    </g>
+    <text x="2200" y="-130" class="s" text-anchor="middle">U1 · Si · 280 µm · top at z 305</text>
+    <text x="2200" y="100" class="s" text-anchor="middle">attach · Ag epoxy · 25 µm (thin band under the die)</text>
+    <text x="2200" y="290" class="s" text-anchor="middle">substrate · FR4/ENIG · 400 µm · lands at z 0</text>
+    <text x="260" y="-730" class="s">glob · epoxy · top at z 800</text>
+    <text x="2900" y="-730" class="s">highest loop z 555 (PWR33)</text>
+  </g>
+  <text x="150" y="4140" class="s">Plan and section share one x axis, because every wire here runs purely in x. Three STD25 loops fan out on the left from one definition.</text>
+  <!-- PROFILE LIBRARY: each wb:kind=profile group holds moves and a polyline drawn at wb:ref-span -->
+  <text x="4350" y="560" class="h">3 · One profile, taken apart</text>
+  <g transform="translate(4520 1040)" class="pf-STD25" wb:kind="profile" wb:name="STD25" wb:material="Au" wb:style="ball-wedge" wb:dir="forward" wb:moves="180/0 30/12% -20/35%" wb:interp="spline" wb:ref-span="1000" inkscape:groupmode="layer" inkscape:label="profile STD25">
+    <polyline points="0,0 0,-180 120,-210 470,-190 1000,0" stroke-width="25" class="w c-STD25 pf-STD25">
+      <title>STD25: moves 180/0 30/12% -20/35%, Au 25 µm, ball-wedge, forward, used by W02, W03, W04, W09</title>
+    </polyline>
+    <line x1="0" y1="0" x2="1000" y2="0" class="base"/>
+    <circle cx="0" cy="0" r="14" class="cp"/>
+    <circle cx="0" cy="-180" r="14" class="cp"/>
+    <circle cx="120" cy="-210" r="14" class="cp"/>
+    <circle cx="470" cy="-190" r="14" class="cp"/>
+    <circle cx="1000" cy="0" r="14" class="cp"/>
+    <circle cx="-70" cy="-90" r="38" class="num"/>
+    <text x="-70" y="-72" class="numt" text-anchor="middle">1</text>
+    <circle cx="60" cy="-265" r="38" class="num"/>
+    <text x="60" y="-247" class="numt" text-anchor="middle">2</text>
+    <circle cx="295" cy="-265" r="38" class="num"/>
+    <text x="295" y="-247" class="numt" text-anchor="middle">3</text>
+    <circle cx="790" cy="-170" r="38" class="num"/>
+    <text x="790" y="-152" class="numt" text-anchor="middle">4</text>
+    <path d="M0 70 V110 M1000 70 V110 M0 90 H1000" class="dim"/>
+    <text x="500" y="165" class="s" text-anchor="middle">wb:ref-span = 1000 µm</text>
+  </g>
+  <text x="5640" y="720" class="tb">1  180/0</text>
+  <text x="6110" y="720" class="t">up 180 µm, straight up from the first bond</text>
+  <text x="5640" y="812" class="tb">2  30/12%</text>
+  <text x="6110" y="812" class="t">up 30 µm over 12% of the span</text>
+  <text x="5640" y="904" class="tb">3  -20/35%</text>
+  <text x="6110" y="904" class="t">down 20 µm over 35% of the span</text>
+  <text x="5640" y="996" class="tb">4  implicit</text>
+  <text x="6110" y="996" class="t">straight line to the second bond</text>
+  <text x="5640" y="1098" class="s">stroke-width = 25 is the wire diameter, at true scale.</text>
+  <text x="5640" y="1170" class="s">Drawn with both bonds level. In use the second bond sits lower: see section 2.</text>
+  <rect x="4350" y="1260" width="3200" height="578" class="code"/>
+  <text x="4390" y="1330" class="mc">&lt;!-- the definition --&gt;</text>
+  <text x="4390" y="1396" class="m">&lt;g wb:kind="profile" wb:name="STD25" wb:material="Au" wb:style="ball-wedge"</text>
+  <text x="4390" y="1462" class="m">   wb:dir="forward" wb:interp="spline" wb:ref-span="1000" wb:moves="180/0 30/12% -20/35%"&gt;</text>
+  <text x="4390" y="1528" class="m">  &lt;polyline points="0,0 0,-180 120,-210 470,-190 1000,0" stroke-width="25"/&gt;</text>
+  <text x="4390" y="1594" class="m">&lt;/g&gt;</text>
+  <text x="4390" y="1660" class="mc">&lt;!-- one wire that uses it, from the plan view --&gt;</text>
+  <text x="4390" y="1726" class="m">&lt;line x1="1710" y1="1750" x2="810" y2="1750" stroke-width="25" wb:kind="wire"</text>
+  <text x="4390" y="1792" class="m">   wb:name="W03" wb:from="U1.3" wb:to="L3" wb:profile="STD25" wb:seq="3" wb:tier="1" wb:net="A1"/&gt;</text>
+  <text x="4350" y="1960" class="h">4 · The rest of the library, each at its reference span</text>
+  <g transform="translate(4520 2290)" class="pf-PWR33" wb:kind="profile" wb:name="PWR33" wb:material="Au" wb:style="ball-wedge" wb:dir="forward" wb:moves="220/0 30/12% -30/40%" wb:interp="spline" wb:ref-span="1000" inkscape:groupmode="layer" inkscape:label="profile PWR33">
+    <polyline points="0,0 0,-220 120,-250 520,-220 1000,0" stroke-width="33" class="w c-PWR33 pf-PWR33">
+      <title>PWR33: moves 220/0 30/12% -30/40%, Au 33 µm, ball-wedge, forward, used by W06, W07</title>
+    </polyline>
+    <line x1="0" y1="0" x2="1000" y2="0" class="base"/>
+  </g>
+  <text x="5640" y="2120" class="tb f-PWR33">PWR33</text>
+  <text x="6060" y="2120" class="t">Au 33 µm · ball-wedge · forward</text>
+  <text x="5640" y="2198" class="s">moves 220/0 30/12% -30/40% · spline · ref-span 1000</text>
+  <text x="5640" y="2270" class="s">used by W06, W07</text>
+  <g transform="translate(4520 2570)" class="pf-DOWN25" wb:kind="profile" wb:name="DOWN25" wb:material="Au" wb:style="ball-wedge" wb:dir="forward" wb:moves="110/0 25/20%" wb:interp="spline" wb:ref-span="500" inkscape:groupmode="layer" inkscape:label="profile DOWN25">
+    <polyline points="0,0 0,-110 100,-135 500,0" stroke-width="25" class="w c-DOWN25 pf-DOWN25">
+      <title>DOWN25: moves 110/0 25/20%, Au 25 µm, ball-wedge, forward, used by W01, W05</title>
+    </polyline>
+    <line x1="0" y1="0" x2="500" y2="0" class="base"/>
+  </g>
+  <text x="5640" y="2400" class="tb f-DOWN25">DOWN25</text>
+  <text x="6060" y="2400" class="t">Au 25 µm · ball-wedge · forward</text>
+  <text x="5640" y="2478" class="s">moves 110/0 25/20% · spline · ref-span 500</text>
+  <text x="5640" y="2550" class="s">used by W01, W05</text>
+  <g transform="translate(4520 2840)" class="pf-WEDGE25" wb:kind="profile" wb:name="WEDGE25" wb:material="Al" wb:style="wedge-wedge" wb:dir="forward" wb:moves="70/6% 50/18% -10/30%" wb:interp="polyline" wb:ref-span="1000" inkscape:groupmode="layer" inkscape:label="profile WEDGE25">
+    <polyline points="0,0 60,-70 240,-120 540,-110 1000,0" stroke-width="25" class="w c-WEDGE25 pf-WEDGE25">
+      <title>WEDGE25: moves 70/6% 50/18% -10/30%, Al 25 µm, wedge-wedge, forward, used by W08</title>
+    </polyline>
+    <line x1="0" y1="0" x2="1000" y2="0" class="base"/>
+  </g>
+  <text x="5640" y="2670" class="tb f-WEDGE25">WEDGE25</text>
+  <text x="6060" y="2670" class="t">Al 25 µm · wedge-wedge · forward</text>
+  <text x="5640" y="2748" class="s">moves 70/6% 50/18% -10/30% · polyline · ref-span 1000</text>
+  <text x="5640" y="2820" class="s">used by W08</text>
+  <g transform="translate(4520 3370)" class="pf-REV25" wb:kind="profile" wb:name="REV25" wb:material="Au" wb:style="ball-wedge" wb:dir="reverse" wb:moves="470/0 -30/78%" wb:interp="spline" wb:ref-span="1000" inkscape:groupmode="layer" inkscape:label="profile REV25">
+    <polyline points="0,0 0,-470 780,-440 1000,0" stroke-width="25" class="w c-REV25 pf-REV25">
+      <title>REV25: moves 470/0 -30/78%, Au 25 µm, ball-wedge, reverse, used by no wires</title>
+    </polyline>
+    <line x1="0" y1="0" x2="1000" y2="0" class="base"/>
+  </g>
+  <text x="5640" y="3080" class="tb f-REV25">REV25</text>
+  <text x="6060" y="3080" class="t">Au 25 µm · ball-wedge · reverse</text>
+  <text x="5640" y="3158" class="s">moves 470/0 -30/78% · spline · ref-span 1000</text>
+  <text x="5640" y="3230" class="warn">used by no wire. In v0.1 it can't be: wb:from must be a pad,</text>
+  <text x="5640" y="3300" class="warn">and from is always the first bond, which here is on the land.</text>
+  <text x="4350" y="3530" class="h">5 · How a wire gets its shape</text>
+  <text x="4350" y="3630" class="t">1  wb:profile on the wire picks the moves.</text>
+  <text x="4350" y="3714" class="t">2  The wire's two endpoints give the span.</text>
+  <text x="4350" y="3798" class="t">3  The die top in the stack gives the drop to the land.</text>
+  <text x="4350" y="3882" class="t">4  Walk the moves, then run straight to the second bond.</text>
+  <text x="4350" y="3986" class="s">W03: STD25, span 900 µm, drop 305 µm, as x, z from the first bond:</text>
+  <text x="4350" y="4076" class="mt">(0, 0)  (0, 180)  (108, 210)  (423, 190)  (900, −305)</text>
+</svg>
