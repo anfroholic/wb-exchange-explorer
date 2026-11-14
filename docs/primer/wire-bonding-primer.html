@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wire Bonding Primer</title>
+<style>
+/* Layout: one reading column (≈880px) with full-width figures; Evezor house palette, dark first. */
+:root{
+  color-scheme:dark;
+  --bg:#262c2a; --panel:#12302b; --panel2:#0c1311; --line:#1b5c50;
+  --txt:#e8eceb; --muted:#8fb5ac; --accent:#5bbbe6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#36d9bb; --green-bg:#0b3a31; --blue:#5bbbe6; --blue-bg:#10303f;
+  --magenta:#e660bd; --magenta-bg:#3a1832; --amber:#e9c46a; --amber-bg:#3b3115;
+  --si:#6d7a86; --si-edge:#9aa7b2; --board:#1d5a3a; --board-edge:#2f7d55; --gold:#e3b23c; --copper:#e07a4b;
+  --glass:rgba(91,187,230,.10); --metal:#c9ced3;
+  --code-bg:#04130a; --code-txt:#aff5b4;
+  --f-body:Arial,Helvetica,sans-serif; --f-mono:ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --glass:rgba(31,120,166,.08); --metal:#7d858c;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --glass:rgba(31,120,166,.08); --metal:#7d858c;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}
+*{box-sizing:border-box}
+img{max-width:100%;height:auto}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 var(--f-body)}
+a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+code,.mono{font-family:var(--f-mono);font-size:.84em}
+code{background:var(--code-bg);color:var(--code-txt);border-radius:4px;padding:1px 5px}
+.num{font-variant-numeric:tabular-nums}
+
+/* masthead band */
+.mast{background:var(--head);color:var(--head-txt);border-bottom:4px solid #d93aa7}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast .wrap{padding-block:26px 22px}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--head-sub)}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:6px 0 8px;text-wrap:balance}
+.mast p{margin:0;color:var(--head-sub);max-width:680px;font-size:16.5px}
+
+main.wrap{padding-block:8px 96px}
+h2{font-size:24px;line-height:1.25;margin:56px 0 4px;padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{color:var(--muted);font-weight:400;margin-right:8px;font-size:18px}
+h3{font-size:17px;margin:26px 0 6px}
+p{margin:10px 0;max-width:72ch}
+.lede{font-size:17px}
+.muted{color:var(--muted)} .small{font-size:13.5px}
+
+.hero{margin:20px 0 6px}
+.hero img{display:block;width:100%;border-radius:10px;border:1px solid var(--line)}
+figure{margin:16px 0}
+figcaption,.cap{font-size:13px;color:var(--muted);margin-top:7px;max-width:80ch}
+
+.tldr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;margin:18px 0}
+.tldr ul{margin:6px 0 0;padding-left:20px} .tldr li{margin:4px 0}
+.callout{border:1px solid var(--line);border-left:4px solid var(--amber);background:var(--amber-bg);border-radius:8px;padding:11px 15px;margin:14px 0;font-size:15px}
+.callout.info{border-left-color:var(--blue);background:var(--blue-bg)}
+.callout p{margin:4px 0}
+
+nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 18px;margin:18px 0;font-size:14.5px}
+nav.toc a{color:var(--txt);text-decoration:none} nav.toc a:hover{color:var(--accent)}
+nav.toc span{color:var(--muted);display:inline-block;width:22px}
+
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0}
+.scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto}
+.fig svg.wide{min-width:620px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px}
+.grid2>*{min-width:0}
+.grid2 img{display:block;width:100%;border-radius:8px}
+
+/* pills for source tiers */
+.pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 9px;border:1px solid;white-space:nowrap;vertical-align:1px;line-height:1.6}
+.t-std{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.t-ven{color:var(--blue);border-color:var(--blue);background:var(--blue-bg)}
+.t-rot{color:var(--magenta);border-color:var(--magenta);background:var(--magenta-bg)}
+.t-ph{color:var(--amber);border-color:var(--amber);background:var(--amber-bg);border-style:dashed}
+.t-our{color:var(--muted);border-color:var(--line);background:var(--panel2)}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:14px 0}
+.tier{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.tier b{font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.tier .h{display:flex;align-items:center;gap:10px}
+
+/* glossary */
+dl.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:2px 26px;margin:12px 0}
+dl.gl div{padding:9px 0;border-bottom:1px solid var(--line);min-width:0}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:2px 0 0;color:var(--txt);font-size:14.5px}
+dl.gl dd .muted{font-size:13.5px}
+
+/* steps */
+ol.steps{list-style:none;padding:0;margin:14px 0;display:grid;gap:10px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--head);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+ol.steps b{display:block}
+ol.steps span{font-size:14.5px;color:var(--muted)}
+
+/* tables */
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;background:var(--panel2);white-space:nowrap}
+td.key{font-family:var(--f-mono);font-weight:700;color:var(--magenta);white-space:nowrap}
+td.val{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700}
+td .why{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+
+/* controls */
+.ctl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:4px 0 12px}
+.ctl label{font-size:13.5px;color:var(--muted);font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;background:var(--panel2);color:var(--txt);border:0;border-right:1px solid var(--line);padding:5px 12px;cursor:pointer;font-variant-numeric:tabular-nums}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--head);color:#fff;font-weight:700}
+input[type=range]{width:min(320px,100%);accent-color:var(--green)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px;margin-top:12px}
+.ro{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:14px}
+.ro .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.ro .s{color:var(--muted);font-size:12.5px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.filters button{font:inherit;font-size:13px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);padding:3px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:700}
+
+ul.check{list-style:none;padding:0;margin:12px 0;display:grid;gap:8px}
+ul.check li{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 12px 9px 40px;position:relative;font-size:15px}
+ul.check li::before{content:"";position:absolute;left:13px;top:13px;width:14px;height:14px;border:2px solid var(--green);border-radius:3px}
+ul.check li .ref{color:var(--muted);font-size:13px}
+
+ol.src{padding-left:22px;font-size:14.5px} ol.src li{margin:8px 0}
+
+/* SVG vocabulary */
+svg text{font-family:var(--f-body);fill:var(--txt);font-size:13px}
+svg .lbl{font-size:12.5px} svg .lblm{fill:var(--muted);font-size:12px} svg .key{fill:var(--magenta);font-weight:700;font-size:12px}
+svg .dim{stroke:var(--muted);stroke-width:1.2;fill:none}
+svg .lead{stroke:var(--muted);stroke-width:1;fill:none;stroke-dasharray:3 3}
+svg .board{fill:var(--board);stroke:var(--board-edge)}
+svg .die{fill:var(--si);stroke:var(--si-edge)}
+svg .attach{fill:var(--muted);opacity:.6}
+svg .gold{fill:var(--gold)}
+svg .wire{stroke:var(--gold);fill:none;stroke-linecap:round}
+svg .wire2{stroke:var(--copper);fill:none;stroke-linecap:round}
+svg .glob{fill:var(--glass);stroke:var(--accent);stroke-width:1.4;stroke-dasharray:6 4}
+svg .metal{fill:var(--metal)}
+svg .glass{fill:var(--panel2);stroke:var(--line)}
+svg .bad{stroke:var(--magenta);stroke-width:2.2;fill:none}
+svg .keep{fill:var(--magenta-bg);stroke:var(--magenta);stroke-dasharray:5 4}
+svg .part{fill:var(--si);stroke:var(--si-edge)}
+svg .bar{fill:var(--green)}
+svg .bar.alt{fill:var(--blue)}
+svg .grid{stroke:var(--line);stroke-width:1}
+svg .mark{stroke:var(--magenta);stroke-width:2.5}
+svg .arc{stroke:var(--accent);stroke-width:1.4;fill:none}
+
+.sitenav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-bottom:14px}
+.sitenav a{color:var(--head-sub);text-decoration:none}
+.sitenav a:hover{color:#fff;text-decoration:underline}
+
+@media (prefers-reduced-motion:no-preference){ .seg button,.filters button{transition:background .12s,color .12s} }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <nav class="sitenav" aria-label="Project pages">
+      <a href="../../app/index.html">← Wire Bond Bench</a>
+      <a href="../../planning/_planning_tools/index.html">Planning index</a>
+      <a href="../../planning/wire_bond_lifecycle/plan.html">Lifecycle plan</a>
+      <a href="../wire_bond_design_rules.svg">Rules sheet</a>
+      <a href="../wire_bond_design_rules_sources.md">Rule sources notes</a>
+      <a href="fiducials.html">Fiducials</a>
+    </nav>
+    <div class="eyebrow">Wire Bond Bench · learning page · November 2026</div>
+    <h1>Designing a board for a wire bonded die</h1>
+    <p>What happens when a bare die is wired to a circuit board, the words people use for it, and the numbers that decide whether a design can be bonded. Every number links to where it came from.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<figure class="hero">
+  <img src="img/iso.jpg" alt="Close 3D view of a wafer.space die with rocket artwork, ringed by gold and orange bond wires looping out to yellow bond lands on a green board." width="1400" height="863">
+  <figcaption>KiCad's 3D render of the run 2 chip-on-board design, with the die and every wire generated from the GDS. Gold wires are 25 µm signal wires; orange wires are 33 µm supply wires. This is a render, not a photo: nobody on this team has bonded a die yet.</figcaption>
+</figure>
+
+<div class="tldr">
+  <b>The short version</b>
+  <ul>
+    <li><b>Pick the wire first.</b> Its diameter, usually 25 µm gold, sets almost every other number: pad size, pad pitch, ball size, longest wire.</li>
+    <li><b>The die is fine and the board is coarse.</b> Die pads sit about 65 µm apart; board lands need about 200 µm. So the lands form a bigger ring and the wires fan out.</li>
+    <li><b>Keep wires short, straight out, and apart.</b> Under about 45° from the pad's outward direction, no crossings, and well under the bonding house's longest wire.</li>
+    <li><b>Leave room around the die</b> for the wire to come down, the bonding tool to reach, and the glob top that covers it all.</li>
+    <li><b>Every number here is a starting point.</b> The bonding house that does your job has the final word. Ask them early.</li>
+  </ul>
+</div>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#anatomy"><span>1</span>What wire bonding is</a>
+  <a href="#words"><span>2</span>Words you'll meet</a>
+  <a href="#flow"><span>3</span>From GDS to a bonded board</a>
+  <a href="#trust"><span>4</span>How much to trust a number</a>
+  <a href="#size"><span>5</span>Size it from the wire</a>
+  <a href="#length"><span>6</span>How long is too long</a>
+  <a href="#layout"><span>7</span>Lay out the board</a>
+  <a href="#height"><span>8</span>Height and the glob top</a>
+  <a href="#checklist"><span>9</span>Checklist before you send it</a>
+  <a href="#house"><span>10</span>Working with a bonding house</a>
+  <a href="#rules"><span>11</span>All 28 rules</a>
+  <a href="#sources"><span>12</span>Sources</a>
+</nav>
+
+<!-- 1 -->
+<h2 id="anatomy"><span class="k">1</span>What wire bonding is</h2>
+<p class="lede">A die is the small square of silicon cut from a wafer. It has no pins. Around its edge are <b>pad openings</b>, windows in the protective glass layer where bare metal shows. A wire bonder welds a hair-thin gold or aluminium wire to each pad, draws it up into a loop, and welds the other end to a copper <b>land</b> on the board. That is the whole electrical connection.</p>
+
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 300" role="img" aria-labelledby="sideT">
+  <title id="sideT">Side view of one bond wire running from a pad on the die down to a land on the board, under a glob top, with the main dimensions labelled.</title>
+  <path class="glob" d="M30,230 C40,-10 640,-10 650,230"/>
+  <rect class="board" x="0" y="230" width="860" height="44"/>
+  <rect class="attach" x="58" y="222" width="294" height="8"/>
+  <rect class="die" x="60" y="170" width="290" height="52"/>
+  <rect class="metal" x="314" y="167" width="26" height="3"/>
+  <rect class="gold" x="530" y="226" width="70" height="4"/>
+  <path class="wire" stroke-width="3.5" d="M327,160 L327,95 C335,68 420,66 470,100 L556,226"/>
+  <circle class="gold" cx="327" cy="162" r="7"/>
+  <path class="gold" d="M548,226 L566,226 L561,221 Z"/>
+  <!-- span -->
+  <path class="dim" d="M327,30 L556,30 M327,24 L327,36 M556,24 L556,36"/>
+  <text x="441" y="22" text-anchor="middle" class="lbl">Span, first bond to second <tspan class="key">W1 W2</tspan></text>
+  <!-- loop height -->
+  <path class="dim" d="M395,228 L395,76 M389,76 L401,76"/>
+  <text x="400" y="176" class="lbl">Loop height <tspan class="key">S3</tspan></text>
+  <!-- clearance -->
+  <path class="dim" d="M352,168 L352,81"/>
+  <path class="lead" d="M320,124 L350,124"/>
+  <text x="316" y="120" text-anchor="end" class="lbl">Clearance over</text>
+  <text x="316" y="135" text-anchor="end" class="lbl">die edge <tspan class="key">S1 S2</tspan></text>
+  <!-- die edge to land -->
+  <path class="dim" d="M350,212 L530,212 M350,206 L350,218 M530,206 L530,218"/>
+  <text x="440" y="205" text-anchor="middle" class="lbl">Die edge to land <tspan class="key">L3</tspan></text>
+  <!-- glob -->
+  <path class="lead" d="M340,50 L705,50"/>
+  <path class="dim" d="M700,228 L700,50 M694,50 L706,50"/>
+  <text x="712" y="130" class="lbl">Glob top</text>
+  <text x="712" y="145" class="lbl">height <tspan class="key">S4</tspan></text>
+  <path class="dim" d="M455,92 L455,54"/>
+  <text x="462" y="47" class="lbl">Cover over loop <tspan class="key">S5</tspan></text>
+  <!-- parts -->
+  <text x="205" y="201" text-anchor="middle" class="lbl">Die (silicon)</text>
+  <text x="54" y="226" text-anchor="end" class="lblm">Die attach</text>
+  <text x="80" y="258" class="lblm">Board</text>
+  <path class="lead" d="M305,163 L318,163"/>
+  <text x="300" y="167" text-anchor="end" class="lbl">Pad + ball bond (1st)</text>
+  <text x="566" y="258" class="lbl">Land + stitch bond (2nd)</text>
+  <text x="120" y="150" class="lblm">Glob top encapsulant</text>
+</svg>
+<div class="cap">Side view, schematic and not to scale. The magenta keys point to the rules in <a href="#rules">section 11</a>. A real die is a few hundred µm thick and a 25 µm wire is about a quarter of a human hair.</div>
+</div>
+
+<h3>Ball bonding and wedge bonding</h3>
+<div class="grid2">
+  <div class="callout info" style="margin:0">
+    <p><b>Ball bonding</b>, usually gold wire. The tool, a ceramic tube called a <b>capillary</b>, melts a ball onto the wire end and presses it onto the die pad with heat and ultrasound (thermosonic). It then pulls the wire up into a loop and presses it flat onto the land in a <b>stitch</b>. The wire can leave the ball in any direction.</p>
+  </div>
+  <div class="callout info" style="margin:0">
+    <p><b>Wedge bonding</b>, often aluminium wire. A wedge-shaped tool presses the wire flat at both ends with ultrasound. Both bonds are wedges, and the wire leaves each one along the tool's direction, so the board usually turns under the tool between wires.</p>
+  </div>
+</div>
+<p class="small muted">General background. The rules on this page are mostly written for 25 µm gold ball bonding, because that's what the sources quote most. MIL-STD-883 gives separate ball and wedge limits (B1, B2).</p>
+
+<!-- 2 -->
+<h2 id="words"><span class="k">2</span>Words you'll meet</h2>
+<p>Bonding houses, data sheets and the rest of this page use these terms. They're grouped from die to board to paperwork.</p>
+<dl class="gl">
+  <div><dt>Pad opening</dt><dd>The window in the die's glass where bare metal shows. The wire can only bond there. In a GDS it's a layer of its own, <code>37/0</code> on GF180MCU.</dd></div>
+  <div><dt>Glassivation, passivation</dt><dd>The protective glass over the die. A ball that lands partly on it is a weak bond.</dd></div>
+  <div><dt>Pitch</dt><dd>Centre-to-centre distance between neighbouring pads or lands. Smaller pitch packs more wires but leaves less room for the tool.</dd></div>
+  <div><dt>First bond, second bond</dt><dd>The order the bonder makes them. In ball bonding the ball on the die is usually first and the stitch on the board second.</dd></div>
+  <div><dt>Ball, stitch, wedge</dt><dd>The three bond shapes. A ball is round and sits on the pad; a stitch is the crescent where the wire is pressed off; a wedge is a flattened strip.</dd></div>
+  <div><dt>Capillary, wedge tool, bond head</dt><dd>The tool that feeds and presses the wire, and the moving head that carries it. The tool has width, which is why pads and parts need clearance.</dd></div>
+  <div><dt>Loop, loop height, loop profile</dt><dd>The arc of the wire between bonds, how high it rises, and the named shape the bonder follows to form it.</dd></div>
+  <div><dt>Span</dt><dd>The straight plan-view distance from first bond to second. The real wire is longer, by its loop.</dd></div>
+  <div><dt>Land, bond finger</dt><dd>The copper pad on the board that the second bond lands on. It needs a surface finish the wire can bond to; your board house and bonding house agree which.</dd></div>
+  <div><dt>Bond ring</dt><dd>The ring of lands around the die area on the board.</dd></div>
+  <div><dt>Down bond</dt><dd>A wire from a die pad to a land right beside the die, often ground.</dd></div>
+  <div><dt>Die attach</dt><dd>The glue or film that holds the die to the board before bonding.</dd></div>
+  <div><dt>Glob top, dam and fill</dt><dd>Epoxy dropped over the die and wires to protect them. With dam and fill, a raised ring is laid first and the inside is filled.</dd></div>
+  <div><dt>Tier</dt><dd>A height level for loops. Multi-tier designs run some wires higher so they can pass over others; single-tier designs forbid crossings.</dd></div>
+  <div><dt>Bond diagram</dt><dd>The drawing that shows which pad goes to which land. It's the main thing a bonding house asks for.</dd></div>
+  <div><dt>Bondlist, offline programming</dt><dd>A table of bond coordinates, and the software the bonding house uses to turn your drawing into a machine program.</dd></div>
+  <div><dt>Class S, class B</dt><dd>Inspection levels in MIL-STD-883. Class S is for space and is the stricter one. These are reject criteria for finished parts, borrowed here as design guidance.</dd></div>
+  <div><dt>d</dt><dd>Wire diameter. Many rules are written as multiples of it, like 2 × d.</dd></div>
+</dl>
+
+<!-- 3 -->
+<h2 id="flow"><span class="k">3</span>From GDS to a bonded board</h2>
+<p>This is the path a die takes in this project. The first three steps are design work you do; the rest is the bonding house's.</p>
+<ol class="steps">
+  <li><div><b>Read the pads from the GDS.</b><span>The pad opening layer gives every pad's position and size. Net names come from text labels when the flow writes them. GDS has no pad numbering of its own, so pick an anchor; on our die it's the QR code in one corner.</span></div></li>
+  <li><div><b>Place the die on the board and draw the bond ring.</b><span>Lands go at board pitch, at a set distance from the die edge, with keepouts for tall parts. In this project KiCad holds the board and the GDS holds the die.</span></div></li>
+  <li><div><b>Draw the wires and check them.</b><span>Each wire runs from a pad to a land. Check length, angle, crossings, gaps and clearance against the rules in section 11. The Wire Bond Bench app does this.</span></div></li>
+  <li><div><b>Send the bond diagram and table.</b><span>A drawing of pad-to-land connections plus a table of signal, die pad, board land and X, Y coordinates. Some houses also take DXF or a bondlist.</span></div></li>
+  <li><div><b>The bonding house programs and bonds.</b><span>Their engineer turns your drawing into a machine program, picks the loop shapes, and adjusts anything their process can't do.</span></div></li>
+  <li><div><b>Encapsulate and test.</b><span>A glob top goes over the die and wires. Then the board gets tested like any other.</span></div></li>
+</ol>
+<div class="grid2">
+  <figure style="margin:0"><img src="img/eurosynth-die.jpg" alt="Two-colour render of the eurosynth die showing top metal and 72 pad openings around the edge, with a QR code in the bottom-left corner." width="1400" height="901" loading="lazy"><figcaption><b>Step 1.</b> The eurosynth die from its GDS, 3932 × 2531 µm. Dark red is the pad opening layer. The QR code at bottom left is the anchor for pad numbering.</figcaption></figure>
+  <figure style="margin:0"><img src="img/top.jpg" alt="Top-down KiCad 3D render of the board with a die in the centre and gold and orange wires fanning out to a ring of yellow lands." width="1000" height="1000" loading="lazy"><figcaption><b>Steps 2 and 3.</b> The run 2 board with a die stand-in and 74 generated wires. The fan-out from fine die pitch to coarse land pitch is easy to see here.</figcaption></figure>
+</div>
+
+<!-- 4 -->
+<h2 id="trust"><span class="k">4</span>How much to trust a number</h2>
+<p>There is no single public rulebook for wire bond design. Each bonding house has its own limits for its own wire and tools. What's public is a military inspection standard, a few vendor and lab guides, and folklore. So every rule on this page carries one of four labels saying where it came from.</p>
+<div class="tiers">
+  <div class="tier"><div class="h"><b>5</b><span class="pill t-std">Standard</span></div>Read in a published standard, MIL-STD-883. Written as inspection criteria for military parts, not design rules.</div>
+  <div class="tier"><div class="h"><b>17</b><span class="pill t-ven">Vendor guide</span></div>Read in a packaging house, vendor or bonding lab guide. True for that house's process.</div>
+  <div class="tier"><div class="h"><b>1</b><span class="pill t-rot">Rule of thumb</span></div>Quoted as a rule of thumb in a published source.</div>
+  <div class="tier"><div class="h"><b>5</b><span class="pill t-ph">Placeholder</span></div>Ours. No source found. Use them as a reminder to ask.</div>
+</div>
+<div class="callout"><p><b>Sources disagree, and that's normal.</b> Europractice asks for a 55 µm pad opening for 25 µm wire, about 2.2 × d. STFC asks for 3 × d, 75 µm. Both are right for their own process. When two sources differ, design to the stricter one until your bonding house tells you otherwise.</p></div>
+
+<!-- 5 -->
+<h2 id="size"><span class="k">5</span>Size it from the wire</h2>
+<p>Pick a wire diameter and the drawing below redraws three die pads at Europractice's smallest opening and pitch for that wire, to scale in µm. It's the fastest way to see why the numbers are what they are.</p>
+
+<div class="fig">
+  <div class="ctl">
+    <label id="dLbl">Gold wire diameter</label>
+    <div class="seg" role="group" aria-labelledby="dLbl" id="dSeg">
+      <button type="button" data-d="17.5" aria-pressed="false">17.5 µm</button>
+      <button type="button" data-d="20" aria-pressed="false">20 µm</button>
+      <button type="button" data-d="25" aria-pressed="true">25 µm</button>
+      <button type="button" data-d="33" aria-pressed="false">33 µm</button>
+    </div>
+  </div>
+  <div class="scroll">
+  <svg id="padSvg" viewBox="0 0 330 244" role="img" aria-label="Three die pads to scale with balls at the chosen wire diameter" style="max-width:720px;min-width:300px;margin:0 auto"></svg>
+  </div>
+  <div class="cap">To scale, 1 unit = 1 µm. Grey is glass, light metal is the pad opening, gold is a ball at the 2 × d minimum with its wire leaving downward. On the middle pad, the dashed square is STFC's 3 × d pad and the dashed circle is the 5 × d largest ball MIL-STD-883 accepts.</div>
+  <div class="readout" id="padRead"></div>
+</div>
+
+<!-- 6 -->
+<h2 id="length"><span class="k">6</span>How long is too long</h2>
+<p>No source gives one number for the longest wire. They answer four different questions, and the answers differ by more than a factor of two.</p>
+<div class="grid2">
+  <div class="callout info" style="margin:0"><p><b>What the bonder can do.</b> A house's service limit for its wire and tool. Europractice: 6 mm for 25 µm gold. Samtec: 6.35 mm. <span class="pill t-ven">Vendor guide</span></p></div>
+  <div class="callout info" style="margin:0"><p><b>What the wire can hold up.</b> The 100-D rule caps span at 100 wire diameters, 2.5 mm for 25 µm wire, because long wires sag and get swept by flowing mold compound. It comes from molded packages; a glob top flows less forcefully. <span class="pill t-rot">Rule of thumb</span></p></div>
+  <div class="callout info" style="margin:0"><p><b>What it clears.</b> Long, low wires sag toward the die edge and their neighbours. MIL-STD-883 rejects a wire that gets too close, whatever its length. <span class="pill t-std">Standard</span></p></div>
+  <div class="callout info" style="margin:0"><p><b>What the signal tolerates.</b> 1 mil gold wire is about 46 mΩ and 1 nH per mm. Too long is whenever that matters to your circuit. <span class="pill t-our">Trade article</span></p></div>
+</div>
+
+<div class="fig">
+  <div class="ctl">
+    <label for="lenIn">Your wire's span</label>
+    <input type="range" id="lenIn" min="0.5" max="8" step="0.1" value="3.0">
+    <span class="mono num" id="lenOut">3.0 mm</span>
+    <span class="small muted" id="lenD">for 25 µm wire (change it in section 5)</span>
+  </div>
+  <div class="scroll"><svg id="lenSvg" class="wide" viewBox="0 0 720 190" role="img" aria-label="Bar chart of longest-wire limits from three sources with a marker at your wire's span"></svg></div>
+  <div class="cap">Hover a bar for its source. Samtec doesn't state a diameter for its 6.35 mm, so its bar doesn't change. The magenta line is your span. A span is the plan distance; the real wire is longer by its loop, so leave margin.</div>
+  <div class="readout" id="lenRead"></div>
+</div>
+
+<!-- 7 -->
+<h2 id="layout"><span class="k">7</span>Lay out the board</h2>
+<p>Seen from above, a bonded die is a fan: fine-pitch pads on the die, coarse-pitch lands on the board, and short straight wires between. Most layout rules keep those wires from touching each other, the die, or the tool's path.</p>
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 430" role="img" aria-labelledby="planT">
+  <title id="planT">Plan view of one die edge with pads at fine pitch, wires fanning out to lands at coarse pitch, and the main layout rules labelled.</title>
+  <rect class="board" x="0" y="0" width="860" height="430" opacity=".55"/>
+  <rect class="die" x="30" y="40" width="270" height="350"/>
+  <text x="165" y="215" text-anchor="middle" class="lbl">Die</text>
+  <g id="planWires"></g>
+  <!-- pad pitch -->
+  <path class="dim" d="M262,120 L262,150 M256,120 L268,120 M256,150 L268,150"/>
+  <text x="252" y="139" text-anchor="end" class="lbl">Pad pitch <tspan class="key">P4</tspan></text>
+  <!-- land pitch -->
+  <path class="dim" d="M520,47 L520,103 M514,47 L526,47 M514,103 L526,103"/>
+  <text x="530" y="79" class="lbl">Land pitch <tspan class="key">L2</tspan></text>
+  <!-- die edge to land -->
+  <path class="dim" d="M300,408 L470,408 M300,402 L300,414 M470,402 L470,414"/>
+  <text x="385" y="400" text-anchor="middle" class="lbl">Die edge to land <tspan class="key">L3</tspan></text>
+  <!-- angle -->
+  <path class="lead" d="M287,120 L400,120"/>
+  <path class="arc" d="M372,120 A85,85 0 0 0 365,87"/>
+  <text x="380" y="108" class="lbl">≤ 45° <tspan class="key">W3</tspan></text>
+  <!-- avoid crossing -->
+  <text x="680" y="40" class="lbl" font-weight="700">Avoid</text>
+  <rect class="metal" x="650" y="70" width="12" height="12"/><rect class="metal" x="650" y="110" width="12" height="12"/>
+  <rect class="gold" x="800" y="62" width="22" height="16"/><rect class="gold" x="800" y="114" width="22" height="16"/>
+  <path class="wire" stroke-width="3" d="M656,76 L811,122"/><path class="wire" stroke-width="3" d="M656,116 L811,70"/>
+  <path class="bad" d="M724,90 L742,108 M742,90 L724,108"/>
+  <text x="680" y="155" class="lbl">Crossing wires <tspan class="key">W4</tspan></text>
+  <text x="680" y="171" class="lblm">allowed only in multi-tier designs</text>
+  <!-- keepout -->
+  <rect class="keep" x="610" y="232" width="190" height="130" rx="10"/>
+  <rect class="part" x="660" y="270" width="90" height="54" rx="3"/>
+  <text x="705" y="302" text-anchor="middle" class="lbl">Tall part</text>
+  <text x="610" y="384" class="lbl">Bond head keepout <tspan class="key">K1</tspan></text>
+  <text x="610" y="400" class="lblm">45° from its top, plus half the tool tip</text>
+  <text x="610" y="222" class="lblm">Keep lands and wires outside</text>
+</svg>
+<div class="cap">Plan view, schematic. Pads at fine pitch on the die edge, lands at coarse pitch on the board, and one supply pad (orange) with two wires, the most Europractice allows on one pad (P5).</div>
+</div>
+<div class="tw"><table data-rules="W3,W4,W5,W6,P4,P5,L1,L2,L3,L4,D1,K1"></table></div>
+<figure>
+  <img src="img/edge.jpg" alt="Low-angle KiCad 3D view along the die edge, showing gold wires rising from the pads and looping down to the board, with thicker orange supply wires." width="1400" height="689" loading="lazy">
+  <figcaption>Along the die edge in the run 2 render. Each wire rises straight up from its ball, then loops out and down to its land. The thicker orange wires are 33 µm supply wires. The camera is close, so perspective exaggerates the near wires.</figcaption>
+</figure>
+
+<!-- 8 -->
+<h2 id="height"><span class="k">8</span>Height and the glob top</h2>
+<p>The wire has to clear the die's sharp edge on the way down, which is conductive silicon. Above it, the glob top has to cover the highest loop with some to spare, and anything sitting over the board has to clear the glob top.</p>
+<div class="tw"><table data-rules="S1,S2,S3,S4,S5,L5,D2"></table></div>
+
+<h3>Rules for the pads and bonds themselves</h3>
+<div class="tw"><table data-rules="P1,P2,P3,P6,B1,B2,B3,W1,W2"></table></div>
+
+<!-- 9 -->
+<h2 id="checklist"><span class="k">9</span>Checklist before you send it</h2>
+<p>Run through this before a design leaves your hands. The keys point to the rules in section 11.</p>
+<ul class="check">
+  <li>Choose the wire material and diameter, and write it on the drawing. <span class="ref">Everything scales from it.</span></li>
+  <li>Pad openings are at least the smallest size for your wire, and pad pitch at least the smallest pitch. <span class="ref">P1, P2, P4</span></li>
+  <li>Lands are at least 100 µm wide at 200 µm pitch on an ordinary board. <span class="ref">L1, L2</span></li>
+  <li>The bond ring sits at least 375 µm from the die edge, or twice the die thickness if that's more. <span class="ref">L3</span></li>
+  <li>Every wire leaves its pad within 45° of straight out, and no two wires cross. <span class="ref">W3, W4</span></li>
+  <li>Every wire is shorter than your bonding house's limit. Under 100 × d if the part will be molded. <span class="ref">W1, W2</span></li>
+  <li>Neighbouring wires keep a gap; at least 2 × d for class S. <span class="ref">W5, W6</span></li>
+  <li>No pad or land carries more than two wires. <span class="ref">P5, P6, L4</span></li>
+  <li>Tall parts sit outside the bond head's 45° keepout. <span class="ref">K1</span></li>
+  <li>If there's a glob top, the drawing leaves room for its dam and its height clears anything above it. <span class="ref">S4, S5, L5</span></li>
+  <li>Pad 1 and land 1 are marked, and the numbering in the drawing matches the table. <span class="pill t-our">Our practice</span> <span class="ref">On our die, the QR code corner is the anchor.</span></li>
+  <li>Placeholder rules have been checked with the bonding house. <span class="ref">W5, S1, P3, P6, D2</span></li>
+</ul>
+
+<!-- 10 -->
+<h2 id="house"><span class="k">10</span>Working with a bonding house</h2>
+<p>There is no standard file format for wire bond designs. What houses actually exchange is a drawing, a table and their own machine programs.</p>
+<div class="grid2">
+  <div>
+    <h3 style="margin-top:6px">What to send</h3>
+    <ul>
+      <li>A <b>bond diagram</b> as a PDF, showing which die pad goes to which land.</li>
+      <li>A <b>netlist table</b>: signal, die pad, board land, and X, Y for each.</li>
+      <li>Coordinates on a <b>1:1 drawing centred on 0,0</b>, with bond points accurate to a few µm, and wires sorted by tier if there's more than one.</li>
+      <li>A <b>DXF</b> if they ask for one; offline programming tools commonly read it.</li>
+    </ul>
+  </div>
+  <div>
+    <h3 style="margin-top:6px">What to ask them, early</h3>
+    <ul>
+      <li>Which wire material and diameters do you run?</li>
+      <li>What's your smallest pad opening and pitch, and your longest wire?</li>
+      <li>Which loop shapes and heights do you use?</li>
+      <li>Which land finish and size do you need on the board?</li>
+      <li>Do you encapsulate, and how tall does it end up?</li>
+      <li>Which files does your offline programming read?</li>
+    </ul>
+  </div>
+</div>
+<div class="callout info"><p><b>Where this project fits.</b> wirebond.svg (<code>.wb.svg</code>) is our attempt at a file that a person can open as a true-scale bond diagram and a tool can read as data. Wire Bond Bench, in the same repository, imports GDS and KiCad files, generates wires and runs the checks on this page. <a href="https://github.com/MaxClerkwell/open.cob.json">open.cob.json</a> is a related open format with a broader data model. None of these is something a bonding house expects yet, so send the PDF and table too.</p></div>
+
+<!-- 11 -->
+<h2 id="rules"><span class="k">11</span>All 28 rules</h2>
+<p>The full table behind the checks in Wire Bond Bench. Values are for 25 µm gold ball bonding on an organic board unless the condition says otherwise. The <a href="../wire_bond_design_rules.svg">one-page rules sheet</a> draws each rule.</p>
+<div class="filters" role="group" aria-label="Filter by source tier" id="tierF">
+  <button type="button" data-t="all" aria-pressed="true">All 28</button>
+  <button type="button" data-t="std" aria-pressed="false">Standard</button>
+  <button type="button" data-t="ven" aria-pressed="false">Vendor guide</button>
+  <button type="button" data-t="rot" aria-pressed="false">Rule of thumb</button>
+  <button type="button" data-t="ph" aria-pressed="false">Placeholder</button>
+</div>
+<div class="tw"><table id="allRules"></table></div>
+
+<!-- 12 -->
+<h2 id="sources"><span class="k">12</span>Sources</h2>
+<p>Read during this project in November 2026. PDFs were read as extracted text, so their figures weren't checked.</p>
+<ol class="src">
+  <li><a href="https://europractice-ic.com/wp-content/uploads/2020/06/ASIC_Prototype_Packaging_Design_Rules_2024.pdf">Europractice, ASIC Prototype Packaging Design Rules, 2024</a>. <span class="pill t-ven">Vendor guide</span> Pad, pitch and length limits by wire diameter. Written for their packaging service, mostly ceramic and QFN.</li>
+  <li><a href="https://suddendocs.samtec.com/literature/advanced-package-design-guidlines.pdf">Samtec, Advanced Package Design Guidelines, 2017</a>. <span class="pill t-ven">Vendor guide</span> Board land sizes, loop height and encapsulation. Guidelines for their own process.</li>
+  <li><a href="https://q-tech.com/wp-content/uploads/STD-883-2010.pdf">MIL-STD-883G, Test Method 2010.11</a> and <a href="https://q-tech.com/wp-content/uploads/STD-883-2017.pdf">Test Method 2017.8</a>. <span class="pill t-std">Standard</span> Internal visual inspection criteria. The 2004 revision; the current one may differ.</li>
+  <li><a href="https://indico.global/event/1886/contributions/31130/attachments/15938/25564/Wire%20bond%20requirement10.pdf">STFC, Wire bond requirements</a>. <span class="pill t-ven">Lab guide</span> Pad size as 3 × d, wedge pads, 45° component clearance.</li>
+  <li><a href="https://bondlab.web.cern.ch/Recommendations.html">CERN bond lab, Recommendations</a>. <span class="pill t-ven">Lab guide</span> Bond spacing on one land, half the tool tip as extra keepout. Tool dependent by their own account.</li>
+  <li><a href="https://patents.google.com/patent/US5923092A/en">US patent 5,923,092</a>. <span class="pill t-rot">Rule of thumb</span> The 100-D rule for span in molded packages.</li>
+  <li><a href="https://sst.semiconductor-digest.com/?p=36674">Semiconductor Digest, on wire bond design</a>. Resistance and inductance per length of 1 mil gold wire.</li>
+  <li><a href="https://sst.semiconductor-digest.com/?p=34154">Semiconductor Digest, Software-driven wirebonding</a>. What offline programming needs: 1:1 drawing, 0,0 centred, endpoints to a few µm, sorted by tier.</li>
+  <li><a href="https://anysilicon.com/submitting-design-files-assembly-house-checklist/">AnySilicon, Submitting design files to an assembly house</a>. The bond diagram PDF and netlist table.</li>
+  <li><a href="https://community.cadence.com/cadence_blogs_8/b/pcb/posts/allegro-package-designer-and-3d-dxf">Cadence, Allegro Package Designer and 3D DXF</a>. DXF as input to offline programming.</li>
+</ol>
+<p class="small muted">Looked for and not found in public: wire bond geometry rules from JEDEC or IPC, design guides from Kulicke &amp; Soffa, Palomar, Hesse, F&amp;K Delvotec, Amkor or ASE, and any MIL-STD-883 limit on wire length or sag. The full research notes are in <a href="../wire_bond_design_rules_sources.md">wire_bond_design_rules_sources.md</a>.</p>
+
+</main>
+
+<script>
+(function(){
+var SRC={
+  ep:["Europractice 2024","https://europractice-ic.com/wp-content/uploads/2020/06/ASIC_Prototype_Packaging_Design_Rules_2024.pdf"],
+  sam:["Samtec 2017","https://suddendocs.samtec.com/literature/advanced-package-design-guidlines.pdf"],
+  m2010:["MIL-STD-883 TM 2010","https://q-tech.com/wp-content/uploads/STD-883-2010.pdf"],
+  m2017:["MIL-STD-883 TM 2017","https://q-tech.com/wp-content/uploads/STD-883-2017.pdf"],
+  stfc:["STFC","https://indico.global/event/1886/contributions/31130/attachments/15938/25564/Wire%20bond%20requirement10.pdf"],
+  cern:["CERN bond lab","https://bondlab.web.cern.ch/Recommendations.html"],
+  pat:["US 5,923,092","https://patents.google.com/patent/US5923092A/en"]
+};
+var TIER={std:["Standard","t-std"],ven:["Vendor guide","t-ven"],rot:["Rule of thumb","t-rot"],ph:["Placeholder","t-ph"]};
+// key, rule, value, condition, tier, source, why it matters
+var R=[
+["W1","Longest wire","6 mm","25 µm Au ball; 4.5 to 7.0 mm for 17.5 to 33 µm","ven","ep","The longest loop this house will form with its wire and tool."],
+["W2","Span per wire diameter","100 × d","Molded packages","rot","pat","Long thin wires sag and get swept sideways by flowing mold compound."],
+["W3","Wire angle from pad normal","≤ 45°","25 µm Au ball","ven","ep","A wire leaving at a steep angle passes over its neighbours' pads and wires."],
+["W4","Wire crossings","0","Single tier","ven","ep","Crossed wires can touch. Multi-tier designs may cross with two wire diameters of clearance (MIL-STD-883)."],
+["W5","Wire to wire gap, plan view","60 µm","Our default","ph","","Keeps room between wires when they sag or sweep. CERN bonds 25 µm wire at 60 µm pitch, which is a pitch, not a gap."],
+["W6","Wire separation","2 × d","Class S; 1 × d for class B","std","m2010","An inspector rejects wires closer than this to another wire."],
+["S1","Clearance over die edge","40 µm","Our default","ph","","A wire touching the die edge can short to the silicon."],
+["S2","Die edge clearance per diameter","2 × d","Beyond 5 mil from a ball bond, 10 mil from a wedge","std","m2017","The unpassivated die edge is conductive; this is the inspection reject limit."],
+["S3","Highest loop","2540 µm","Maximum","ven","sam","Everything above the board has to clear the highest loop."],
+["S4","Glob top height","600 µm","Off by default; set your own","ven","sam","The tallest encapsulation Samtec lists. A lid or mating part above sets yours."],
+["S5","Glob top cover over loop","175 µm","Organic board","ven","sam","A wire poking through the encapsulant isn't protected."],
+["P1","Pad opening, smallest side","55 µm","25 µm Au ball; 40 to 70 µm for 17.5 to 33 µm","ven","ep","The ball has to land inside the opening."],
+["P2","Pad opening per diameter","3 × d","Gold ball","ven","stfc","A more generous view than P1: 75 µm for 25 µm wire."],
+["P3","Pad opening, largest side","300 µm","Our sanity check","ph","","Not a bonding limit; catches shapes on the pad layer that aren't bond pads."],
+["P4","Pad pitch","65 µm","25 µm Au ball; 50 to 80 µm for 17.5 to 33 µm","ven","ep","Neighbouring balls and the tool tip need room."],
+["P5","Bonds on one pad or land","2","Per pad or finger","ven","ep","The most wires Europractice will put on one pad."],
+["P6","Spacing of bonds on one die pad","75 µm","Our default: one ball at 3 × d","ph","","MIL-STD-883 only says a second bond may not cover more than 25% of the first."],
+["L1","Land, smallest side","100 µm","Organic; 75 µm ceramic","ven","sam","The second bond needs a landing area on the board."],
+["L2","Land pitch","200 µm","Organic; 150 µm ceramic","ven","sam","Board copper is coarser than die metal, so the bond ring is bigger than the die."],
+["L3","Die edge to land","375 µm or 2 × die thickness","Whichever is greater; no ground plane under the die","ven","sam","Gives the wire room to come down from die height to the board."],
+["L4","Spacing of bonds on one land","300 µm","In line; tool dependent","ven","cern","The tool needs room to place a second bond beside the first."],
+["L5","Glob top dam to land","300 µm","Organic","ven","sam","Room between the dam and the bonds. Not checked by the app."],
+["D1","Die to die, side by side","250 µm","Minimum","ven","ep","Room for wires and tools between neighbouring dies."],
+["D2","Stacked die step to a bonded pad","250 µm","Our default, borrowed from D1","ph","","No source found for a stacked step."],
+["K1","Keepout to parts with height","45°","Plus half the tool tip","ven","stfc","The bond head comes down at the die; tall parts nearby get in its way. CERN adds the half tool tip."],
+["B1","Ball bond diameter","2 × d to 5 × d","Gold ball","std","m2010","Outside this range a ball bond is rejected at inspection."],
+["B2","Wedge bond width","1.2 × d to 3 × d","Ultrasonic wedge; thermosonic 1.5 to 3 × d","std","m2010","Outside this range a wedge bond is rejected at inspection."],
+["B3","Bond inside the pad opening","≥ 75%","Class S; 50% for class B","std","m2010","A bond mostly on glass is rejected at inspection."]
+];
+var byKey={}; R.forEach(function(r){byKey[r[0]]=r;});
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function row(r){
+  var t=TIER[r[4]], s=r[5]?'<a href="'+SRC[r[5]][1]+'">'+SRC[r[5]][0]+'</a>':'<span class="muted">none</span>';
+  return '<tr data-t="'+r[4]+'"><td class="key">'+r[0]+'</td><td>'+esc(r[1])+'<span class="why">'+esc(r[6])+'</span></td><td class="val">'+esc(r[2])+'</td><td class="small">'+esc(r[3])+'</td><td><span class="pill '+t[1]+'">'+t[0]+'</span></td><td class="small">'+s+'</td></tr>';
+}
+var HEAD='<thead><tr><th>Key</th><th>Rule, and why it matters</th><th>Value</th><th>Condition</th><th>Tier</th><th>Source</th></tr></thead>';
+document.querySelectorAll("table[data-rules]").forEach(function(tb){
+  tb.innerHTML=HEAD+'<tbody>'+tb.getAttribute("data-rules").split(",").map(function(k){return row(byKey[k]);}).join("")+'</tbody>';
+});
+var all=document.getElementById("allRules");
+all.innerHTML=HEAD+'<tbody>'+R.map(row).join("")+'</tbody>';
+document.getElementById("tierF").addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+  var t=b.getAttribute("data-t");
+  all.querySelectorAll("tbody tr").forEach(function(tr){tr.hidden=!(t==="all"||tr.getAttribute("data-t")===t);});
+});
+
+/* ---- plan view wires (static) ---- */
+(function(){
+  var g=document.getElementById("planWires"), h="";
+  var pads=[120,150,180,210,240,270,300], lands=[47,103,159,215,271,327,383];
+  pads.forEach(function(py,i){
+    var ly=lands[i], cls=(i===3)?"wire2":"wire";
+    h+='<rect class="metal" x="281" y="'+(py-6)+'" width="12" height="12"/>';
+    h+='<rect class="gold" x="470" y="'+(ly-10)+'" width="34" height="20"/>';
+    if(i===3){
+      h+='<path class="wire2" stroke-width="3.5" d="M287,'+py+' L478,'+(ly-5)+'"/>';
+      h+='<path class="wire2" stroke-width="3.5" d="M287,'+py+' L496,'+(ly+5)+'"/>';
+    } else h+='<path class="'+cls+'" stroke-width="2.6" d="M287,'+py+' L480,'+ly+'"/>';
+  });
+  h+='<text x="487" y="20" text-anchor="middle" class="lblm">Lands (bond ring)</text>';
+  h+='<text x="287" y="104" text-anchor="middle" class="lblm">Pads</text>';
+  g.innerHTML=h;
+})();
+
+/* ---- wire size calculator ---- */
+var EP={ "17.5":[40,50,4.5], "20":[46,56,5.0], "25":[55,65,6.0], "33":[70,80,7.0] };
+var D=25;
+function insideFrac(dia,side){ // share of a centred circle's area inside a centred square opening
+  var r=dia/2,h=side/2,n=180,inC=0,inB=0;
+  for(var i=0;i<n;i++)for(var j=0;j<n;j++){
+    var x=-r+(i+.5)*dia/n,y=-r+(j+.5)*dia/n;
+    if(x*x+y*y<=r*r){inC++; if(Math.abs(x)<=h&&Math.abs(y)<=h) inB++;}
+  }
+  return inB/inC;
+}
+function f1(v){return (Math.round(v*10)/10).toString();}
+function drawPads(){
+  var e=EP[String(D)], s=e[0], p=e[1], ball=2*D, W=330, cx=W/2, cy=104;
+  var o='<rect class="glass" x="0" y="0" width="'+W+'" height="244"/>';
+  [-1,0,1].forEach(function(k){
+    var x=cx+k*p;
+    o+='<rect class="metal" x="'+(x-s/2)+'" y="'+(cy-s/2)+'" width="'+s+'" height="'+s+'"/>';
+    o+='<line class="wire" stroke-width="'+D+'" x1="'+x+'" y1="'+cy+'" x2="'+x+'" y2="222"/>';
+    o+='<circle class="gold" cx="'+x+'" cy="'+cy+'" r="'+(ball/2)+'"/>';
+  });
+  o+='<rect x="'+(cx-1.5*D)+'" y="'+(cy-1.5*D)+'" width="'+(3*D)+'" height="'+(3*D)+'" style="fill:none;stroke:var(--accent);stroke-width:1.2;stroke-dasharray:4 3"/>';
+  o+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(2.5*D)+'" style="fill:none;stroke:var(--magenta);stroke-width:1.2;stroke-dasharray:4 3"/>';
+  // scale bar 50 um
+  o+='<path class="dim" d="M12,232 L62,232 M12,227 L12,237 M62,227 L62,237" style="stroke:var(--txt)"/><text x="68" y="236" class="lbl" style="font-size:9px">50 µm</text>';
+  // pitch dim
+  o+='<path class="dim" d="M'+cx+',8 L'+(cx+p)+',8 M'+cx+',3 L'+cx+',13 M'+(cx+p)+',3 L'+(cx+p)+',13" style="stroke:var(--txt)"/><text x="'+(cx+p+4)+'" y="12" class="lbl" style="font-size:9px">pitch '+p+'</text>';
+  document.getElementById("padSvg").innerHTML=o;
+  var gapBall=p-ball, gapWire=p-D, f3=insideFrac(3*D,s);
+  var cards=[
+    ["Pad opening, at least",s+" µm","Europractice for "+D+" µm wire (P1). STFC's 3 × d would be "+f1(3*D)+" µm (P2)."],
+    ["Pad pitch, at least",p+" µm","Europractice (P4)."],
+    ["Ball at 2 × d",f1(ball)+" µm",(s>=ball?"Fits the opening with "+f1((s-ball)/2)+" µm each side.":"Wider than the opening.")+" Gap to the next ball: "+f1(gapBall)+" µm."],
+    ["Ball at 3 × d",f1(3*D)+" µm",Math.round(f3*100)+"% inside the opening. Class S needs 75%, class B 50% (B3)."],
+    ["Parallel wire gap at this pitch",f1(gapWire)+" µm","If neighbouring wires left in parallel. Class S asks 2 × d = "+f1(2*D)+" µm, class B 1 × d = "+f1(D)+" µm (W6). Fanning out widens it."],
+    ["Longest wire",e[2].toFixed(1)+" mm","Europractice for "+D+" µm gold (W1). 100 × d would be "+f1(D/10)+" mm (W2)."]
+  ];
+  document.getElementById("padRead").innerHTML=cards.map(function(c){return '<div class="ro"><div class="s">'+c[0]+'</div><div class="v">'+c[1]+'</div><div class="s">'+c[2]+'</div></div>';}).join("");
+}
+document.getElementById("dSeg").addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+  D=parseFloat(b.getAttribute("data-d")); drawPads(); drawLen();
+});
+
+/* ---- length chart ---- */
+var lenIn=document.getElementById("lenIn");
+function drawLen(){
+  var L=parseFloat(lenIn.value), e=EP[String(D)];
+  document.getElementById("lenOut").textContent=L.toFixed(1)+" mm";
+  document.getElementById("lenD").textContent="for "+D+" µm wire (change it in section 5)";
+  var bars=[
+    ["100-D rule (molded)",D/10,"US 5,923,092: span ≤ 100 wire diameters","alt"],
+    ["Europractice service limit",e[2],"Europractice 2024, Table 2, "+D+" µm Au ball",""],
+    ["Samtec maximum",6.35,"Samtec 2017; diameter not stated",""]
+  ];
+  var x0=200,x1=700,max=8,sx=function(v){return x0+(x1-x0)*v/max;}, o="";
+  for(var t=0;t<=8;t+=2){o+='<line class="grid" x1="'+sx(t)+'" y1="14" x2="'+sx(t)+'" y2="150"/><text x="'+sx(t)+'" y="170" text-anchor="middle" class="lblm">'+t+' mm</text>';}
+  bars.forEach(function(b,i){
+    var y=26+i*42, w=sx(b[1])-x0, ok=L<=b[1];
+    o+='<g><title>'+b[0]+": "+b[1].toFixed(2)+' mm. '+b[2]+'</title>';
+    o+='<text x="'+(x0-10)+'" y="'+(y+17)+'" text-anchor="end" class="lbl">'+b[0]+'</text>';
+    o+='<path class="bar '+b[3]+'" d="M'+x0+','+y+' h'+(w-4)+' a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-'+(w-4)+' z"/>';
+    o+='<text x="'+(sx(b[1])+8)+'" y="'+(y+17)+'" class="lbl num">'+b[1].toFixed(2).replace(/0$/,"")+' mm '+(ok?'':'<tspan class="key">exceeded</tspan>')+'</text></g>';
+  });
+  o+='<line class="mark" x1="'+sx(L)+'" y1="8" x2="'+sx(L)+'" y2="152"/>';
+  o+='<text x="'+sx(L)+'" y="186" text-anchor="middle" class="key">your span</text>';
+  document.getElementById("lenSvg").innerHTML=o;
+  var area=Math.pow(25.4/D,2), R=46.1*L*area, Lh=0.98*L;
+  document.getElementById("lenRead").innerHTML=
+    '<div class="ro"><div class="s">Resistance, gold</div><div class="v">'+Math.round(R)+' mΩ</div><div class="s">46 mΩ/mm for 1 mil wire, scaled by cross-section to '+D+' µm. Using the span, so the real wire is a little higher.</div></div>'+
+    '<div class="ro"><div class="s">Inductance, rough</div><div class="v">'+Lh.toFixed(1)+' nH</div><div class="s">About 1 nH/mm, quoted for 1 mil wire. It changes only slowly with diameter.</div></div>'+
+    '<div class="ro"><div class="s">Against the limits</div><div class="v">'+(L<=D/10?"Within all three":(L<=e[2]?"Over 100-D only":"Over the service limit"))+'</div><div class="s">'+(L>D/10&&L<=e[2]?"Fine for a glob top by the vendor's limit; too long for a molded part by the 100-D rule.":"Span is the plan distance; leave margin for the loop.")+'</div></div>';
+}
+lenIn.addEventListener("input",drawLen);
+drawPads(); drawLen();
+})();
+</script>
+</body>
+</html>

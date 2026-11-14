@@ -1,0 +1,6 @@
+frame,name,role,datum,x_um,y_um
+board,F1,align,B,-2200,-2200
+board,F2,align,C,2200,2200
+board,P1,orient,,-1550,-1600
+U1,QR,align,,-1150,-1150
+U1,TRI,align,,1150,1150

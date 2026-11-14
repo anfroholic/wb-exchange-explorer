@@ -1,0 +1,672 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="2832" viewBox="0 0 1500 2832" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif">
+<title>Wire bond design rules: generic values and where each comes from</title>
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#2b3532"/></marker>
+<pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#f0f0f0"/><line x1="0" y1="0" x2="0" y2="7" stroke="#c4c4c4" stroke-width="2.2"/></pattern>
+<pattern id="board" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#cfe3dd"/><line x1="0" y1="0" x2="0" y2="8" stroke="#a9cbc1" stroke-width="2"/></pattern>
+</defs>
+<rect width="1500" height="2832" fill="#f7f9f9"/>
+<rect x="0" y="0" width="1500" height="104" fill="#0b6f5d"/><rect x="0" y="100" width="1500" height="4" fill="#d93aa7"/>
+<text x="30.0" y="46.0" font-size="30" fill="#ffffff" text-anchor="start" font-weight="bold">Wire bond design rules</text>
+<text x="30.0" y="78.0" font-size="14" fill="#d8f3ec" text-anchor="start" font-weight="normal">Generic starting values for a die bonded to a board, each labelled by where it comes from. Nobody on this team has bonded yet, so every value is also a question for the bonding house.</text>
+<text x="1470.0" y="46.0" font-size="13" fill="#d8f3ec" text-anchor="end" font-weight="normal">Wire Bond Bench · November 2026</text>
+<rect x="30" y="116" width="1440" height="62" rx="8" fill="#ffffff" stroke="#c9d3d1"/>
+<text x="46.0" y="151.0" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">Tier of each value</text>
+<rect x="190" y="124" width="118" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="249.0" y="136.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="318.0" y="137.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">5 rules. Read in a published standard (MIL-STD-883).</text>
+<rect x="830" y="124" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="889.0" y="136.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="958.0" y="137.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">17 rules. Read in a packaging house, vendor or bonding lab guide.</text>
+<rect x="190" y="150" width="118" height="18" rx="9" fill="#ffffff" stroke="#d93aa7" stroke-width="1.4"/>
+<text x="249.0" y="162.8" font-size="10.5" fill="#d93aa7" text-anchor="middle" font-weight="bold">RULE OF THUMB</text>
+<text x="318.0" y="163.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">1 rule. Read as a rule of thumb in a published source.</text>
+<rect x="830" y="150" width="118" height="18" rx="9" fill="url(#hatch)" stroke="#555" stroke-width="1.4" stroke-dasharray="4 3"/>
+<text x="889.0" y="162.8" font-size="10.5" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">PLACEHOLDER</text>
+<text x="958.0" y="163.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">5 rules. Ours. No source found: change it before trusting it.</text>
+<rect x="30" y="186" width="745" height="740" rx="8" fill="#ffffff" stroke="#c9d3d1"/>
+<rect x="30" y="186" width="745" height="34" rx="8" fill="#eef4f3"/><rect x="30" y="212" width="745" height="8" fill="#eef4f3"/>
+<text x="44.0" y="208.0" font-size="14" fill="#0b6f5d" text-anchor="start" font-weight="bold">PLAN VIEW</text>
+<text x="761.0" y="208.0" font-size="11.5" fill="#4d5c58" text-anchor="end" font-weight="normal">schematic, not to scale</text>
+<rect x="64" y="232" width="676" height="508" rx="26" fill="none" stroke="#b78bb0" stroke-width="1.4" stroke-dasharray="7 5"/>
+<text x="722.0" y="252.0" font-size="11" fill="#8a4f80" text-anchor="end" font-weight="normal" font-style="italic">glob top dam</text>
+<rect x="90" y="330" width="290" height="330" fill="#dfe6e4" stroke="#33413d" stroke-width="1.6"/>
+<text x="110.0" y="355.0" font-size="14" fill="#33413d" text-anchor="start" font-weight="bold">DIE</text>
+<rect x="344" y="367.0" width="26" height="26" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<rect x="344" y="427.0" width="26" height="26" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<rect x="344" y="478.0" width="26" height="64" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<rect x="344" y="577.0" width="26" height="26" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<rect x="520" y="305.0" width="120" height="30" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<rect x="520" y="395.0" width="120" height="30" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<rect x="520" y="500.0" width="120" height="30" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<rect x="520" y="635.0" width="120" height="30" fill="#e8b84a" stroke="#9a6b00" stroke-width="1"/>
+<line x1="357" y1="380" x2="536" y2="320" stroke="#9a6b00" stroke-width="2.2"/>
+<circle cx="357" cy="380" r="5" fill="#9a6b00"/><ellipse cx="536" cy="320" rx="7" ry="4" fill="#9a6b00"/>
+<line x1="357" y1="440" x2="536" y2="410" stroke="#9a6b00" stroke-width="2.2"/>
+<circle cx="357" cy="440" r="5" fill="#9a6b00"/><ellipse cx="536" cy="410" rx="7" ry="4" fill="#9a6b00"/>
+<line x1="357" y1="494" x2="546" y2="515" stroke="#9a6b00" stroke-width="2.2"/>
+<circle cx="357" cy="494" r="5" fill="#9a6b00"/><ellipse cx="546" cy="515" rx="7" ry="4" fill="#9a6b00"/>
+<line x1="357" y1="526" x2="614" y2="515" stroke="#9a6b00" stroke-width="2.2"/>
+<circle cx="357" cy="526" r="5" fill="#9a6b00"/><ellipse cx="614" cy="515" rx="7" ry="4" fill="#9a6b00"/>
+<line x1="357" y1="590" x2="536" y2="650" stroke="#9a6b00" stroke-width="2.2"/>
+<circle cx="357" cy="590" r="5" fill="#9a6b00"/><ellipse cx="536" cy="650" rx="7" ry="4" fill="#9a6b00"/>
+<text x="562.0" y="324.0" font-size="10.5" fill="#5b4300" text-anchor="start" font-weight="normal">land 1</text>
+<text x="562.0" y="414.0" font-size="10.5" fill="#5b4300" text-anchor="start" font-weight="normal">land 2</text>
+<text x="562.0" y="545.0" font-size="10.5" fill="#5b4300" text-anchor="start" font-weight="normal">land 3</text>
+<text x="562.0" y="654.0" font-size="10.5" fill="#5b4300" text-anchor="start" font-weight="normal">land 4</text>
+<line x1="357" y1="380" x2="348.73677348535625" y2="355.34804089797956" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="536" y1="320" x2="527.7367734853563" y2="295.34804089797956" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="348.73677348535625" y1="355.34804089797956" x2="527.7367734853563" y2="295.34804089797956" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="392" y="270" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="406.0" y="283.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">W1</text>
+<rect x="423" y="270" width="28" height="17" rx="4" fill="#ffffff" stroke="#d93aa7" stroke-width="1.3"/>
+<text x="437.0" y="283.0" font-size="11" fill="#d93aa7" text-anchor="middle" font-weight="bold">W2</text>
+<text x="456.0" y="283.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">length, bond to bond</text>
+<line x1="357" y1="590" x2="470" y2="590" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<path d="M431,590 A74,74 0 0 1 427.2,613.5" fill="none" stroke="#2b3532" stroke-width="1.1" marker-end="url(#arr)"/>
+<rect x="452" y="564" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="466.0" y="577.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">W3</text>
+<text x="485.0" y="577.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">≤ 45°</text>
+<text x="470.0" y="594.0" font-size="10.5" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">pad normal</text>
+<line x1="470" y1="345.122905027933" x2="470" y2="418.06145251396646" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="478" y="377" width="28" height="17" rx="4" fill="url(#hatch)" stroke="#555" stroke-width="1.3" stroke-dasharray="3 2"/>
+<text x="492.0" y="390.0" font-size="11" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">W5</text>
+<rect x="509" y="377" width="28" height="17" rx="4" fill="#068770" stroke="#068770" stroke-width="1.3"/>
+<text x="523.0" y="390.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">W6</text>
+<text x="542.0" y="390.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">gap</text>
+<rect x="110" y="380" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="124.0" y="393.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">W4</text>
+<text x="143.0" y="393.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">no crossings in plan</text>
+<line x1="344" y1="603" x2="344" y2="628" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="370" y1="603" x2="370" y2="628" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="344" y1="622" x2="370" y2="622" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="108" y="614" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="122.0" y="627.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">P1</text>
+<rect x="139" y="614" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="153.0" y="627.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">P2</text>
+<text x="172.0" y="627.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">pad opening, short side</text>
+<line x1="302" y1="622" x2="340" y2="622" stroke="#4d5c58" stroke-width="0.8"/>
+<line x1="318" y1="380" x2="344" y2="380" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="318" y1="440" x2="344" y2="440" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="322" y1="380" x2="322" y2="440" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="108" y="420" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="122.0" y="433.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">P4</text>
+<text x="141.0" y="433.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">pad pitch</text>
+<line x1="196" y1="428" x2="318" y2="412" stroke="#4d5c58" stroke-width="0.8"/>
+<line x1="300" y1="478" x2="344" y2="478" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="300" y1="542" x2="344" y2="542" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="304" y1="478" x2="304" y2="542" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="108" y="470" width="28" height="17" rx="4" fill="url(#hatch)" stroke="#555" stroke-width="1.3" stroke-dasharray="3 2"/>
+<text x="122.0" y="483.0" font-size="11" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">P3</text>
+<text x="141.0" y="483.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">pad, long side</text>
+<line x1="222" y1="478" x2="300" y2="500" stroke="#4d5c58" stroke-width="0.8"/>
+<line x1="332" y1="496" x2="332" y2="524" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="108" y="528" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="122.0" y="541.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">P5</text>
+<rect x="139" y="528" width="28" height="17" rx="4" fill="url(#hatch)" stroke="#555" stroke-width="1.3" stroke-dasharray="3 2"/>
+<text x="153.0" y="541.0" font-size="11" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">P6</text>
+<text x="172.0" y="541.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">two bonds on one pad</text>
+<line x1="298" y1="536" x2="328" y2="514" stroke="#4d5c58" stroke-width="0.8"/>
+<line x1="640" y1="305" x2="662" y2="305" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="640" y1="335" x2="662" y2="335" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="656" y1="305" x2="656" y2="335" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<line x1="640" y1="410" x2="700" y2="410" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="640" y1="320" x2="700" y2="320" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="694" y1="320" x2="694" y2="410" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="660" y="284" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="674.0" y="297.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">L1</text>
+<rect x="700" y="360" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="714.0" y="373.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">L2</text>
+<line x1="546" y1="515" x2="546" y2="486" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="614" y1="515" x2="614" y2="486" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="546" y1="490" x2="614" y2="490" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="556" y="466" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="570.0" y="479.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">L4</text>
+<text x="650.0" y="532.0" font-size="10.5" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">P5 counts</text>
+<text x="650.0" y="545.0" font-size="10.5" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">lands too</text>
+<line x1="380" y1="660" x2="380" y2="712" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="520" y1="665" x2="520" y2="712" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="380" y1="706" x2="520" y2="706" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="404" y="716" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="418.0" y="729.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">L3</text>
+<text x="437.0" y="729.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">die edge to land</text>
+<line x1="640" y1="665" x2="640" y2="712" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="640" y1="700" x2="740" y2="700" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="664" y="712" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="678.0" y="725.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">L5</text>
+<rect x="600" y="800" width="96" height="40" fill="#cfd8d6" stroke="#33413d" stroke-width="1.3"/>
+<text x="648.0" y="825.0" font-size="11" fill="#14201d" text-anchor="middle" font-weight="normal">part, height h</text>
+<rect x="566" y="770" width="164" height="100" rx="6" fill="none" stroke="#33413d" stroke-width="1" stroke-dasharray="5 4"/>
+<rect x="420" y="800" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="434.0" y="813.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">K1</text>
+<text x="453.0" y="813.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">keepout ≈ h</text>
+<line x1="530" y1="808" x2="566" y2="808" stroke="#4d5c58" stroke-width="0.8"/>
+<rect x="90" y="800" width="170" height="90" fill="#dfe6e4" stroke="#33413d" stroke-width="1.6"/>
+<text x="110.0" y="850.0" font-size="12" fill="#33413d" text-anchor="start" font-weight="bold">SECOND DIE</text>
+<line x1="140" y1="660" x2="140" y2="800" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="160" y1="660" x2="160" y2="800" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="176" y="723" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="190.0" y="736.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">D1</text>
+<text x="209.0" y="736.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">die to die, side by side</text>
+<text x="290.0" y="890.0" font-size="11.5" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">Keys are coloured by tier, so a placeholder looks like one wherever it appears.</text>
+<text x="290.0" y="906.0" font-size="11.5" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">Two keys on one dimension: the second is the same rule per wire diameter d.</text>
+<rect x="790" y="186" width="680" height="740" rx="8" fill="#ffffff" stroke="#c9d3d1"/>
+<rect x="790" y="186" width="680" height="34" rx="8" fill="#eef4f3"/><rect x="790" y="212" width="680" height="8" fill="#eef4f3"/>
+<text x="804.0" y="208.0" font-size="14" fill="#0b6f5d" text-anchor="start" font-weight="bold">SIDE VIEW</text>
+<text x="1456.0" y="208.0" font-size="11.5" fill="#4d5c58" text-anchor="end" font-weight="normal">sections, not to scale</text>
+<rect x="806" y="560" width="648" height="40" fill="url(#board)" stroke="#5f7d75"/>
+<text x="820.0" y="588.0" font-size="11" fill="#3d5a52" text-anchor="start" font-weight="bold">BOARD</text>
+<rect x="870" y="552" width="190" height="8" fill="#b9c4c1"/>
+<rect x="870" y="470" width="190" height="82" fill="#dfe6e4" stroke="#33413d" stroke-width="1.6"/>
+<text x="890.0" y="518.0" font-size="12" fill="#33413d" text-anchor="start" font-weight="bold">DIE, thickness t</text>
+<rect x="1030" y="465" width="22" height="5" fill="#e8b84a" stroke="#9a6b00"/>
+<rect x="1180" y="554" width="80" height="6" fill="#e8b84a" stroke="#9a6b00"/>
+<path d="M842,560 C842,226 1296,226 1296,560" fill="#f6e7f2" fill-opacity="0.55" stroke="#b78bb0" stroke-width="1.4" stroke-dasharray="7 5"/>
+<rect x="1296" y="536" width="12" height="24" fill="#d9b9d2" stroke="#8a4f80"/>
+<text x="1314.0" y="548.0" font-size="10.5" fill="#8a4f80" text-anchor="start" font-weight="normal" font-style="italic">dam</text>
+<path d="M1041,465 L1041,372 C1062,346 1104,352 1132,380 C1166,412 1192,496 1204,554" fill="none" stroke="#9a6b00" stroke-width="2.4"/>
+<circle cx="1041" cy="462" r="7" fill="#9a6b00"/>
+<path d="M1196,554 L1218,554 L1214,548 L1200,548 z" fill="#9a6b00"/>
+<line x1="1077.445224375" y1="355.41247124999995" x2="826" y2="355.41247124999995" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="830" y1="560" x2="830" y2="356.41247124999995" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<text x="824.0" y="470.0" font-size="12" fill="#14201d" text-anchor="middle" font-weight="normal" transform="rotate(-90 824 470)">S3 loop height</text>
+<line x1="1060" y1="470" x2="1086" y2="470" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1060.140625" y1="358.34375" x2="1086" y2="358.34375" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1080" y1="470" x2="1080" y2="359.34375" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="1180" y="386" width="28" height="17" rx="4" fill="url(#hatch)" stroke="#555" stroke-width="1.3" stroke-dasharray="3 2"/>
+<text x="1194.0" y="399.0" font-size="11" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">S1</text>
+<rect x="1211" y="386" width="28" height="17" rx="4" fill="#068770" stroke="#068770" stroke-width="1.3"/>
+<text x="1225.0" y="399.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">S2</text>
+<text x="1244.0" y="399.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">over die edge</text>
+<line x1="1178" y1="394" x2="1084" y2="418" stroke="#4d5c58" stroke-width="0.8"/>
+<line x1="1077.445224375" y1="355.41247124999995" x2="1006" y2="355.41247124999995" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1069" y1="309.5" x2="1006" y2="309.5" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1010" y1="310.5" x2="1010" y2="354.41247124999995" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="900" y="290" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="914.0" y="303.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">S5</text>
+<text x="933.0" y="303.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">cover</text>
+<line x1="960" y1="300" x2="1006" y2="304" stroke="#4d5c58" stroke-width="0.8"/>
+<line x1="1069" y1="309.5" x2="1446" y2="309.5" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1440" y1="560" x2="1440" y2="310.5" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<text x="1458.0" y="440.0" font-size="12" fill="#14201d" text-anchor="middle" font-weight="normal" transform="rotate(-90 1458 440)">S4 glob top height</text>
+<rect x="846" y="288" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="860.0" y="301.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">S3</text>
+<rect x="1404" y="288" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="1418.0" y="301.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">S4</text>
+<line x1="1041" y1="600" x2="1041" y2="628" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1204" y1="600" x2="1204" y2="628" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1041" y1="622" x2="1204" y2="622" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="1214" y="615" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="1228.0" y="628.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">W1</text>
+<rect x="1245" y="615" width="28" height="17" rx="4" fill="#ffffff" stroke="#d93aa7" stroke-width="1.3"/>
+<text x="1259.0" y="628.0" font-size="11" fill="#d93aa7" text-anchor="middle" font-weight="bold">W2</text>
+<text x="1278.0" y="628.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">bond to bond</text>
+<line x1="1060" y1="600" x2="1060" y2="660" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1180" y1="600" x2="1180" y2="660" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1060" y1="654" x2="1180" y2="654" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="1190" y="647" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="1204.0" y="660.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">L3</text>
+<text x="1223.0" y="660.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">≥ 375 µm or 2 t</text>
+<line x1="1034" y1="458" x2="990" y2="432" stroke="#4d5c58" stroke-width="0.8"/>
+<rect x="908" y="420" width="28" height="17" rx="4" fill="#068770" stroke="#068770" stroke-width="1.3"/>
+<text x="922.0" y="433.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">B1</text>
+<text x="941.0" y="433.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">ball</text>
+<line x1="1214" y1="552" x2="1236" y2="520" stroke="#4d5c58" stroke-width="0.8"/>
+<rect x="1222" y="500" width="28" height="17" rx="4" fill="#068770" stroke="#068770" stroke-width="1.3"/>
+<text x="1236.0" y="513.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">B2</text>
+<text x="1255.0" y="513.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">wedge</text>
+<text x="912.0" y="452.0" font-size="10.5" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">B3: bond inside pad</text>
+<rect x="1336" y="456" width="64" height="104" fill="#cfd8d6" stroke="#33413d" stroke-width="1.3"/>
+<text x="1368.0" y="512.0" font-size="11" fill="#14201d" text-anchor="middle" font-weight="normal">part</text>
+<line x1="1204" y1="554" x2="1316" y2="442" stroke="#33413d" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="1288.0" y="474.0" font-size="11" fill="#14201d" text-anchor="start" font-weight="normal">45°</text>
+<rect x="1336" y="428" width="28" height="17" rx="4" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.3"/>
+<text x="1350.0" y="441.0" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">K1</text>
+<text x="1369.0" y="441.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">keepout</text>
+<line x1="1414" y1="456" x2="1414" y2="560" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<text x="1426.0" y="512.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal" font-style="italic">h</text>
+<line x1="806" y1="690" x2="1454" y2="690" stroke="#c9d3d1"/>
+<text x="806.0" y="712.0" font-size="12.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">Stacked die</text>
+<rect x="806" y="860" width="648" height="34" fill="url(#board)" stroke="#5f7d75"/>
+<rect x="870" y="800" width="300" height="60" fill="#dfe6e4" stroke="#33413d" stroke-width="1.6"/>
+<rect x="870" y="750" width="190" height="50" fill="#e9eeed" stroke="#33413d" stroke-width="1.6"/>
+<text x="886.0" y="780.0" font-size="11.5" fill="#33413d" text-anchor="start" font-weight="bold">UPPER DIE</text>
+<text x="886.0" y="838.0" font-size="11.5" fill="#33413d" text-anchor="start" font-weight="bold">LOWER DIE</text>
+<rect x="1112" y="796" width="20" height="4" fill="#e8b84a" stroke="#9a6b00"/>
+<rect x="1030" y="746" width="20" height="4" fill="#e8b84a" stroke="#9a6b00"/>
+<rect x="1270" y="855" width="60" height="5" fill="#e8b84a" stroke="#9a6b00"/>
+<rect x="1360" y="855" width="60" height="5" fill="#e8b84a" stroke="#9a6b00"/>
+<path d="M1122,796 L1122,770 C1160,742 1240,760 1290,855" fill="none" stroke="#9a6b00" stroke-width="2.2"/>
+<path d="M1040,746 L1040,720 C1120,690 1300,700 1380,855" fill="none" stroke="#9a6b00" stroke-width="2.2"/>
+<line x1="1060" y1="750" x2="1060" y2="726" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1122" y1="770" x2="1122" y2="726" stroke="#8a9a96" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="1060" y1="730" x2="1122" y2="730" stroke="#2b3532" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<rect x="870" y="720" width="28" height="17" rx="4" fill="url(#hatch)" stroke="#555" stroke-width="1.3" stroke-dasharray="3 2"/>
+<text x="884.0" y="733.0" font-size="11" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">D2</text>
+<text x="903.0" y="733.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">step to a bonded pad</text>
+<rect x="30" y="950" width="1440" height="40" rx="8" fill="#0b6f5d"/>
+<text x="44.0" y="976.0" font-size="13" fill="#ffffff" text-anchor="start" font-weight="bold">Key</text>
+<text x="96.0" y="976.0" font-size="13" fill="#ffffff" text-anchor="start" font-weight="bold">Rule</text>
+<text x="384.0" y="976.0" font-size="13" fill="#ffffff" text-anchor="start" font-weight="bold">Value</text>
+<text x="492.0" y="976.0" font-size="13" fill="#ffffff" text-anchor="start" font-weight="bold">Condition</text>
+<text x="908.0" y="976.0" font-size="13" fill="#ffffff" text-anchor="start" font-weight="bold">Tier</text>
+<text x="1040.0" y="976.0" font-size="13" fill="#ffffff" text-anchor="start" font-weight="bold">Source</text>
+<text x="1366.0" y="976.0" font-size="13" fill="#ffffff" text-anchor="start" font-weight="bold">In the app</text>
+<rect x="30" y="990" width="1440" height="24" fill="#e3ecea"/>
+<text x="44.0" y="1007.0" font-size="11.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">WIRE</text>
+<g class="rule" data-rule="lengthMax" data-key="W1" data-value="6" data-unit="mm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1014" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1032.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">W1</text>
+<text x="96.0" y="1032.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Wire length, longest</text>
+<text x="384.0" y="1032.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">6 mm</text>
+<text x="492.0" y="1032.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">25 µm Au ball; scales with wire</text>
+<rect x="908" y="1018" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1030.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1032.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Europractice ASIC packaging rules 2024</text>
+<text x="1366.0" y="1032.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="lengthPerD" data-key="W2" data-value="100" data-unit="× d" data-tier="thumb" data-on="true" data-enforce="specified">
+<rect x="30" y="1040" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1058.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">W2</text>
+<text x="96.0" y="1058.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Wire span per wire diameter</text>
+<text x="384.0" y="1058.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">100 × d</text>
+<text x="492.0" y="1058.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">molded packages; sag and sweep</text>
+<rect x="908" y="1044" width="120" height="18" rx="9" fill="#ffffff" stroke="#d93aa7" stroke-width="1.4"/>
+<text x="968.0" y="1056.8" font-size="10.5" fill="#d93aa7" text-anchor="middle" font-weight="bold">RULE OF THUMB</text>
+<text x="1040.0" y="1058.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">US patent 5,923,092 (100-D rule)</text>
+<text x="1366.0" y="1058.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">sized wires</text>
+</g>
+<g class="rule" data-rule="angleMax" data-key="W3" data-value="45" data-unit="°" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1066" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1084.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">W3</text>
+<text x="96.0" y="1084.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Wire angle from pad normal</text>
+<text x="384.0" y="1084.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">45 °</text>
+<text x="492.0" y="1084.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">25 µm Au ball</text>
+<rect x="908" y="1070" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1082.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1084.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Europractice ASIC packaging rules 2024</text>
+<text x="1366.0" y="1084.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="crossings" data-key="W4" data-value="0" data-unit="wires" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1092" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1110.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">W4</text>
+<text x="96.0" y="1110.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Wires crossing in plan</text>
+<text x="384.0" y="1110.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">0 wires</text>
+<text x="492.0" y="1110.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">single tier</text>
+<rect x="908" y="1096" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1108.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1110.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Europractice ASIC packaging rules 2024</text>
+<text x="1366.0" y="1110.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="wireGap" data-key="W5" data-value="60" data-unit="µm" data-tier="placeholder" data-on="true" data-enforce="all">
+<rect x="30" y="1118" width="1440" height="26" fill="url(#hatch)" stroke="#777" stroke-dasharray="5 3"/>
+<text x="44.0" y="1136.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">W5</text>
+<text x="96.0" y="1136.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">Wire to wire gap, plan</text>
+<text x="384.0" y="1136.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">60 µm</text>
+<text x="492.0" y="1136.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">ours; no source for a gap</text>
+<rect x="908" y="1122" width="120" height="18" rx="9" fill="url(#hatch)" stroke="#555" stroke-width="1.4" stroke-dasharray="4 3"/>
+<text x="968.0" y="1134.8" font-size="10.5" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">PLACEHOLDER</text>
+<text x="1040.0" y="1136.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">This repo</text>
+<text x="1366.0" y="1136.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">every wire</text>
+</g>
+<g class="rule" data-rule="wireGapPerD" data-key="W6" data-value="2" data-unit="× d" data-tier="standard" data-on="true" data-enforce="specified">
+<rect x="30" y="1144" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1162.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">W6</text>
+<text x="96.0" y="1162.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Wire to wire separation per diameter</text>
+<text x="384.0" y="1162.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">2 × d</text>
+<text x="492.0" y="1162.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">class S; class B is 1 × d</text>
+<rect x="908" y="1148" width="120" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="968.0" y="1160.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="1040.0" y="1162.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">MIL-STD-883G TM 2010.11</text>
+<text x="1366.0" y="1162.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">sized wires</text>
+</g>
+<rect x="30" y="1170" width="1440" height="24" fill="#e3ecea"/>
+<text x="44.0" y="1187.0" font-size="11.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">HEIGHT</text>
+<g class="rule" data-rule="edgeClear" data-key="S1" data-value="40" data-unit="µm" data-tier="placeholder" data-on="true" data-enforce="specified">
+<rect x="30" y="1194" width="1440" height="26" fill="url(#hatch)" stroke="#777" stroke-dasharray="5 3"/>
+<text x="44.0" y="1212.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">S1</text>
+<text x="96.0" y="1212.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">Loop clearance over die edge</text>
+<text x="384.0" y="1212.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">40 µm</text>
+<text x="492.0" y="1212.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">ours</text>
+<rect x="908" y="1198" width="120" height="18" rx="9" fill="url(#hatch)" stroke="#555" stroke-width="1.4" stroke-dasharray="4 3"/>
+<text x="968.0" y="1210.8" font-size="10.5" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">PLACEHOLDER</text>
+<text x="1040.0" y="1212.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">This repo</text>
+<text x="1366.0" y="1212.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">sized wires</text>
+</g>
+<g class="rule" data-rule="edgeClearPerD" data-key="S2" data-value="2" data-unit="× d" data-tier="standard" data-on="true" data-enforce="specified">
+<rect x="30" y="1220" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1238.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">S2</text>
+<text x="96.0" y="1238.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Die edge clearance per diameter</text>
+<text x="384.0" y="1238.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">2 × d</text>
+<text x="492.0" y="1238.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">past 5 mil from the bond</text>
+<rect x="908" y="1224" width="120" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="968.0" y="1236.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="1040.0" y="1238.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">MIL-STD-883G TM 2017.8</text>
+<text x="1366.0" y="1238.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">sized wires</text>
+</g>
+<g class="rule" data-rule="loopMax" data-key="S3" data-value="2540" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="specified">
+<rect x="30" y="1246" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1264.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">S3</text>
+<text x="96.0" y="1264.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Loop height, highest</text>
+<text x="384.0" y="1264.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">2540 µm</text>
+<text x="492.0" y="1264.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">maximum, any wire</text>
+<rect x="908" y="1250" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1262.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1264.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec precision die attach design guide 2017</text>
+<text x="1366.0" y="1264.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">sized wires</text>
+</g>
+<g class="rule" data-rule="globTop" data-key="S4" data-value="600" data-unit="µm" data-tier="vendor" data-on="false" data-enforce="specified">
+<rect x="30" y="1272" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1290.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">S4</text>
+<text x="96.0" y="1290.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Glob top height</text>
+<text x="384.0" y="1290.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">600 µm (off)</text>
+<text x="492.0" y="1290.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec maximum; set yours</text>
+<rect x="908" y="1276" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1288.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1290.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec precision die attach design guide 2017</text>
+<text x="1366.0" y="1290.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">sized wires</text>
+</g>
+<g class="rule" data-rule="globCover" data-key="S5" data-value="175" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="specified">
+<rect x="30" y="1298" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1316.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">S5</text>
+<text x="96.0" y="1316.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Glob top cover over loop</text>
+<text x="384.0" y="1316.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">175 µm</text>
+<text x="492.0" y="1316.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">organic substrate</text>
+<rect x="908" y="1302" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1314.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1316.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec precision die attach design guide 2017</text>
+<text x="1366.0" y="1316.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">sized wires</text>
+</g>
+<rect x="30" y="1324" width="1440" height="24" fill="#e3ecea"/>
+<text x="44.0" y="1341.0" font-size="11.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">DIE PAD</text>
+<g class="rule" data-rule="padMin" data-key="P1" data-value="55" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1348" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1366.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">P1</text>
+<text x="96.0" y="1366.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Die pad opening, smallest side</text>
+<text x="384.0" y="1366.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">55 µm</text>
+<text x="492.0" y="1366.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">25 µm Au ball; scales with wire</text>
+<rect x="908" y="1352" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1364.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1366.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Europractice ASIC packaging rules 2024</text>
+<text x="1366.0" y="1366.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="padPerD" data-key="P2" data-value="3" data-unit="× d" data-tier="vendor" data-on="true" data-enforce="specified">
+<rect x="30" y="1374" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1392.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">P2</text>
+<text x="96.0" y="1392.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Die pad opening per wire diameter</text>
+<text x="384.0" y="1392.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">3 × d</text>
+<text x="492.0" y="1392.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Au ball; Europractice ≈ 2.2 × d</text>
+<rect x="908" y="1378" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1390.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1392.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">STFC Interconnect Lab guidelines</text>
+<text x="1366.0" y="1392.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">sized wires</text>
+</g>
+<g class="rule" data-rule="padMax" data-key="P3" data-value="300" data-unit="µm" data-tier="placeholder" data-on="true" data-enforce="all">
+<rect x="30" y="1400" width="1440" height="26" fill="url(#hatch)" stroke="#777" stroke-dasharray="5 3"/>
+<text x="44.0" y="1418.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">P3</text>
+<text x="96.0" y="1418.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">Die pad opening, largest side</text>
+<text x="384.0" y="1418.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">300 µm</text>
+<text x="492.0" y="1418.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">ours; pad-finding sanity check</text>
+<rect x="908" y="1404" width="120" height="18" rx="9" fill="url(#hatch)" stroke="#555" stroke-width="1.4" stroke-dasharray="4 3"/>
+<text x="968.0" y="1416.8" font-size="10.5" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">PLACEHOLDER</text>
+<text x="1040.0" y="1418.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">This repo</text>
+<text x="1366.0" y="1418.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">every wire</text>
+</g>
+<g class="rule" data-rule="padPitch" data-key="P4" data-value="65" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1426" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1444.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">P4</text>
+<text x="96.0" y="1444.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Die pad pitch</text>
+<text x="384.0" y="1444.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">65 µm</text>
+<text x="492.0" y="1444.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">25 µm Au ball; scales with wire</text>
+<rect x="908" y="1430" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1442.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1444.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Europractice ASIC packaging rules 2024</text>
+<text x="1366.0" y="1444.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="bondsPerPad" data-key="P5" data-value="2" data-unit="bonds" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1452" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1470.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">P5</text>
+<text x="96.0" y="1470.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Bonds on one pad or land</text>
+<text x="384.0" y="1470.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">2 bonds</text>
+<text x="492.0" y="1470.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">per pad or finger</text>
+<rect x="908" y="1456" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1468.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1470.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Europractice ASIC packaging rules 2024</text>
+<text x="1366.0" y="1470.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="multiPad" data-key="P6" data-value="75" data-unit="µm" data-tier="placeholder" data-on="true" data-enforce="all">
+<rect x="30" y="1478" width="1440" height="26" fill="url(#hatch)" stroke="#777" stroke-dasharray="5 3"/>
+<text x="44.0" y="1496.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">P6</text>
+<text x="96.0" y="1496.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">Spacing of bonds on one die pad</text>
+<text x="384.0" y="1496.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">75 µm</text>
+<text x="492.0" y="1496.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">ours; one 25 µm ball width</text>
+<rect x="908" y="1482" width="120" height="18" rx="9" fill="url(#hatch)" stroke="#555" stroke-width="1.4" stroke-dasharray="4 3"/>
+<text x="968.0" y="1494.8" font-size="10.5" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">PLACEHOLDER</text>
+<text x="1040.0" y="1496.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">This repo</text>
+<text x="1366.0" y="1496.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">every wire</text>
+</g>
+<rect x="30" y="1504" width="1440" height="24" fill="#e3ecea"/>
+<text x="44.0" y="1521.0" font-size="11.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">LAND</text>
+<g class="rule" data-rule="landMin" data-key="L1" data-value="100" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1528" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1546.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">L1</text>
+<text x="96.0" y="1546.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Land, smallest side</text>
+<text x="384.0" y="1546.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">100 µm</text>
+<text x="492.0" y="1546.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">organic; ceramic 75 µm</text>
+<rect x="908" y="1532" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1544.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1546.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec precision die attach design guide 2017</text>
+<text x="1366.0" y="1546.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="landPitch" data-key="L2" data-value="200" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1554" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1572.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">L2</text>
+<text x="96.0" y="1572.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Land pitch</text>
+<text x="384.0" y="1572.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">200 µm</text>
+<text x="492.0" y="1572.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">organic; ceramic 150 µm</text>
+<rect x="908" y="1558" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1570.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1572.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec precision die attach design guide 2017</text>
+<text x="1366.0" y="1572.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="landToDie" data-key="L3" data-value="375" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1580" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1598.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">L3</text>
+<text x="96.0" y="1598.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Die edge to land</text>
+<text x="384.0" y="1598.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">375 µm</text>
+<text x="492.0" y="1598.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">or 2 × die thickness</text>
+<rect x="908" y="1584" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1596.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1598.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec precision die attach design guide 2017</text>
+<text x="1366.0" y="1598.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="multiLand" data-key="L4" data-value="300" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1606" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1624.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">L4</text>
+<text x="96.0" y="1624.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Spacing of bonds on one land</text>
+<text x="384.0" y="1624.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">300 µm</text>
+<text x="492.0" y="1624.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">in line; tool dependent</text>
+<rect x="908" y="1610" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1622.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1624.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">CERN bond lab recommendations</text>
+<text x="1366.0" y="1624.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="damToLand" data-key="L5" data-value="300" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="no">
+<rect x="30" y="1632" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1650.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">L5</text>
+<text x="96.0" y="1650.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Glob top dam to land</text>
+<text x="384.0" y="1650.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">300 µm</text>
+<text x="492.0" y="1650.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">organic substrate</text>
+<rect x="908" y="1636" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1648.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1650.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Samtec precision die attach design guide 2017</text>
+<text x="1366.0" y="1650.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">not yet</text>
+</g>
+<rect x="30" y="1658" width="1440" height="24" fill="#e3ecea"/>
+<text x="44.0" y="1675.0" font-size="11.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">DIE</text>
+<g class="rule" data-rule="dieToDie" data-key="D1" data-value="250" data-unit="µm" data-tier="vendor" data-on="true" data-enforce="all">
+<rect x="30" y="1682" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1700.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">D1</text>
+<text x="96.0" y="1700.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Die to die, side by side</text>
+<text x="384.0" y="1700.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">250 µm</text>
+<text x="492.0" y="1700.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">minimum</text>
+<rect x="908" y="1686" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1698.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1700.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">Europractice ASIC packaging rules 2024</text>
+<text x="1366.0" y="1700.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">every wire</text>
+</g>
+<g class="rule" data-rule="stackStep" data-key="D2" data-value="250" data-unit="µm" data-tier="placeholder" data-on="true" data-enforce="all">
+<rect x="30" y="1708" width="1440" height="26" fill="url(#hatch)" stroke="#777" stroke-dasharray="5 3"/>
+<text x="44.0" y="1726.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">D2</text>
+<text x="96.0" y="1726.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">Stacked die step to a bonded pad</text>
+<text x="384.0" y="1726.0" font-size="12.5" fill="#3a3a3a" text-anchor="start" font-weight="bold" font-style="italic">250 µm</text>
+<text x="492.0" y="1726.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">ours; no source found</text>
+<rect x="908" y="1712" width="120" height="18" rx="9" fill="url(#hatch)" stroke="#555" stroke-width="1.4" stroke-dasharray="4 3"/>
+<text x="968.0" y="1724.8" font-size="10.5" fill="#3a3a3a" text-anchor="middle" font-weight="bold" font-style="italic">PLACEHOLDER</text>
+<text x="1040.0" y="1726.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">This repo</text>
+<text x="1366.0" y="1726.0" font-size="12" fill="#3a3a3a" text-anchor="start" font-weight="normal" font-style="italic">every wire</text>
+</g>
+<rect x="30" y="1734" width="1440" height="24" fill="#e3ecea"/>
+<text x="44.0" y="1751.0" font-size="11.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">KEEPOUT</text>
+<g class="rule" data-rule="keepout" data-key="K1" data-value="45" data-unit="°" data-tier="vendor" data-on="true" data-enforce="no">
+<rect x="30" y="1758" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1776.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">K1</text>
+<text x="96.0" y="1776.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Keepout to parts with height</text>
+<text x="384.0" y="1776.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">45 °</text>
+<text x="492.0" y="1776.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">plus half the tool tip</text>
+<rect x="908" y="1762" width="120" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="968.0" y="1774.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="1040.0" y="1776.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">STFC Interconnect Lab guidelines</text>
+<text x="1366.0" y="1776.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">not yet</text>
+</g>
+<rect x="30" y="1784" width="1440" height="24" fill="#e3ecea"/>
+<text x="44.0" y="1801.0" font-size="11.5" fill="#0b6f5d" text-anchor="start" font-weight="bold">BOND</text>
+<g class="rule" data-rule="ballSize" data-key="B1" data-value="2" data-unit="× d" data-tier="standard" data-on="true" data-enforce="no">
+<rect x="30" y="1808" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1826.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">B1</text>
+<text x="96.0" y="1826.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Ball bond diameter</text>
+<text x="384.0" y="1826.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">2 × d</text>
+<text x="492.0" y="1826.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">to 5 × d; gold ball</text>
+<rect x="908" y="1812" width="120" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="968.0" y="1824.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="1040.0" y="1826.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">MIL-STD-883G TM 2010.11</text>
+<text x="1366.0" y="1826.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">not yet</text>
+</g>
+<g class="rule" data-rule="wedgeWidth" data-key="B2" data-value="1.2" data-unit="× d" data-tier="standard" data-on="true" data-enforce="no">
+<rect x="30" y="1834" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1852.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">B2</text>
+<text x="96.0" y="1852.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Wedge bond width</text>
+<text x="384.0" y="1852.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">1.2 × d</text>
+<text x="492.0" y="1852.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">ultrasonic; to 3 × d</text>
+<rect x="908" y="1838" width="120" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="968.0" y="1850.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="1040.0" y="1852.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">MIL-STD-883G TM 2010.11</text>
+<text x="1366.0" y="1852.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">not yet</text>
+</g>
+<g class="rule" data-rule="bondInPad" data-key="B3" data-value="75" data-unit="%" data-tier="standard" data-on="true" data-enforce="no">
+<rect x="30" y="1860" width="1440" height="26" fill="#ffffff" stroke="#dde5e3"/>
+<text x="44.0" y="1878.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">B3</text>
+<text x="96.0" y="1878.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Bond inside the pad opening</text>
+<text x="384.0" y="1878.0" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="bold">75 %</text>
+<text x="492.0" y="1878.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">class S; class B 50%</text>
+<rect x="908" y="1864" width="120" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="968.0" y="1876.8" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="1040.0" y="1878.0" font-size="12" fill="#14201d" text-anchor="start" font-weight="normal">MIL-STD-883G TM 2010.11</text>
+<text x="1366.0" y="1878.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal" font-style="italic">not yet</text>
+</g>
+<text x="44.0" y="1906.0" font-size="11.5" fill="#4d5c58" text-anchor="start" font-weight="normal">In the app: every wire, including wires left to the bonder; sized wires, only wires of a type with a diameter or loop, the rest counted as not checked; not yet, shown in the DRC rules panel as not enforced, never as a pass.</text>
+<text x="44.0" y="1922.0" font-size="11.5" fill="#4d5c58" text-anchor="start" font-weight="normal">A tripped placeholder only ever warns. Values for 25 µm wire scale with diameter where the source gives a table: see the condition and the sources file, docs/wire_bond_design_rules_sources.md.</text>
+<rect x="30" y="1944" width="700" height="499" rx="8" fill="#ffffff" stroke="#c9d3d1"/><rect x="30" y="1944" width="6" height="499" rx="3" fill="#068770"/>
+<text x="52.0" y="1976.0" font-size="17" fill="#0b6f5d" text-anchor="start" font-weight="bold">What does “too long” mean? Our best answer so far</text>
+<text x="52.0" y="2002.0" font-size="13" fill="#14201d" text-anchor="start" font-weight="normal">There is no one number. A wire is too long when the first of these four limits bites, and</text>
+<text x="52.0" y="2019.9" font-size="13" fill="#14201d" text-anchor="start" font-weight="normal">which one bites depends on the wire, the process and the signal.</text>
+<rect x="52" y="2030.88" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="111.0" y="2043.7" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="180.0" y="2043.9" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">1  Process.</text>
+<text x="180.0" y="2061.9" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">The bonding house&#x27;s maximum for that wire. Europractice: 6 mm for 25 µm Au</text>
+<text x="180.0" y="2079.1" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">ball (4.5, 5.0, 6.0, 7.0 mm for 17.5 to 33 µm). Samtec: 6.35 mm. This is W1,</text>
+<text x="180.0" y="2096.4" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">the app&#x27;s length check.</text>
+<rect x="52" y="2108.63" width="118" height="18" rx="9" fill="#ffffff" stroke="#d93aa7" stroke-width="1.4"/>
+<text x="111.0" y="2121.4" font-size="10.5" fill="#d93aa7" text-anchor="middle" font-weight="bold">RULE OF THUMB</text>
+<text x="180.0" y="2121.6" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">2  Sag and sweep.</text>
+<text x="180.0" y="2139.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Sag and sweep grow with span over diameter. The 100-D rule caps span at 100</text>
+<text x="180.0" y="2156.9" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">wire diameters, 2.5 mm for 25 µm wire. It comes from molded packages, where</text>
+<text x="180.0" y="2174.1" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">mold flow pushes wires; a glob top flows too. This is W2.</text>
+<rect x="52" y="2186.38" width="118" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="111.0" y="2199.2" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="180.0" y="2199.4" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">3  Clearance.</text>
+<text x="180.0" y="2217.4" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">A long, low wire sags towards the die edge and its neighbours. MIL-STD-883</text>
+<text x="180.0" y="2234.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">rejects less than 2 wire diameters to a bare die edge or another wire (class</text>
+<text x="180.0" y="2251.9" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">S). These are S2 and W6.</text>
+<rect x="52" y="2264.13" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="111.0" y="2276.9" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="180.0" y="2277.1" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">4  Electrical.</text>
+<text x="180.0" y="2295.1" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">1 mil Au wire has about 25 pH and 1.17 mΩ per mil: roughly 1 nH and 46 mΩ per</text>
+<text x="180.0" y="2312.4" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">mm. Too long is when that matters to the signal. No limit is set for this.</text>
+<text x="52.0" y="2341.6" font-size="12.5" fill="#4d5c58" text-anchor="start" font-weight="normal">What the app does today: W1 measures the straight plan distance from first bond to second, which</text>
+<text x="52.0" y="2358.9" font-size="12.5" fill="#4d5c58" text-anchor="start" font-weight="normal">is shorter than the wire by its loop, and warns over 6 mm. It runs on every wire, including those</text>
+<text x="52.0" y="2376.1" font-size="12.5" fill="#4d5c58" text-anchor="start" font-weight="normal">left to the bonder. W2 runs only where a type gives a diameter.</text>
+<rect x="750" y="1944" width="720" height="499" rx="8" fill="#ffffff" stroke="#c9d3d1"/><rect x="750" y="1944" width="6" height="499" rx="3" fill="#d93aa7"/>
+<text x="772.0" y="1976.0" font-size="17" fill="#a42a7f" text-anchor="start" font-weight="bold">Open questions, and what would answer each</text>
+<text x="772.0" y="2004.0" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">1.</text>
+<text x="794.0" y="2004.0" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">What does too long mean for us?</text>
+<text x="794.0" y="2022.9" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">The house&#x27;s maximum length per wire diameter and loop height; whether we glob top, since flow sweeps</text>
+<text x="794.0" y="2039.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">wires; the edge rates of our fastest signals.</text>
+<text x="772.0" y="2064.1" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">2.</text>
+<text x="794.0" y="2064.1" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">Which wire: Au or Al, what diameter, ball or wedge?</text>
+<text x="794.0" y="2083.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">The house&#x27;s standard wire. It sets P1, P2, P4, W1 and W2, which are quoted here for 25 µm Au ball.</text>
+<text x="772.0" y="2107.6" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">3.</text>
+<text x="794.0" y="2107.6" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">Whose bonder, and which tool?</text>
+<text x="794.0" y="2126.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">Capillary or wedge tip size and bond head drawings. They set K1, P6, L4 and the pitches.</text>
+<text x="772.0" y="2151.1" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">4.</text>
+<text x="794.0" y="2151.1" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">Glob top, dam, or nothing?</text>
+<text x="794.0" y="2170.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">The encapsulant datasheet and how it is dispensed. It sets S4, S5 and L5.</text>
+<text x="772.0" y="2194.6" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">5.</text>
+<text x="794.0" y="2194.6" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">How tall are the parts near the die?</text>
+<text x="794.0" y="2213.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">Heights from the board&#x27;s parts list. With them the app could enforce K1.</text>
+<text x="772.0" y="2238.1" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">6.</text>
+<text x="794.0" y="2238.1" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">Do we want an inspection class?</text>
+<text x="794.0" y="2257.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">MIL-STD-883 class S, class B, or commercial. It sets W6, S2 and B1 to B3.</text>
+<text x="772.0" y="2281.6" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">7.</text>
+<text x="794.0" y="2281.6" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">How thick is the die, and how thick the attach?</text>
+<text x="794.0" y="2300.5" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">Measured or from the foundry. L3 takes twice the thickness; S1 and D2 depend on it.</text>
+<text x="772.0" y="2325.1" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">8.</text>
+<text x="794.0" y="2325.1" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">Are lands 150 µm from the die acceptable?</text>
+<text x="794.0" y="2344.0" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">Our example board has them; Samtec asks 375 µm without a ground plane. Ask the house about die</text>
+<text x="794.0" y="2360.6" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">attach bleed.</text>
+<text x="772.0" y="2385.1" font-size="13" fill="#a42a7f" text-anchor="start" font-weight="bold">9.</text>
+<text x="794.0" y="2385.1" font-size="13" fill="#14201d" text-anchor="start" font-weight="bold">What step does a stacked die need?</text>
+<text x="794.0" y="2404.1" font-size="12" fill="#4d5c58" text-anchor="start" font-weight="normal">No source found. D2 is a placeholder borrowed from die to die spacing.</text>
+<rect x="30" y="2462.62" width="1440" height="346" rx="8" fill="#ffffff" stroke="#c9d3d1"/>
+<text x="46.0" y="2490.6" font-size="15" fill="#0b6f5d" text-anchor="start" font-weight="bold">Sources read for this sheet</text>
+<rect x="46" y="2503.62" width="118" height="18" rx="9" fill="#068770" stroke="#068770" stroke-width="1.4"/>
+<text x="105.0" y="2516.4" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">STANDARD</text>
+<text x="176.0" y="2516.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">MIL-STD-883G, TM 2010.11 internal visual (monolithic) and TM 2017.8 (hybrid), 2004. Bond size, separation, crossings.</text>
+<text x="176.0" y="2532.6" font-size="11" fill="#3ea9da" text-anchor="start" font-weight="normal">q-tech.com/wp-content/uploads/STD-883-2010.pdf and STD-883-2017.pdf</text>
+<rect x="46" y="2539.62" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="105.0" y="2552.4" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="176.0" y="2552.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Europractice, ASIC prototype packaging design rules, 2024. Pad, pitch, length, angle, wires per pad, die to die.</text>
+<text x="176.0" y="2568.6" font-size="11" fill="#3ea9da" text-anchor="start" font-weight="normal">europractice-ic.com/wp-content/uploads/2020/06/ASIC_Prototype_Packaging_Design_Rules_2024.pdf</text>
+<rect x="46" y="2575.62" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="105.0" y="2588.4" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="176.0" y="2588.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Samtec, precision die attach design rules and guidelines, 2017. Land size and pitch, die edge to land, loop height, encapsulation.</text>
+<text x="176.0" y="2604.6" font-size="11" fill="#3ea9da" text-anchor="start" font-weight="normal">suddendocs.samtec.com/literature/advanced-package-design-guidlines.pdf</text>
+<rect x="46" y="2611.62" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="105.0" y="2624.4" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="176.0" y="2624.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">STFC Interconnect Laboratory, helpful guidelines (G. Lockwood). 45° head clearance, 3 × d ball pads, 100 × 125 µm wedge pads.</text>
+<text x="176.0" y="2640.6" font-size="11" fill="#3ea9da" text-anchor="start" font-weight="normal">indico.global/event/1886/contributions/31130/attachments/15938/25564</text>
+<rect x="46" y="2647.62" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="105.0" y="2660.4" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="176.0" y="2660.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">CERN bond lab, recommendations. 60 µm pitch with 25 µm wire; 300 µm between two in-line bonds.</text>
+<text x="176.0" y="2676.6" font-size="11" fill="#3ea9da" text-anchor="start" font-weight="normal">bondlab.web.cern.ch/Recommendations.html</text>
+<rect x="46" y="2683.62" width="118" height="18" rx="9" fill="#ffffff" stroke="#d93aa7" stroke-width="1.4"/>
+<text x="105.0" y="2696.4" font-size="10.5" fill="#d93aa7" text-anchor="middle" font-weight="bold">RULE OF THUMB</text>
+<text x="176.0" y="2696.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">US patent 5,923,092. The 100-D rule for maximum span; 180 to 200 mil in industry at the time.</text>
+<text x="176.0" y="2712.6" font-size="11" fill="#3ea9da" text-anchor="start" font-weight="normal">patents.google.com/patent/US5923092A</text>
+<rect x="46" y="2719.62" width="118" height="18" rx="9" fill="#3ea9da" stroke="#3ea9da" stroke-width="1.4"/>
+<text x="105.0" y="2732.4" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="bold">VENDOR GUIDE</text>
+<text x="176.0" y="2732.6" font-size="12.5" fill="#14201d" text-anchor="start" font-weight="normal">Semiconductor Digest, Wire bonding considerations. 25 pH and 1.17 mΩ per mil of 1 mil Au wire.</text>
+<text x="176.0" y="2748.6" font-size="11" fill="#3ea9da" text-anchor="start" font-weight="normal">sst.semiconductor-digest.com/?p=36674</text>
+<text x="46.0" y="2772.6" font-size="11.5" fill="#4d5c58" text-anchor="start" font-weight="normal">Read and not used as a default: an LCSC blog (≤ 5 mm length, 60 to 120 µm ball pads), an Altium article (50 to 150 µm lands). Full notes and quotes: docs/wire_bond_design_rules_sources.md.</text>
+<text x="46.0" y="2790.6" font-size="11.5" fill="#4d5c58" text-anchor="start" font-weight="normal">Generated from the rule table in app/js/rules.js by app/make_rules_svg.py. The app&#x27;s DRC rules panel uses the same table, and a test checks they agree.</text>
+</svg>

@@ -1,6 +1,6 @@
 # KiCad example
 
-The same assembly as `../example.wb.svg`, as a KiCad 10 board. It's the input a future KiCad to WBX importer would read. No importer exists yet. For now `../make_kicad.py` generates these files from the `.wb.svg`, so don't hand-edit them if you plan to regenerate.
+The same assembly as `../example.wb.svg`, as a KiCad 10 board. It's the input a future KiCad to wirebond.svg importer would read. No importer exists yet. For now `../make_kicad.py` generates these files from the `.wb.svg`, so don't hand-edit them if you plan to regenerate.
 
 KiCad has no bond wire, so this board uses a convention. KiCad preserves that data but doesn't interpret it.
 
@@ -12,19 +12,23 @@ KiCad mm = SVG µm / 1000, with no offset. Both are y-down. Text values in `wb_`
 
 ## Mapping
 
-| WBX | KiCad object | Where the data is |
+| wirebond.svg | KiCad object | Where the data is |
 |---|---|---|
 | Die | Footprint `U1`, anchored at the GDS origin | `(at)` is the translate; `wb_gds_cell`, `wb_pad_layer` |
 | Die outline | `fp_rect` on `F.Fab` in `U1` | Width and height |
 | Pad | `smd rect` pad on `F.Cu` in `U1` | Number is the GDS pad name; local position is `(gds_x, -gds_y) / 1000`; size is the opening; net |
 | Land | One-pad footprint `L1`..`L20`, anchored at the land centre | Pad size and net; `wb_finish` |
 | Wire | Padless footprint `W01`..`W21`, anchored at the first bond | One `fp_line` on `Wirebond`, whose end is the second bond and whose width is the diameter; `wb_from`, `wb_to`, `wb_profile`, `wb_seq`, `wb_tier`, `wb_net` |
+| Board fiducial | Footprint `F1`, `F2`, `P1`, anchored at the reference point | One unnumbered pad on `F.Cu` and `F.Mask`, mask opened by `wb_rule_fid_clear`; `wb_role`, `wb_datum`. An `align` fiducial's pad has `(property pad_prop_fiducial_glob)`, which KiCad writes into the Gerbers |
+| Die fiducial | Not carried | It's die artwork, so it stays with the GDS |
 | Substrate outline | `gr_rect` on `Edge.Cuts` | Name in `wb_substrate_name` |
-| Design, rev, rules | Board properties | `wb_design`, `wb_rev`, `wb_rule_wire_gap`, `wb_rule_edge_clear`, plus `wb_version`, `wb_units` |
+| Design, rev, rules | Board properties | `wb_design`, `wb_rev`, `wb_rule_wire_gap`, `wb_rule_edge_clear`, `wb_rule_fid_clear`, plus `wb_version`, `wb_units` |
 | Loop profile | Board properties | `wb_profile_<i>_name`, `_material`, `_d`, `_style`, `_dir`, `_moves`, `_interp`, `_ref_span` |
 | Stack layer | Board properties | `wb_stack_<i>_name`, `_role`, `_material`, `_z`, `_t`, `_x`, `_w` |
 
-Each die, land and wire footprint has `wb_kind` set to `die`, `land` or `wire`. A reader should select on that, and ignore other footprints.
+Each die, land, wire and fiducial footprint has `wb_kind` set to `die`, `land`, `wire` or `fiducial`. A reader should select on that, and ignore other footprints.
+
+The example's fiducials are 500 µm and 300 µm dots, sized for a bonder's camera. Pick and place guides ask for at least 1 mm, so these aren't SMT fiducials.
 
 ## For anyone reading the file
 

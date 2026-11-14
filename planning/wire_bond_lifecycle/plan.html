@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wire Bond Lifecycle</title>
+<meta name="plan-board" content="wire_bond_lifecycle">
+<meta name="plan-chapter" content="2">
+<link rel="stylesheet" href="../_planning_tools/plan.doc.css">
+<style>
+/* Layout: one reading column with wide figures, in the Evezor scheme (dark green surfaces, magenta accent).
+   Deliberately a single dark look, matching Evezor's own IDE and docs. Plan-doc vocabulary: TL;DR, glance tiles, pills, figures, callouts. */
+:root{
+  color-scheme:dark;
+  --green:#068770; --magenta:#d93aa7; --blue:#3ea9da;
+  --shade1:#0b6f5d; --shade2:#105649; --shade3:#12302b; --shade4:#0c1311;
+  --bg:#303030; --surface:#12302b; --element:#105649; --inset:#0c1311; --elevated:#484848;
+  --ink:#d4d4d4; --ink-high:#fef0fa; --muted:#7ba69c; --line:#105649; --brand-ink:#36d9bb;
+  --ok:#36d9bb; --warn:#dc7647; --bad:#da3e5b; --amber:#e9c46a; --violet:#c5acfb;
+  --wire-sig:#e9b949; --wire-pwr:#f4744f; --wire-gnd:#bee36d; --wire-al:#80b5f9; --wire-rev:#c5acfb;
+  --font-body:Arial,Helvetica,sans-serif; --font-mono:Consolas,Monaco,'Courier New',monospace;
+  --radius:8px; --radius-sm:4px;
+}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.6 var(--font-body);color:var(--ink);
+  background:radial-gradient(1200px 500px at 100% -10%,rgba(6,135,112,.20) 0,transparent 60%),
+             radial-gradient(900px 400px at -10% 0,rgba(217,58,167,.12) 0,transparent 55%),var(--bg);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1060px;margin:0 auto;padding-block:26px 90px}
+a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+::selection{background:var(--green);color:#fff}
+h1,h2,h3,h4{color:var(--ink-high);line-height:1.22;text-wrap:balance}
+h1{font-size:34px;margin:6px 0 10px}
+h2{font-size:23px;margin:0}
+h3{font-size:16.5px;margin:24px 0 6px;color:var(--brand-ink)}
+p{margin:8px 0;max-width:78ch} li{margin:3px 0;max-width:76ch} ul,ol{padding-left:22px;margin:8px 0}
+code,.mono{font-family:var(--font-mono);font-size:.88em}
+code{background:var(--inset);color:#9df0db;border-radius:var(--radius-sm);padding:1px 5px;overflow-wrap:anywhere}
+pre{background:var(--inset);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;overflow-x:auto;font:12.5px/1.55 var(--font-mono);margin:10px 0;color:#c9e6df}
+pre .c{color:var(--muted)} pre .k{color:var(--brand-ink)}
+.muted{color:var(--muted)} .small{font-size:13px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:center;margin-bottom:16px}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--magenta);font-weight:700}
+.lede{font-size:16.5px;color:var(--ink-high)}
+.hero figure{margin:0}
+.hero img{display:block;width:100%;border-radius:var(--radius);border:1px solid var(--line)}
+.hero figcaption,.cap{font-size:12.5px;color:var(--muted);margin-top:8px}
+.key{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* pills */
+.pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 9px;border:1px solid;vertical-align:1px;white-space:nowrap}
+.pill.dec{color:#9df0db;border-color:var(--brand-ink);background:#0b3a31}
+.pill.prv{color:#fff;border-color:var(--green);background:var(--green)}
+.pill.lean{color:#e1d4ff;border-color:var(--violet);background:#2c2347}
+.pill.open{color:#f5dd9d;border-color:var(--amber);background:#3b3115}
+.pill.now{color:var(--muted);border-color:var(--muted);background:var(--inset)}
+.pill.no{color:#ffc7d1;border-color:var(--bad);background:#401822}
+
+.tldr{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--magenta);border-radius:var(--radius);padding:12px 16px;margin:16px 0;font-size:15.5px}
+.glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:12px;margin:16px 0}
+.g{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px;font-size:13.5px;display:flex;flex-direction:column;min-width:0}
+.g h4{margin:0 0 7px;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.g ul{list-style:none;padding:0;margin:0} .g li{margin:0 0 5px;line-height:1.42}
+.nums{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;align-items:baseline;font-variant-numeric:tabular-nums}
+.nums b{font-size:20px;text-align:right;color:var(--brand-ink)} .nums span{color:var(--ink);font-size:13px;line-height:1.35}
+
+.foldbar{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin:12px 0 -4px;flex-wrap:wrap}
+.foldbar span{margin-right:auto}
+button{font:inherit;font-size:12.5px;background:var(--element);color:var(--ink-high);border:1px solid var(--green);border-radius:var(--radius-sm);padding:4px 11px;cursor:pointer}
+button:hover{background:var(--green)}
+button[aria-pressed="true"]{background:var(--magenta);border-color:var(--magenta);color:#fff}
+nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:3px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;margin:14px 0;font-size:13.5px}
+nav.toc a{color:var(--ink)} nav.toc a span{color:var(--magenta);margin-right:7px;font-weight:700;font-variant-numeric:tabular-nums}
+
+details.sec{border-top:1px solid var(--element);margin-top:14px}
+details.sec>summary{list-style:none;cursor:pointer;position:relative;padding:15px 0 8px 24px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::before{content:"";position:absolute;left:5px;top:24px;border-style:solid;border-width:6px 0 6px 8px;border-color:transparent transparent transparent var(--magenta);transition:transform .15s}
+details.sec[open]>summary::before{transform:rotate(90deg)}
+details.sec>summary h2{display:inline}
+h2 .n{color:var(--magenta);margin-right:9px;font-variant-numeric:tabular-nums}
+.gist{margin:3px 0 0;color:var(--muted);font-size:14px}
+.secbody{padding:2px 0 12px}
+@media (prefers-reduced-motion:reduce){details.sec>summary::before{transition:none} html{scroll-behavior:auto}}
+
+/* figures, tables */
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin:14px 0;min-width:0}
+.fig .scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;min-width:0}
+.fig.wide svg{min-width:880px}
+.fig img{display:block;width:100%;height:auto;border-radius:var(--radius-sm)}
+.fig .paper{background:#fff;border-radius:var(--radius-sm);padding:10px}
+.fig .paper img{border-radius:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.grid2>.fig{margin:0}
+.gridgap{margin:14px 0}
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border-bottom:1px solid var(--element);padding:7px 9px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;background:var(--inset)}
+tr.chosen td{background:rgba(6,135,112,.20)}
+td .pill{margin-right:2px}
+.callout{border:1px solid var(--line);border-left:4px solid var(--amber);background:#3b3115;border-radius:var(--radius);padding:10px 14px;margin:12px 0;font-size:14px;color:#f3ead0}
+.callout.info{border-left-color:var(--blue);background:#10303f;color:#d6eaf4}
+.callout.good{border-left-color:var(--brand-ink);background:#0b3a31;color:#d3f4ea}
+.callout b{color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:12px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;min-width:0;font-size:14px}
+.card.pick{border-color:var(--brand-ink)}
+.card h4{margin:0 0 6px;font-size:14.5px}
+.card p{margin:5px 0}
+
+/* SVG vocabulary */
+svg text{font-family:var(--font-body)}
+.s-t{fill:var(--ink-high);font-size:13px}.s-tb{fill:var(--ink-high);font-size:13px;font-weight:700}
+.s-m{fill:var(--muted);font-size:11.5px}.s-lane{fill:var(--muted);font-size:11px;font-weight:700;letter-spacing:.08em}
+.s-mono{fill:#9df0db;font-family:var(--font-mono);font-size:11px}
+.s-box{fill:var(--element);stroke:var(--green);stroke-width:1.2}
+.s-src{fill:#0b3a31;stroke:var(--brand-ink);stroke-width:2}
+.s-new{fill:#3a1832;stroke:var(--magenta);stroke-width:1.5}
+.s-out{fill:#10303f;stroke:var(--blue);stroke-width:1.3}
+.s-opt{fill:var(--inset);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+.s-lanebg{fill:rgba(12,19,17,.45);stroke:none}
+.s-ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+.s-lna{stroke:var(--magenta);stroke-width:1.6;fill:none}
+.s-lnd{stroke:var(--amber);stroke-width:1.3;fill:none;stroke-dasharray:5 4}
+.s-inj{fill:var(--magenta);stroke:#fff;stroke-width:1}.s-injx{fill:var(--bad);stroke:#fff;stroke-width:1}
+.s-injt{fill:#fff;font-size:12px;font-weight:700;text-anchor:middle}
+
+/* explorer */
+.explorer{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:16px}
+.inputs label{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;padding:7px 9px;border:1px solid var(--element);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;background:var(--inset);font-size:13.5px;color:var(--ink-high);line-height:1.3}
+.inputs label small{grid-column:2;color:var(--muted);font-size:12px}
+input[type=checkbox],input[type=range]{accent-color:var(--magenta)}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.out{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 11px;border:1px solid var(--element);border-left-width:4px;border-radius:var(--radius-sm);margin-bottom:6px;background:var(--inset);font-size:13.5px;align-items:start}
+.out b{color:var(--ink-high)} .out .why{grid-column:1/3;color:var(--muted);font-size:12.5px;line-height:1.38}
+.out.full{border-left-color:var(--ok)} .out.partial{border-left-color:var(--amber)} .out.none{border-left-color:var(--bad);opacity:.82}
+.st{font-size:11.5px;font-weight:700;white-space:nowrap}
+.full .st{color:var(--ok)} .partial .st{color:var(--amber)} .none .st{color:var(--bad)}
+
+/* loop bench */
+.bench-ctl{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;font-size:13.5px;margin-bottom:10px}
+.bench-ctl label{display:flex;gap:9px;align-items:center;min-width:0}
+.bench-ctl output{font-family:var(--font-mono);color:var(--brand-ink);min-width:66px}
+.bench-ctl input[type=range]{width:200px;max-width:100%}
+.loops{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:10px}
+.loop{background:var(--inset);border:1px solid var(--element);border-radius:var(--radius-sm);padding:8px 10px;min-width:0}
+.loop h4{margin:0;font-size:13.5px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.loop .mv{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);overflow-wrap:anywhere}
+.loop .res{font-size:12px;color:var(--ink);font-variant-numeric:tabular-nums}
+.loop .res.bad{color:var(--warn)}
+.loop svg{margin:4px 0}
+#customMoves{font:12.5px var(--font-mono);background:#e2e8f0;color:#000;border:1px solid #a0a0a0;border-radius:var(--radius-sm);padding:3px 7px;width:100%;margin-top:3px}
+#ringFig text{font-family:var(--font-body)}
+@media (max-width:760px){
+  .hero,.grid2,.explorer{grid-template-columns:minmax(0,1fr)} h1{font-size:27px}
+  .gridgap{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7ba69c"/></marker>
+  <marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d93aa7"/></marker>
+  <marker id="ay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e9c46a"/></marker>
+</defs></svg>
+
+<main>
+<div class="crumbs embed-hide">
+  <a href="board.html">← Discussion board</a>
+  <a href="../_planning_tools/index.html">🗂 Planning index</a>
+  <a href="../../docs/primer/wire-bonding-primer.html">📖 Wire bonding primer</a>
+  <a href="../../docs/primer/fiducials.html">🎯 Fiducials</a>
+  <span>As of chapter 2 · 2026-11-09</span>
+</div>
+<section class="hero">
+  <div>
+    <div class="eyebrow">WBX · from GDS to bonded board</div>
+    <h1>Wire Bond Lifecycle</h1>
+    <p class="lede">The GDS defines the die, KiCad defines the assembly, and everything else is generated from those two. Each stage works with whatever data exists so far and tells you what it had to assume.</p>
+    <div class="key">
+      <span><span class="pill dec">Decided</span> you said so</span>
+      <span><span class="pill prv">Proven</span> ran on real data for this page</span>
+      <span><span class="pill lean">Lean</span> my recommendation</span>
+      <span><span class="pill open">Open</span> needs your call</span>
+      <span><span class="pill now">Today</span> how it works now</span>
+    </div>
+  </div>
+  <figure>
+    <img src="img/board.jpg" alt="KiCad 3D render of the 74-pad mezzanine board with a wafer.space die and 74 gold and orange bond wires looping out to the bond ring.">
+    <figcaption>This is KiCad's own 3D renderer. The die stand-in and all 74 wires were generated from the GDS and placed on a copy of your run 2 1x1 board. Land 1 and the QR are both at the bottom left.</figcaption>
+  </figure>
+</section>
+
+<div class="tldr"><b>In one line:</b> read the GDS once into a die kit, let KiCad hold the board and the wire choices, and treat wires like a zone fill: you pick the rules, and the geometry is regenerated rather than drawn.</div>
+
+<div class="callout info"><b>New in chapter 2:</b> everything now runs on your <a href="#number">run 2 COBs</a>, where the die sits at 0° instead of 180°. The type library moved <a href="#types">into the board file</a>. <a href="#exist">Section 10</a> is new and covers the conventions that already exist. <a href="#number">Section 5</a> also reports a labelling fault in the run 2 bonding PDFs that you'll want to look at.</div>
+
+<div class="glance" aria-label="Summary">
+  <div class="g"><h4>Sources of truth</h4><ul>
+    <li><b>GDS:</b> the die, its pads, sometimes nets</li>
+    <li><b>KiCad:</b> board, connections, wire types</li>
+    <li><b>Everything else</b> is generated and never edited</li></ul></div>
+  <div class="g"><h4>Proven on real data</h4><div class="nums">
+    <b>3/3</b><span>run 2 boards follow the pin rule, 218 wires in all</span>
+    <b>0</b><span>Gerber layers changed on any of them</span>
+    <b>0/72</b><span>nets needed to still get a footprint and symbol</span></div></div>
+  <div class="g"><h4>Wire types</h4><ul>
+    <li>Your 5 profiles already fit one model</li>
+    <li>Shape family + material + diameter + direction</li>
+    <li>"Custom" works like a custom pad shape</li>
+    <li>The library lives in the board file</li></ul></div>
+  <div class="g"><h4>Where it stands</h4><ul>
+    <li><span class="pill prv">Prototype</span> die kit, wires, 3D</li>
+    <li><span class="pill open">Not built</span> KiCad panel, export from KiCad</li>
+    <li><span class="pill open">4 questions</span> <a href="#decide">for you</a></li></ul></div>
+</div>
+
+<div class="foldbar"><span class="small muted">Every section is open. Click a heading to fold it.</span><button type="button" data-fold="close">Collapse all</button><button type="button" data-fold="open">Expand all</button></div>
+<nav class="toc" aria-label="Contents">
+  <a href="#life"><span>1</span>The whole lifecycle</a>
+  <a href="#own"><span>2</span>Who owns what</a>
+  <a href="#partial"><span>3</span>Working with partial data</a>
+  <a href="#gds"><span>4</span>The GDS</a>
+  <a href="#number"><span>5</span>Pin 1 and direction</a>
+  <a href="#kit"><span>6</span>The die kit</a>
+  <a href="#board"><span>7</span>The KiCad board</a>
+  <a href="#wires"><span>8</span>Generating wires</a>
+  <a href="#types"><span>9</span>Wire types</a>
+  <a href="#exist"><span>10</span>What already exists</a>
+  <a href="#out"><span>11</span>Outputs</a>
+  <a href="#rev"><span>12</span>When something changes</a>
+  <a href="#inject"><span>13</span>Where to inject, and where not</a>
+  <a href="#build"><span>14</span>Build order</a>
+  <a href="#decide"><span>15</span>Still to decide</a>
+</nav>
+
+<!-- 1 ========================================================= -->
+<details class="sec" id="life" open>
+<summary><h2><span class="n">1</span>The whole lifecycle</h2><p class="gist">Four lanes: silicon flow, die kit, KiCad, outputs. Only the middle two are ours to build, and the numbered dots are the places data may enter.</p></summary>
+<div class="secbody">
+<div class="fig wide"><div class="scroll">
+<svg viewBox="0 0 1180 640" role="img" aria-labelledby="lifeT">
+  <title id="lifeT">Lifecycle diagram with four lanes. Silicon flow produces a GDS. The die kit reads it into a manifest, footprint, symbol and 3D model. KiCad holds the schematic, board, generated wires and wire types. Outputs are generated one way: the wb.svg, bondlist, DXF and STEP go to the assembly house.</title>
+  <rect class="s-lanebg" x="10" y="14" width="1160" height="122" rx="8"/>
+  <rect class="s-lanebg" x="10" y="146" width="1160" height="132" rx="8"/>
+  <rect class="s-lanebg" x="10" y="288" width="1160" height="166" rx="8"/>
+  <rect class="s-lanebg" x="10" y="464" width="1160" height="166" rx="8"/>
+  <text class="s-lane" x="22" y="36">SILICON FLOW</text><text class="s-m" x="22" y="52">exists today</text>
+  <text class="s-lane" x="22" y="168">DIE KIT</text><text class="s-m" x="22" y="184">new tool</text>
+  <text class="s-lane" x="22" y="310">KICAD</text><text class="s-m" x="22" y="326">the base model</text>
+  <text class="s-lane" x="22" y="486">OUTPUTS</text><text class="s-m" x="22" y="502">one way only</text>
+
+  <!-- silicon -->
+  <rect class="s-box" x="130" y="48" width="150" height="56" rx="6"/><text class="s-tb" x="205" y="72" text-anchor="middle">RTL ports</text><text class="s-m" x="205" y="90" text-anchor="middle">chip_top.sv</text>
+  <rect class="s-box" x="310" y="48" width="150" height="56" rx="6"/><text class="s-tb" x="385" y="72" text-anchor="middle">Slot YAML</text><text class="s-m" x="385" y="90" text-anchor="middle">PAD_SOUTH… ring order</text>
+  <rect class="s-box" x="490" y="48" width="160" height="56" rx="6"/><text class="s-tb" x="570" y="72" text-anchor="middle">LibreLane + DEF</text><text class="s-m" x="570" y="90" text-anchor="middle">names exist here</text>
+  <rect class="s-src" x="680" y="42" width="170" height="68" rx="6"/><text class="s-tb" x="765" y="70" text-anchor="middle">GDS</text><text class="s-m" x="765" y="90" text-anchor="middle">source of truth for the die</text>
+  <rect class="s-opt" x="900" y="48" width="240" height="56" rx="6"/><text class="s-t" x="1020" y="72" text-anchor="middle">No chip yet? Slot template</text><text class="s-m" x="1020" y="90" text-anchor="middle">same shape of data, flagged as a stand-in</text>
+  <line class="s-ln" x1="280" y1="76" x2="308" y2="76" marker-end="url(#a)"/><line class="s-ln" x1="460" y1="76" x2="488" y2="76" marker-end="url(#a)"/><line class="s-ln" x1="650" y1="76" x2="678" y2="76" marker-end="url(#a)"/>
+
+  <!-- die kit -->
+  <rect class="s-new" x="660" y="176" width="210" height="60" rx="6"/><text class="s-tb" x="765" y="199" text-anchor="middle">Die manifest</text><text class="s-mono" x="765" y="218" text-anchor="middle">outline, pads, order, nets?</text>
+  <rect class="s-opt" x="900" y="176" width="240" height="60" rx="6"/><text class="s-t" x="1020" y="199" text-anchor="middle">Overrides file</text><text class="s-m" x="1020" y="218" text-anchor="middle">anchor, no-bond pads, thickness, names</text>
+  <rect class="s-new" x="130" y="176" width="150" height="60" rx="6"/><text class="s-tb" x="205" y="199" text-anchor="middle">Symbol</text><text class="s-mono" x="205" y="218" text-anchor="middle">.kicad_sym</text>
+  <rect class="s-new" x="310" y="176" width="150" height="60" rx="6"/><text class="s-tb" x="385" y="199" text-anchor="middle">Footprint</text><text class="s-mono" x="385" y="218" text-anchor="middle">.kicad_mod, no copper</text>
+  <rect class="s-new" x="490" y="176" width="140" height="60" rx="6"/><text class="s-tb" x="560" y="199" text-anchor="middle">3D stand-in</text><text class="s-mono" x="560" y="218" text-anchor="middle">.wrl + render</text>
+  <line class="s-ln" x1="765" y1="110" x2="765" y2="174" marker-end="url(#a)"/>
+  <line class="s-ln" x1="1020" y1="104" x2="1020" y2="174" stroke-dasharray="5 3" marker-end="url(#a)"/>
+  <line class="s-ln" x1="898" y1="206" x2="872" y2="206" marker-end="url(#a)"/>
+  <path class="s-ln" d="M680,236 V256 H170 V238" marker-end="url(#a)"/><path class="s-ln" d="M350,256 V238" marker-end="url(#a)"/><path class="s-ln" d="M530,256 V238" marker-end="url(#a)"/>
+
+  <!-- KiCad -->
+  <rect class="s-box" x="130" y="322" width="150" height="56" rx="6"/><text class="s-tb" x="205" y="346" text-anchor="middle">Schematic</text><text class="s-m" x="205" y="364" text-anchor="middle">pin names, net classes</text>
+  <rect class="s-src" x="310" y="316" width="150" height="68" rx="6"/><text class="s-tb" x="385" y="344" text-anchor="middle">Board</text><text class="s-m" x="385" y="364" text-anchor="middle">die + bond lands</text>
+  <rect class="s-new" x="490" y="322" width="150" height="56" rx="6"/><text class="s-tb" x="565" y="346" text-anchor="middle">Generate wires</text><text class="s-m" x="565" y="364" text-anchor="middle">pad n to land n+1</text>
+  <rect class="s-new" x="670" y="322" width="150" height="56" rx="6"/><text class="s-tb" x="745" y="346" text-anchor="middle">Apply wire types</text><text class="s-m" x="745" y="364" text-anchor="middle">rules, then overrides</text>
+  <rect class="s-box" x="850" y="322" width="150" height="56" rx="6"/><text class="s-tb" x="925" y="346" text-anchor="middle">Review</text><text class="s-m" x="925" y="364" text-anchor="middle">DRC, checks, 3D view</text>
+  <rect class="s-opt" x="310" y="402" width="150" height="38" rx="6"/><text class="s-t" x="385" y="426" text-anchor="middle">Bond ring footprint</text>
+  <rect class="s-new" x="670" y="402" width="150" height="38" rx="6"/><text class="s-t" x="745" y="426" text-anchor="middle">Wire type library</text>
+  <line class="s-ln" x1="280" y1="350" x2="308" y2="350" marker-end="url(#a)"/><line class="s-ln" x1="460" y1="350" x2="488" y2="350" marker-end="url(#a)"/><line class="s-ln" x1="640" y1="350" x2="668" y2="350" marker-end="url(#a)"/><line class="s-ln" x1="820" y1="350" x2="848" y2="350" marker-end="url(#a)"/>
+  <line class="s-ln" x1="385" y1="402" x2="385" y2="386" marker-end="url(#a)"/><line class="s-ln" x1="745" y1="402" x2="745" y2="380" marker-end="url(#a)"/>
+  <path class="s-ln" d="M240,236 V320" marker-end="url(#a)"/><path class="s-ln" d="M420,236 V314" marker-end="url(#a)"/><path class="s-ln" d="M590,236 V280 H440 V314" marker-end="url(#a)"/>
+  <path class="s-lnd" d="M925,322 V296 H565 V320" marker-end="url(#ay)"/><text class="s-m" x="830" y="312" text-anchor="middle" style="fill:#e9c46a">moved something? regenerate</text>
+
+  <!-- outputs -->
+  <rect class="s-box" x="850" y="498" width="150" height="56" rx="6"/><text class="s-tb" x="925" y="522" text-anchor="middle">Export</text><text class="s-m" x="925" y="540" text-anchor="middle">one command</text>
+  <rect class="s-out" x="670" y="498" width="150" height="56" rx="6"/><text class="s-tb" x="745" y="522" text-anchor="middle">.wb.svg</text><text class="s-m" x="745" y="540" text-anchor="middle">the viewable drawing</text>
+  <rect class="s-out" x="490" y="498" width="150" height="56" rx="6"/><text class="s-tb" x="565" y="522" text-anchor="middle">Bondlist CSV</text><text class="s-m" x="565" y="540" text-anchor="middle">XYZ, sequence, tier</text>
+  <rect class="s-out" x="310" y="498" width="150" height="56" rx="6"/><text class="s-tb" x="385" y="522" text-anchor="middle">3D DXF</text><text class="s-m" x="385" y="540" text-anchor="middle">offline programming</text>
+  <rect class="s-out" x="130" y="498" width="150" height="56" rx="6"/><text class="s-tb" x="205" y="522" text-anchor="middle">STEP + PDFs</text><text class="s-m" x="205" y="540" text-anchor="middle">mechanical, operators</text>
+  <rect class="s-opt" x="130" y="578" width="690" height="38" rx="6"/><text class="s-t" x="475" y="602" text-anchor="middle">Assembly house and bonder program (vendor formats, out of scope)</text>
+  <line class="s-ln" x1="925" y1="378" x2="925" y2="496" marker-end="url(#a)"/>
+  <line class="s-ln" x1="848" y1="526" x2="822" y2="526" marker-end="url(#a)"/><line class="s-ln" x1="668" y1="526" x2="642" y2="526"/><line class="s-ln" x1="488" y1="526" x2="462" y2="526"/><line class="s-ln" x1="308" y1="526" x2="282" y2="526"/>
+  <line class="s-ln" x1="475" y1="554" x2="475" y2="576" marker-end="url(#a)"/>
+
+  <!-- injection -->
+  <g><circle class="s-inj" cx="130" cy="48" r="11"/><text class="s-injt" x="130" y="52.5">1</text></g>
+  <g><circle class="s-inj" cx="490" cy="48" r="11"/><text class="s-injt" x="490" y="52.5">2</text></g>
+  <g><circle class="s-inj" cx="900" cy="176" r="11"/><text class="s-injt" x="900" y="180.5">3</text></g>
+  <g><circle class="s-inj" cx="130" cy="322" r="11"/><text class="s-injt" x="130" y="326.5">4</text></g>
+  <g><circle class="s-inj" cx="310" cy="402" r="11"/><text class="s-injt" x="310" y="406.5">5</text></g>
+  <g><circle class="s-inj" cx="670" cy="402" r="11"/><text class="s-injt" x="670" y="406.5">6</text></g>
+  <g><circle class="s-inj" cx="670" cy="322" r="11"/><text class="s-injt" x="670" y="326.5">7</text></g>
+  <g><circle class="s-injx" cx="670" cy="498" r="11"/><text class="s-injt" x="670" y="502.5">✕</text></g>
+</svg></div>
+<div class="cap">Green outlines hold truth. Magenta is what we build. Blue is generated. Dashed is optional. Magenta dots are safe places to add data; the red ✕ means never edit here. Section <a href="#inject">13</a> lists each one.</div>
+</div>
+<p><span class="pill dec">Decided</span> KiCad is the base model. Other EDA tools are out of scope, and if someone wants to use one, that's up to them.</p>
+<p><span class="pill dec">Decided</span> Keep it light. People can take any layer and skip the rest, so nothing here may depend on someone adopting the whole stack.</p>
+</div>
+</details>
+
+<!-- 2 ========================================================= -->
+<details class="sec" id="own" open>
+<summary><h2><span class="n">2</span>Who owns what</h2><p class="gist">Every fact gets one owner. A copy anywhere else is a generated copy that can be thrown away.</p></summary>
+<div class="secbody">
+<div class="tw"><table>
+  <tr><th>Fact</th><th>Owner</th><th>Copies</th><th>If they disagree</th></tr>
+  <tr><td>Die size, pad locations, pad sizes</td><td><b>GDS</b></td><td>Manifest, footprint, 3D model, SVG</td><td>GDS wins; rerun the die kit</td></tr>
+  <tr><td>Pad order</td><td><b>Convention</b> applied to the GDS, unless an override says otherwise</td><td>Manifest, symbol pin numbers</td><td>Warn on any change, because it moves every connection</td></tr>
+  <tr><td>Net names on the die</td><td><b>GDS labels</b> when present, otherwise the overrides file</td><td>Manifest, symbol pin names</td><td>Schematic pin stays linked by number; the name updates</td></tr>
+  <tr><td>Which pad bonds to which land</td><td><b>KiCad</b></td><td>Wire footprints, SVG, bondlist</td><td>KiCad wins</td></tr>
+  <tr><td>Wire type per wire</td><td><b>KiCad</b>: rule from the library, with a per-wire override</td><td>SVG, DXF</td><td>KiCad wins</td></tr>
+  <tr><td>Wire geometry</td><td><b>Nobody</b>: calculated from pad, land and type</td><td>Wire footprints, SVG, DXF</td><td>Regenerate</td></tr>
+  <tr><td>Stack: thickness, attach, cap</td><td><b>KiCad project</b>, seeded from the overrides file</td><td>Section view in SVG, 3D model</td><td>KiCad wins</td></tr>
+  <tr><td>Bond force, power, machine program</td><td><b>Bonding engineer</b></td><td>None</td><td>Out of scope</td></tr>
+</table></div>
+<div class="callout info"><b>This changes an earlier position.</b> The design report had WBX owning connectivity, with KiCad as one input among several. With KiCad as the base, <code>.wb.svg</code> becomes a generated handoff file. It is still the viewable, checkable drawing, but nothing reads it back into the design.</div>
+</div>
+</details>
+
+<!-- 3 ========================================================= -->
+<details class="sec" id="partial" open>
+<summary><h2><span class="n">3</span>Working with partial data</h2><p class="gist">Try it: tick what you have, and see what each output becomes. Nothing fails silently, and every assumption gets named.</p></summary>
+<div class="secbody">
+<p>The rule behind this: an output is only blocked if the missing data can't be guessed safely. Everything else runs with a stated fallback, so a board can be started long before a chip exists.</p>
+<div class="fig">
+<div class="presets" role="group" aria-label="Presets">
+  <button type="button" data-preset="plan">No chip yet</button>
+  <button type="button" data-preset="bare">GDS only</button>
+  <button type="button" data-preset="real" aria-pressed="true">GDS with labels</button>
+  <button type="button" data-preset="all">Everything</button>
+</div>
+<div class="explorer">
+  <div class="inputs" id="inputs"></div>
+  <div id="outputs" aria-live="polite"></div>
+</div>
+<div class="cap">The fallbacks for the footprint, symbol, 3D stand-in and generated wires ran for real in the prototype, with labels and the marker turned off. The "No chip yet" slot template, the DRAFT mark and the exports are planned behaviour.</div>
+</div>
+<div class="fig"><img src="img/bare.jpg" alt="KiCad 3D render of the mezzanine board with a plain dark block as the die and 74 identical gold wires."><div class="cap"><span class="pill prv">Proven</span> The minimum case on the run 2 1x1 board: GDS geometry only, no labels, no marker, no render. The die is a plain block and all 74 wires get one default type. Pairing still agrees with your footprint's ring order on all 74, because bottom-left happens to be the right assumption for this die.</div></div>
+</div>
+</details>
+
+<!-- 4 ========================================================= -->
+<details class="sec" id="gds" open>
+<summary><h2><span class="n">4</span>The GDS</h2><p class="gist">It holds the die outline and the pad openings every time. It holds net names most of the time, as text labels your flow already writes.</p></summary>
+<div class="secbody">
+<div class="fig"><img src="img/eurosynth-die.png" alt="Two-colour render of the eurosynth die showing top metal in olive and 72 pad openings in dark red, with the QR code in the bottom-left corner.">
+<div class="cap">Eurosynth, 3932 × 2531 µm, from <code>render_gds.py</code>. Dark red is the pad opening layer, 37/0. The QR code at bottom left is the anchor for pad numbering.</div></div>
+<div class="tw"><table>
+  <tr><th>What we read</th><th>Where it is</th><th>Reliability, on your 37 shuttle designs</th></tr>
+  <tr><td>Die outline</td><td>Top cell bounding box</td><td>Always</td></tr>
+  <tr><td>Pad openings</td><td>37/0, inside pad cells, so the hierarchy must be walked. A size filter drops the seal ring.</td><td>Always. Two designs also have internal probe pads, which a position filter drops.</td></tr>
+  <tr><td>Net names</td><td>Text on 81/10 or 53/10, at each pad centre</td><td>34 of 37 designs name every pad. 28 pads have only a generic label, and 103 have none.</td></tr>
+  <tr><td>Pad corner marker</td><td>QR cell <code>gf180mcu_ws_ip__id</code>, or <code>__qrcode_id</code> on eurosynth</td><td>Bottom-left on all 37, and on eurosynth. The cell name differs, so match both. The <code>__logo</code> cell at top right looks like a QR in a render, but it isn't one.</td></tr>
+  <tr><td>Instance names</td><td>Removed by LibreLane's KLayout stream-out, kept by Magic as attribute 61</td><td>Not usable today without a flow change</td></tr>
+</table></div>
+<p><span class="pill dec">Decided</span> Net names are welcome but not required. The die kit treats them as an upgrade, and <a href="#kit">section 6</a> shows the result both ways.</p>
+</div>
+</details>
+
+<!-- 5 ========================================================= -->
+<details class="sec" id="number" open>
+<summary><h2><span class="n">5</span>Pin 1 and direction</h2><p class="gist">A light convention: start at the QR corner and go counter-clockwise. On all three run 2 boards tested, the QR sits at land 1 and the die goes on at 0°.</p></summary>
+<div class="secbody">
+<div class="fig"><div class="scroll"><svg id="ringFig" viewBox="0 0 1000 540" role="img" aria-labelledby="ringT" style="min-width:680px">
+  <title id="ringT">Left: the die as drawn in GDS with pad numbering running counter-clockwise from the QR at bottom left. Right: the same die, the same way up, on the run 2 1x1 COB, where its QR meets land 1 at bottom left, and wires run from each die pad to its matching land.</title>
+</svg></div>
+<div class="cap">Drawn from real data: WSLG's 74 pads and the run 2 1x1 COB's 74 lands. Hover any pad for its number and net. The die and the board count the same way from the same corner, so the die goes on without turning.</div></div>
+<div class="grid2 gridgap">
+  <div class="card"><h4>The rule <span class="pill dec">Decided</span></h4><p>Pad 0 is at the QR corner, counting counter-clockwise, and pad n goes to land n+1. It's a convention only, and nothing goes into the GDS for it, so it also works on chips that have already been fabricated.</p></div>
+  <div class="card"><h4>The check <span class="pill prv">Proven</span></h4><p>Every rotation, both directions and every starting offset were tried, about 590 pairings per board. This rule at 0° scored best on all three, and forcing the old 180° onto the 1x1 gave 2632 crossings.</p></div>
+</div>
+<h3>The run 2 boards</h3>
+<div class="tw"><table>
+  <tr><th></th><th>1x1</th><th>1x0p5</th><th>0p5x1</th></tr>
+  <tr><td>Die used</td><td>WSLG, 74 pads <span class="muted">(run 1 stand-in)</span></td><td>eurosynth, 72 pads <span class="muted">(run 2)</span></td><td>HZ80, 72 pads <span class="muted">(run 1 stand-in)</span></td></tr>
+  <tr><td>Land 1</td><td>Bottom left</td><td>Bottom left</td><td>Bottom left</td></tr>
+  <tr><td>Die on the board</td><td><b>0°</b></td><td><b>0°</b></td><td><b>0°</b></td></tr>
+  <tr><td>Bond ring footprint on the board</td><td>180°</td><td>0°</td><td>180°</td></tr>
+  <tr><td>Wires on the right land and pad</td><td>74/74</td><td>72/72</td><td>72/72</td></tr>
+  <tr><td>Span</td><td>1897 to 2757 µm</td><td>1847 to 2955 µm</td><td>1802 to 3115 µm</td></tr>
+  <tr><td>Nets agree, die to board</td><td>18/18 supply; the rest are <code>pad_k</code> names, in order</td><td><b>72/72 by name</b></td><td>16/16 supply; 56 signals not comparable</td></tr>
+  <tr><td>Wires drawn in the footprint, same edge and order</td><td>74/74</td><td>72/72</td><td>Only 2 drawn, too few to tell</td></tr>
+</table></div>
+<p class="small muted">The footprint rotations match <code>die_placement_rotation_deg</code> in <code>ws-bonding-diagrams/boards.json</code>, which was written separately. The fourth run 2 board, <code>0p5x0p5</code>, hasn't been run. Pin 1 is easy to misread on these boards: the rocket silk is now top left and no longer marks it. The real markers are the circle in the bond ring and <code>J1</code> with its silk "1", both at bottom left.</p>
+<div class="callout"><b>Run 2 bonding PDFs have every pad name half a ring off.</b> Page 1 of <code>EURO_chip_top_2_7_1x0.5.pdf</code> labels the pad beside the QR <code>bidir_PAD[26]</code> and puts <code>clk_PAD</code> at top right. The GDS, the board net, the slot config and the pin map all put <code>clk</code> beside the QR. Names match the GDS only after shifting by half the ring: 72/72 on EURO, 74/74 on WSLG and 72/72 on HZ80. Other run 2 designs are likely affected but weren't checked. The cause looks like <code>extract_dies.py</code> lines 139 to 144 in <code>ws-bonding-diagrams</code>, which number the pads assuming the die has been turned, but only turn it when <code>display_rot</code> is set. Wires on page 3 are placed by position and look right, so this appears to be a labelling fault, not a bonding one. That repo hasn't been changed.</div>
+<div class="callout"><b>The drawn wires are still placeholders.</b> Their order is right, but their coordinates can't program a bonder. Only 4 of 74 end on a pad on the 1x1, and 0 of 72 on the 1x0p5. Misses from the pad centre are 0.15 mm typical and 0.41 mm worst on the 1x1, and 0.07 and 0.15 mm on the 1x0p5.</div>
+<p><span class="pill dec">Decided</span> This stays light. If someone's die has no QR, or a different corner, the tool assumes bottom-left and says so, and an overrides file can change it. Anyone can hand-draw a footprint and skip the die kit entirely.</p>
+<p><span class="pill lean">Lean</span> KiCad pin 1 is pad 0, so land 1 pairs with pad 0. Record die rotation in the board's frame, and measure it from the board instead of assuming it, because the footprint's own rotation differs between boards.</p>
+</div>
+</details>
+
+<!-- 6 ========================================================= -->
+<details class="sec" id="kit" open>
+<summary><h2><span class="n">6</span>The die kit</h2><p class="gist">One command turns a GDS into everything KiCad needs. It already runs in prototype, with and without nets.</p></summary>
+<div class="secbody">
+<pre><span class="c"># prototype today, name to be decided</span>
+<span class="k">python</span> proto_diekit.py chip_top.gds.gz kit --png die.png
+<span class="c">chip_top: 3932.0 x 2531.0 um, 72 pads {'B': 24, 'R': 12, 'T': 24, 'L': 12}, internal dropped 0, anchor BL, nets 72/72
+ first pads: [(0, 'B', 'clk_PAD'), (1, 'B', 'rst_n_PAD'), (2, 'B', 'bidir_PAD[0]'), (3, 'B', 'bidir_PAD[1]')]</span>
+
+<span class="k">python</span> proto_diekit.py chip_top.gds.gz kit --no-nets --no-anchor --tag _bare
+<span class="c">chip_top_bare: 3932.0 x 2531.0 um, 72 pads {...}, anchor NONE, assumed BL, nets 0/72</span></pre>
+<div class="grid2 gridgap">
+  <div class="fig" style="margin:0"><div class="paper"><img src="img/symbol-named.svg" alt="KiCad symbol for eurosynth with 72 pins named from GDS labels, such as bidir_PAD and clk_PAD."></div><div class="cap"><b>With labels.</b> Generated symbol as plotted by <code>kicad-cli</code>. Pin names come from the GDS, and pins sit on the side of the symbol that matches the die.</div></div>
+  <div class="fig" style="margin:0"><div class="paper"><img src="img/symbol-bare.svg" alt="KiCad symbol with 72 pins named P0, P1 and so on, generated with no net data."></div><div class="cap"><b>Without labels.</b> The same chip with labels turned off. Pins fall back to <code>P0</code>, <code>P1</code>… and connections keep working, because they follow the pin number.</div></div>
+</div>
+<div class="grid2 gridgap">
+  <div class="fig" style="margin:0"><div class="paper"><img src="img/footprint.svg" alt="KiCad footprint showing the eurosynth die outline with 72 pad rectangles around the edge, drawn on the fab layer."></div><div class="cap"><b>Footprint.</b> Outline and real pad openings on <code>F.Fab</code>, with no copper at all. The anchor is the die centre.</div></div>
+  <div class="fig" style="margin:0"><img src="img/iso.jpg" alt="Close 3D view of the stand-in die with the wafer.space rocket art in yellow and dark grey, ringed by gold wires."><div class="cap"><b>3D stand-in.</b> A VRML block with the GDS render baked in as coloured tiles at 240 columns. Without a render it is a plain block with pads.</div></div>
+</div>
+<div class="tw"><table>
+  <tr><th>Output</th><th>Needs</th><th>Status</th></tr>
+  <tr><td>Manifest <code>.die.json</code></td><td>GDS geometry</td><td><span class="pill prv">Proven</span> eurosynth, WSLG, HZ80</td></tr>
+  <tr><td>Footprint <code>.kicad_mod</code></td><td>Manifest</td><td><span class="pill prv">Proven</span> KiCad loads and plots it</td></tr>
+  <tr><td>Symbol <code>.kicad_sym</code></td><td>Manifest; labels optional</td><td><span class="pill prv">Proven</span> KiCad loads, upgrades and plots it. Pin types are a guess from the name.</td></tr>
+  <tr><td>3D model <code>.wrl</code></td><td>Manifest; render optional</td><td><span class="pill prv">Proven</span> in <code>kicad-cli pcb render</code>. Thickness is assumed: 280 µm die, 25 µm attach.</td></tr>
+  <tr><td>STEP model</td><td>Manifest</td><td><span class="pill open">Not built</span> needed for mechanical export</td></tr>
+</table></div>
+</div>
+</details>
+
+<!-- 7 ========================================================= -->
+<details class="sec" id="board" open>
+<summary><h2><span class="n">7</span>The KiCad board</h2><p class="gist">Decided for now: the electrical connection is on the land, the die is mechanical, and each wire is its own object. Copper stays exactly as it was.</p></summary>
+<div class="secbody">
+<div class="grid2 gridgap">
+  <div class="fig" style="margin:0"><img src="img/cob.png" alt="Top view of the mezzanine board with its yellow bond ring and empty die area."><div class="cap"><span class="pill now">Today</span> your run 2 1x1 board with its bond ring and empty die area. Land 1's circle and <code>J1</code> are at bottom left.</div></div>
+  <div class="fig" style="margin:0"><img src="img/top.jpg" alt="Top-down KiCad 3D render of the same board with a stand-in die and fan-out of gold and orange wires."><div class="cap"><span class="pill prv">Proven</span> the same board with a generated die and 74 generated wires. Orange wires are supply pads, picked automatically by net.</div></div>
+</div>
+<h3>Three ways to represent this in KiCad</h3>
+<div class="tw"><table>
+  <tr><th></th><th>A. Die pads as copper<br><span class="muted">examples/kicad, today</span></th><th>B. Wires inside one footprint<br><span class="muted">your mezzanine board</span></th><th>C. Mechanical die, wire objects<br><span class="muted">this prototype</span></th></tr>
+  <tr><td>Fab outputs</td><td>Die pads plot as copper, so unusable</td><td>Clean</td><td><b>Clean.</b> Gerbers match the original on all three run 2 boards</td></tr>
+  <tr><td>Per-wire data</td><td>Yes</td><td>No</td><td><b>Yes</b></td></tr>
+  <tr><td>Moving the die</td><td>Wires stay behind</td><td>Wires come along</td><td>Regenerate. A group survives saving; moving one in the GUI is untested.</td></tr>
+  <tr><td>Where the net lives</td><td>Die pad and land</td><td>Land</td><td><b>Land</b></td></tr>
+  <tr><td>3D wires</td><td>No</td><td>No</td><td><b>Yes, a model per wire</b></td></tr>
+  <tr><td>DRC noise</td><td>23 unconnected, permanently</td><td>None added</td><td>0 unconnected, no schematic warnings; the new footprints are flagged as having no library</td></tr>
+</table></div>
+<p><span class="pill dec">Decided, for now</span> Option C. The symbol's pins map to the bond lands, as your mezzanine board already does, so KiCad's copper and netlist stay honest. The die is a mechanical object, like a heatsink with holes in the right places.</p>
+<div class="fig"><img src="img/edge.jpg" alt="Low-angle KiCad 3D view along the die edge, showing gold wires rising vertically from the pads and looping to the board, with thicker orange supply wires."><div class="cap">Loop shapes rendered from the same <code>moves</code> strings as your profiles. Heights and thicknesses are true to the data; the camera is close, so perspective exaggerates the near wires. The orange wires are <code>PWR33</code>, at 33 µm rather than 25 µm.</div></div>
+<details class="more small"><summary class="muted" style="cursor:pointer">What the DRC run reported</summary>
+<div class="tw"><table>
+  <tr><th>Source board, then generated</th><th>1x1</th><th>1x0p5</th><th>0p5x1</th></tr>
+  <tr><td>Unconnected items</td><td>0, 0</td><td>0, 0</td><td>0, 0</td></tr>
+  <tr><td><code>lib_footprint_issues</code></td><td>13, 89</td><td>13, 87</td><td>13, 87</td></tr>
+  <tr><td><code>missing_courtyard</code></td><td>5, 81</td><td>Ignored by the project</td><td>Ignored by the project</td></tr>
+  <tr><td>Schematic parity <code>extra_footprint</code>, without <code>board_only</code></td><td>75</td><td>73</td><td>73</td></tr>
+  <tr><td>The same, with <code>board_only</code></td><td><b>0</b></td><td><b>0</b></td><td><b>0</b></td></tr>
+  <tr><td>Total violations</td><td>27, 179</td><td>22, 96</td><td>20, 94</td></tr>
+</table></div>
+<p>The rises all come from the prototype's new footprints, which have no real library and, on the 1x1, trip the courtyard check. The real tool needs to fix those. Other categories didn't move. The Gerbers are identical, but the saved file isn't line for line: pcbnew reorders zones on save, and it does the same to the untouched source board.</p>
+</details>
+</div>
+</details>
+
+<!-- 8 ========================================================= -->
+<details class="sec" id="wires" open>
+<summary><h2><span class="n">8</span>Generating wires</h2><p class="gist">Once the die kit and bond ring are on the board, the from and to of every wire can be worked out. You only intervene for exceptions.</p></summary>
+<div class="secbody">
+<ol>
+  <li><b>Pair.</b> Die pad n goes to land n+1. When both sides have a net, compare them, and report any mismatch instead of silently wiring it. A board that uses slot template names needs handling here: HZ80's signal order is its own, so a plain comparison would flag all 56 signals.</li>
+  <li><b>Pick a type.</b> Apply the rules from the wire library in order, such as "supply nets get <code>PWR33</code>". Later rules can use span or net class.</li>
+  <li><b>Calculate.</b> Bond points come from the pad centre and from a point on the land, and the loop comes from the type and the actual span.</li>
+  <li><b>Write.</b> One footprint per wire on the Wirebond layer, with its fields and its 3D model. The real tool should lock them, since they are generated.</li>
+  <li><b>Check.</b> Bond on pad, net agreement, wire gap, die edge clearance, height against the cap.</li>
+</ol>
+<p><span class="pill prv">Proven</span> Pairing, type choice, geometry, writing and the net comparison ran on three run 2 boards, 218 wires in all, with no crossings. Types are chosen by net name: 56 <code>STD25</code> on each board, with 18, 16 and 16 <code>PWR33</code>. Editing a type in the board and regenerating changed only that type's wires. Not yet run: step 5 through <code>wbx.py</code>. A separate script did check crossings and wire ends.</p>
+<div class="callout"><b>Where a wire ends on a land isn't settled.</b> The drawings put it 0.2 mm in from the land's inner end on the 1x1, 0.5 mm on the 1x0p5 and about 0.16 mm on the 0p5x1. The prototype uses 0.2 mm everywhere. Using the 1x0p5's 0.5 mm takes its longest wire from 2.95 to 3.25 mm, against the 3.3 mm limit in <code>boards.json</code>. This is <a href="#q-Q8">question 8</a>.</div>
+<div class="grid2 gridgap">
+  <div class="card"><h4>Treat wires like a zone fill <span class="pill lean">Lean</span></h4><p>In KiCad you don't draw a zone's fill. You set its rules and press a key. Wires can work the same way. This also solves the die-moves-and-wires-stay-behind problem: move the die, regenerate, and the geometry follows.</p></div>
+  <div class="card"><h4>Exceptions the rule must allow <span class="pill lean">Lean</span></h4><p>Two parallel wires on one pad, like VBUS in the example. Down-bonds from a pad to a ground ring. Pads left unbonded. All three are stored as per-pad settings, so they survive regeneration.</p></div>
+</div>
+</div>
+</details>
+
+<!-- 9 ========================================================= -->
+<details class="sec" id="types" open>
+<summary><h2><span class="n">9</span>Wire types</h2><p class="gist">Your pad analogy holds. A type is a shape family plus a few sizes, with custom as the escape hatch, and it fits any span.</p></summary>
+<div class="secbody">
+<div class="tw"><table>
+  <tr><th>A KiCad pad has</th><th>A wire type would have</th><th>Values</th></tr>
+  <tr><td>Type: SMD, through-hole, connector</td><td>Bond method</td><td><code>ball-wedge</code>, <code>wedge-wedge</code></td></tr>
+  <tr><td>Shape: rect, round, oval, custom</td><td>Loop family</td><td><code>triangle</code>, <code>trapezoid</code>, <code>m</code>, <code>low</code>, <code>jedec4</code>, <code>custom</code></td></tr>
+  <tr><td>Size X, Y</td><td>Loop height, and where the peak sits</td><td>µm and % of span</td></tr>
+  <tr><td>Drill</td><td>Wire diameter</td><td>25 µm, 33 µm…</td></tr>
+  <tr><td>Layers and finish</td><td>Material</td><td>Au, Al, Cu</td></tr>
+  <tr><td>Orientation</td><td>Direction: which end is bonded first</td><td><code>forward</code>, <code>reverse</code></td></tr>
+  <tr><td>Custom shape polygon</td><td>Moves string</td><td><code>180/0 30/12% -20/35%</code></td></tr>
+  <tr><td>Net class default</td><td>Rule that assigns the type</td><td>Supply nets → <code>PWR33</code></td></tr>
+</table></div>
+<h3>Loop bench</h3>
+<p>Your five profiles from <code>profiles.wb.svg</code>, drawn at true scale from their real <code>moves</code> strings, plus the JEDEC 4-point shape and a custom row you can type into. Change the span and each type adapts, which is the reason a type can be applied to every wire.</p>
+<div class="fig">
+  <div class="bench-ctl">
+    <label for="span">Span <input type="range" id="span" min="300" max="3000" step="10" value="1500"><output id="spanV">1500 µm</output></label>
+    <label for="dieT">Die + attach height <input type="range" id="dieT" min="100" max="700" step="5" value="305"><output id="dieV">305 µm</output></label>
+  </div>
+  <div class="loops" id="loops"></div>
+  <div class="cap">Grey block is the die, and the baseline is the board. Clearance is measured at the die edge, 60 µm from the die-side bond, close to the 58 µm on real pads. The curve follows the same moves model as <code>wbx.py</code>. These profiles are illustrative targets and have not been run on a bonder.</div>
+</div>
+<h3>Is the set of shapes really small?</h3>
+<p>Mostly yes, with one caveat. No public catalogue of shapes turned up, so this list is assembled from separate sources.</p>
+<div class="tw"><table>
+  <tr><th>Family</th><th>Evidence</th><th>Your profiles</th></tr>
+  <tr><td><b>Triangular</b></td><td>Named as one of two typical shapes in <a href="https://patents.google.com/patent/US7262124">US 7,262,124</a> and <a href="https://patents.google.com/patent/US6343733">US 6,343,733</a>. No flat top. Riskier when the wire passes close to the chip.</td><td><code>DOWN25</code> is close</td></tr>
+  <tr><td><b>Trapezoidal</b></td><td>The other typical shape in those patents, with a flat upper section, preferred where chip contact is a risk.</td><td><code>STD25</code>, <code>PWR33</code></td></tr>
+  <tr><td><b>M-shaped</b></td><td>A trapezoid whose top bows down, used for low loops. <a href="https://patents.google.com/patent/US6112974">US 6,112,974</a>; compared with Q-loop in a <a href="https://epjst.epj.org/articles/epjst/abs/first/11734_2025_Article_1553/11734_2025_Article_1553.html">2025 study</a>, and with Q and S loops in <a href="https://search.isc.ac/inventory/49/2278927.htm">Kung et al.</a></td><td>None yet</td></tr>
+  <tr><td><b>Reverse</b></td><td>First bond on the substrate, used for low die-side profiles. Direction is a separate setting, as your file has it.</td><td><code>REV25</code></td></tr>
+  <tr><td><b>Wedge</b></td><td>Altium treats ball-wedge and wedge-wedge as the <a href="https://www.altium.com/documentation/altium-designer/pcb/wire-bonding">type setting</a>. It is a bond method more than a shape.</td><td><code>WEDGE25</code></td></tr>
+  <tr><td><b>JEDEC 4 and 5 point</b></td><td>The <a href="https://www.jedec.org/node/7486">JESD59</a> simulation models, built into tools such as <a href="https://ansyshelp.ansys.com/public/Views/Secured/Electronics/v252/en/Subsystems/HFSS/Content/HFSS/Bondwires.htm">Ansys</a>. I couldn't read the paid standard, so this comes from Ansys's help and an <a href="https://github.com/Scio202/fusion-bond-wire">MIT-licensed add-in</a>. The 4-point shape rises to h1, runs flat for 1/8 of the span, then goes straight to the far end, so <code>200/0 0/12.5%</code> writes it. The 5-point shape also needs angles, which moves can't express yet.</td><td>4-point: <code>JEDEC4</code> above</td></tr>
+</table></div>
+<div class="callout info"><b>Prior art worth copying:</b> Altium needs just five settings: loop height, diameter, start angle, end angle, and ball or wedge. It has no preset shape list. Its die pads sit on a die layer tied to the die body, and a copper pad becomes a bond finger when a wire lands on it. That's close to option C.</div>
+<div class="callout"><b>The caveat:</b> real machine loop names, such as Q-loop, belong to bonder vendors, and I found no public specification. You don't have a bonding house yet, so nobody can confirm a mapping. Our families describe intent for now. When you find a bonding partner, the first thing to ask for is their list.</div>
+<h3>Where the type library lives <span class="pill dec">Decided</span></h3>
+<p>In the <code>.kicad_pcb</code> itself, so it travels with the board. These are the options, and what happened with each on KiCad 10.0.0, using a real load and save:</p>
+<div class="tw"><table>
+  <tr><th>Option</th><th>Result</th><th>What that means</th></tr>
+  <tr class="chosen"><td><b>Fields on a footprint</b>: one <code>WBLIB</code> footprint, with a hidden <code>wb_type_STD25</code> field per type <span class="pill prv">Proven</span></td><td>Survives, with or without a project file, on all three run 2 boards. Regenerating reads from it.</td><td>Plain text that diffs cleanly, and it should be editable in KiCad's normal footprint dialog (not yet tried by hand). Adds one more library warning to DRC.</td></tr>
+  <tr><td>Our own token in the file, or a <code>generated</code> object with our own type</td><td><span class="pill no">Fails</span> The board won't load: <code>kicad-cli</code> reports "Failed to load board", and <code>pcbnew</code> crashes.</td><td>This is what a truly native object would be. It needs KiCad's parser to change.</td></tr>
+  <tr><td>Board properties (the example does this)</td><td><span class="pill no">Wiped</span> Saved at first, then <code>SynchronizeProperties</code> empties them unless the project lists them too.</td><td>Would still mean keeping a second copy in the project file.</td></tr>
+  <tr><td>Embedded file, added in KiCad 9</td><td><span class="muted">Not tried</span> The call isn't reachable from Python.</td><td>Would travel in the board, but probably not as readable text. Not worth chasing.</td></tr>
+  <tr><td>Net classes</td><td><span class="muted">Not tested here</span></td><td>Can't describe a loop; still useful as the rule that picks a type.</td></tr>
+</table></div>
+<p>KiCad has no wire bond object today. Its Python API has no bond-related names, and the pad properties are BGA, castellated, fiducial, heatsink, mechanical, press-fit and test point. <a href="https://gitlab.com/kicad/code/kicad/-/issues/2272">Wishlist item #2272</a> is closed, but I found no sign that anything was built. What native should mean next is <a href="#q-Q6">question 6</a>.</p>
+</div>
+</details>
+
+<!-- 10 ======================================================== -->
+<details class="sec" id="exist" open>
+<summary><h2><span class="n">10</span>What already exists</h2><p class="gist">No single standard describes a bonding design, but useful pieces exist. Borrow them, and label where each came from.</p></summary>
+<div class="secbody">
+<p>You asked what definitions and conventions are out there. This is what I found, with how far to trust each one. I'll keep adding to it as more turns up.</p>
+<div class="tw"><table>
+  <tr><th>Topic</th><th>What exists</th><th>How solid</th><th>What it means for us</th></tr>
+  <tr><td><b>Loop shape</b></td><td><a href="https://www.jedec.org/node/7486">JEDEC JESD59</a>, 1997: 4-point and 5-point wire models, with <code>h1</code>, <code>h2</code>, <code>alpha</code> and <code>beta</code>.</td><td>A real standard, written for simulation. Paid, so I read it second-hand.</td><td>The nearest thing to a shared definition. Added as a family, which also lets simulation tools read our shapes.</td></tr>
+  <tr><td><b>What a profile holds</b></td><td><a href="https://www.altium.com/documentation/altium-designer/pcb/wire-bonding">Altium</a>: loop height, diameter, two angles, ball or wedge. <a href="https://community.cadence.com/cadence_blogs_8/b/pkg/posts/default-bond-wire-profile">Cadence</a>: a 3D path with material, diameter and direction, and it ships a Kulicke &amp; Soffa profile set.</td><td>Shipping tools. The Cadence page blocked me, so that detail is from a search summary.</td><td>Our type model already has these settings. Direction and material are confirmed as belonging in it.</td></tr>
+  <tr><td><b>Loop names</b></td><td>Q, S and M loops in <a href="https://search.isc.ac/inventory/49/2278927.htm">published studies</a>. "Low", "ultra-low" and "crimped" appear in <a href="https://www.eesemi.com/wirebond-loop-profiles.htm">process guides</a>.</td><td>Real words, but no public definition. They seem to belong to bonder vendors.</td><td>Don't build around them. Keep a free-text name a bonding partner can fill in later.</td></tr>
+  <tr><td><b>Everyday words</b></td><td><a href="https://www.knowlescapacitors.com/getmedia/ac00b9b6-b2a5-440e-a91f-c53bce40c7bd/Wirebonding-Application-Notes">Knowles</a>: first bond (the ball, normally on the chip) and second bond (the stitch, normally on the substrate). <a href="https://sst.semiconductor-digest.com/?p=36970">Tutorial</a>: reverse bonding puts a bump on the die, then a ball on the substrate, then a stitch on the bump.</td><td>Consistent across sources.</td><td>Use these words in our fields and docs. Our <code>REV25</code> direction setting matches.</td></tr>
+  <tr><td><b>Pad numbering</b></td><td><a href="https://europractice-ic.com/wp-content/uploads/2020/06/ASIC_Prototype_Packaging_Design_Rules_2024.pdf">Europractice</a>: counter-clockwise, and for QFN-style packages "generally starting upper left". They also ask that pad 1 be identified by a "1" or a logo near it.</td><td>One house's rules. I found no general standard.</td><td>Our direction is the common one. Our corner differs, which is fine for a light convention. The QR does the job of their marker.</td></tr>
+  <tr><td><b>Wire limits</b></td><td>Europractice's numeric tables, checked below. Your own <code>boards.json</code> has <code>wire_max_mm</code> of 3.3, 3.4 and 3.2 for three of the run 2 boards.</td><td>Concrete and usable, but for their process, not yours.</td><td>Good default warnings. This is <a href="#q-Q7">question 7</a>.</td></tr>
+  <tr><td><b>Quality testing</b></td><td>MIL-STD-883, <a href="https://www.knowlescapacitors.com/getmedia/ac00b9b6-b2a5-440e-a91f-c53bce40c7bd/Wirebonding-Application-Notes">called the most common standard</a>: visual, pull and shear tests.</td><td>Solid, but I didn't read the standard itself.</td><td>It's about testing finished bonds, not describing a design. It matters when you get to silicon.</td></tr>
+  <tr><td><b>File formats</b></td><td>I found no standard file for bond connections. <a href="https://github.com/MaxClerkwell/open.cob.json">open.cob.json</a> is the closest open effort, and bonders use vendor formats.</td><td>Absence of evidence only.</td><td>Nothing to conform to, which is why generated outputs and a bonding partner's input matter later.</td></tr>
+  <tr><td><b>Others in KiCad</b></td><td>On the <a href="https://forum.kicad.info/t/chiplets-and-interposers/60987">KiCad forum</a>, a user scripts DEF to die footprint and symbol, is drafting requirements, and has discussed it with KiCad developers. <a href="https://forum.kicad.info/t/feature-request-chip-on-board-addon/13367">An older thread</a> asks for much the same as you.</td><td>Forum posts.</td><td>Someone to compare notes with if you pursue a native object.</td></tr>
+</table></div>
+<h3>Your boards against Europractice's rules</h3>
+<div class="tw"><table>
+  <tr><th>Rule</th><th>Limit</th><th>1x1 / WSLG</th><th>1x0p5 / eurosynth</th><th>0p5x1 / HZ80</th></tr>
+  <tr><td>Wire length, 25 µm Au</td><td>6 mm at most</td><td>1.90 to 2.76</td><td>1.85 to 2.95</td><td>1.80 to 3.12</td></tr>
+  <tr><td>Angle from the pad's normal</td><td>45° at most</td><td>42.9°</td><td><b>45.4° on 4 wires</b></td><td>39.9°</td></tr>
+  <tr><td>Crossing wires</td><td>None</td><td>0</td><td>0</td><td>0</td></tr>
+  <tr><td>Pad opening, 25 µm wire</td><td>55 µm at least</td><td>60 µm</td><td>60 µm</td><td>60 µm</td></tr>
+  <tr><td>Pad pitch, 25 µm wire</td><td>65 µm at least</td><td>180 µm</td><td>129 µm</td><td>138 µm</td></tr>
+  <tr><td>Pad opening, <b>33 µm wire</b></td><td>70 µm at least</td><td><b>60 µm</b></td><td><b>60 µm</b></td><td><b>60 µm</b></td></tr>
+</table></div>
+<p class="small muted">Measured from the generated wires with the prototype's 0.2 mm land point, so the angle and length change if that moves. Numbers are from Europractice's tables 1 and 2. That PDF's footer says "strictly confidential" even though it's posted publicly, so link to it instead of copying it around.</p>
+<div class="callout"><b>Two things these rules flag.</b> Four corner wires on the 1x0p5 go just over 45°. More importantly, <code>PWR33</code> is a type I made up for the prototype, and these rules wouldn't allow 33 µm wire on a 60 µm pad. Those orange wires are placeholders, not a recommendation. They're one assembly house's limits, not physics, so a different bonder may allow more. But nobody on the project can check this yet.</div>
+</div>
+</details>
+
+<!-- 11 ======================================================== -->
+<details class="sec" id="out" open>
+<summary><h2><span class="n">11</span>Outputs</h2><p class="gist">All generated from KiCad. The viewable SVG remains the handoff and review document.</p></summary>
+<div class="secbody">
+<div class="fig"><div class="paper"><img src="img/wbx-example.png" alt="WBX bonding diagram with a top view of the die and lands, a true-scale section, loop profiles, stack table and key."></div><div class="cap">The existing <code>.wb.svg</code> example. Next it gets the GDS render in place of the grey die, using the placement proved earlier: <code>&lt;image&gt;</code> inside the die group with a second flip, pixel-exact against all 20 pads.</div></div>
+<div class="tw"><table>
+  <tr><th>Output</th><th>For</th><th>Status</th></tr>
+  <tr><td><code>.wb.svg</code></td><td>Review, assembly house, tools</td><td><span class="pill prv">Proven</span> a throwaway parser rebuilt the example byte for byte from the KiCad board. The render still needs adding to the writer.</td></tr>
+  <tr><td>Bondlist CSV</td><td>Offline programming</td><td><span class="pill now">Today</span> written from <code>.wb.svg</code>, not loaded in a bonder tool</td></tr>
+  <tr><td>3D DXF</td><td>Offline programming</td><td><span class="pill now">Today</span> generated and read back, not loaded in a bonder tool</td></tr>
+  <tr><td>STEP with wires</td><td>Mechanical, enclosure checks</td><td><span class="pill open">Not built</span></td></tr>
+  <tr><td>Operator PDFs</td><td>Die placement and bonding pages</td><td><span class="pill now">Today</span> your <code>temp-reticle_diagrams</code> scripts; they could read the same manifest</td></tr>
+</table></div>
+<div class="callout info"><b>A blocker that run 2 probably removes:</b> <code>wbx.rd</code> accepts only an unrotated die. Run 2 dies are at 0° on the board, so an exporter shouldn't need to write a rotated one. This is inferred, because <code>wbx.py</code> hasn't been run on these boards. The old 74-pad board, at 180°, still has the limit.</div>
+</div>
+</details>
+
+<!-- 11 ======================================================== -->
+<details class="sec" id="rev" open>
+<summary><h2><span class="n">12</span>When something changes</h2><p class="gist">Because geometry is calculated, most changes are one command. The tool only stops to ask when connections would move.</p></summary>
+<div class="secbody">
+<div class="tw"><table>
+  <tr><th>What changed</th><th>What happens</th><th>Asks you?</th></tr>
+  <tr><td>New GDS, same pads</td><td>Render and 3D model refresh</td><td>No</td></tr>
+  <tr><td>Pad moved slightly</td><td>Footprint updates, wires regenerate, checks rerun</td><td>Only if a check fails</td></tr>
+  <tr><td>Net renamed in the GDS</td><td>Symbol pin name updates, pin number stays</td><td>Shows the list</td></tr>
+  <tr><td>Pad count or order changed</td><td>Refuses until you confirm, showing old against new</td><td><b>Yes</b></td></tr>
+  <tr><td>Die moved on the board</td><td>Regenerate wires</td><td>No</td></tr>
+  <tr><td>Land moved in layout</td><td>Regenerate wires</td><td>No</td></tr>
+  <tr><td>Wire type edited</td><td>All wires of that type regenerate</td><td>No</td></tr>
+  <tr><td>Stand-in replaced by real GDS</td><td>Same as a pad moving, plus a diff against the template</td><td>Only if pads differ</td></tr>
+  <tr><td>Bonded part measured</td><td>Future: feed measured loops back into the type</td><td>Later</td></tr>
+</table></div>
+</div>
+</details>
+
+<!-- 12 ======================================================== -->
+<details class="sec" id="inject" open>
+<summary><h2><span class="n">13</span>Where to inject, and where not</h2><p class="gist">Seven safe places, each for a specific kind of data. Three places to leave alone.</p></summary>
+<div class="secbody">
+<div class="tw"><table>
+  <tr><th>#</th><th>Where</th><th>Inject what</th><th>Verdict</th></tr>
+  <tr><td>1</td><td>RTL port names</td><td>Meaningful net names. They flow all the way to the GDS labels by themselves.</td><td><span class="pill dec">Yes</span> cheapest place of all</td></tr>
+  <tr><td>2</td><td>Step after stream-out in LibreLane</td><td>Pad numbers or instance names, on a non-mask layer</td><td><span class="pill now">Not now</span> the convention is enough; nothing goes into the GDS for this</td></tr>
+  <tr><td>3</td><td>Overrides file beside the GDS</td><td>Anchor, no-bond pads, thickness, net names for an unlabelled die</td><td><span class="pill lean">Yes</span> the main home for "other metadata"</td></tr>
+  <tr><td>4</td><td>Schematic</td><td>Nets, net classes</td><td><span class="pill dec">Yes</span> normal KiCad work</td></tr>
+  <tr><td>5</td><td>Bond ring footprint</td><td>Land positions, numbering</td><td><span class="pill dec">Yes</span> normal KiCad work, per COB</td></tr>
+  <tr><td>6</td><td>Wire type library</td><td>Shapes, materials, assignment rules, as fields on a footprint in the board</td><td><span class="pill dec">Yes</span> travels with the board</td></tr>
+  <tr><td>7</td><td>A wire's fields in KiCad</td><td>Per-wire type override, bond sequence, tier</td><td><span class="pill lean">Yes</span> survives regeneration</td></tr>
+  <tr><td>✕</td><td><code>.wb.svg</code>, DXF, bondlist</td><td>Anything by hand</td><td><span class="pill no">No</span> overwritten on export</td></tr>
+  <tr><td>✕</td><td>Label layer 81/10 in the GDS</td><td>Extra labels such as pad numbers</td><td><span class="pill no">No</span> I'd expect LVS to read these as nets; untested</td></tr>
+  <tr><td>✕</td><td>Generated wire coordinates</td><td>Hand drags in KiCad</td><td><span class="pill no">No</span> lost on regeneration; change the rule or the land</td></tr>
+</table></div>
+</div>
+</details>
+
+<!-- 13 ======================================================== -->
+<details class="sec" id="build" open>
+<summary><h2><span class="n">14</span>Build order</h2><p class="gist">Each phase is useful by itself, and all of them can work from the command line before any KiCad panel exists.</p></summary>
+<div class="secbody">
+<div class="cards">
+  <div class="card"><h4>Phase 1 · Die kit</h4><p>Turn the prototype into a tool: overrides file, partial data report, STEP, footprint library cleanup.</p><p class="small muted">✅ All 37 shuttle designs produce a kit, with assumptions listed.</p></div>
+  <div class="card"><h4>Phase 2 · Wire generator</h4><p><code>wbx wires board.kicad_pcb</code>: pair, type, calculate, write. Safe to rerun, keeps overrides.</p><p class="small muted">✅ Move the die, regenerate, and the checks pass.</p></div>
+  <div class="card"><h4>Phase 3 · Type library</h4><p>A <code>WBLIB</code> footprint in the board: families including JEDEC 4-point, and rules. Checks with labelled limits.</p><p class="small muted">✅ Changing one type updates all of its wires and their 3D models.</p></div>
+  <div class="card"><h4>Phase 4 · Export from KiCad</h4><p>KiCad board to <code>.wb.svg</code>, bondlist, DXF. Rotated dies. Render in the SVG.</p><p class="small muted">✅ Mezzanine board exports and passes <code>wbx check</code>.</p></div>
+  <div class="card"><h4>Phase 5 · KiCad panel</h4><p>A plugin with a wire type picker and a Regenerate button, wrapping phases 2 to 4.</p><p class="small muted">✅ Full loop done inside the KiCad GUI.</p></div>
+  <div class="card"><h4>Phase 6 · Real silicon</h4><p>One die through to a bonded part, then measured loops compared against the types.</p><p class="small muted">✅ A bonding partner, once you have one, accepts the handoff.</p></div>
+</div>
+<h3>What hasn't been tested</h3>
+<ul>
+  <li><b>The KiCad GUI.</b> Everything here ran through <code>kicad-cli</code> and pcbnew's API. Nobody has opened these boards by hand yet.</li>
+  <li><b>The plugin route.</b> KiCad's docs say the IPC API in 9 and 10 needs a running GUI, and forum threads report trouble creating copper pads through it. We add no copper, which should help, but this needs a spike. Phases 1 to 4 can use file generation, and don't depend on it.</li>
+  <li><b>Moving a group</b> of a die and its wires in KiCad. The group survives a save, but nobody has dragged one.</li>
+  <li><b>The prototype's assumptions:</b> die thickness, attach height, and a 0.2 mm land bond point on every board.</li>
+  <li><b>Run 2 coverage.</b> There's no run 2 reticle locally, so WSLG and HZ80 are run 1 stand-ins, checked against the run 2 PDFs for size, pad count and names. That eurosynth's <code>final_chip</code> is exactly what was submitted is inferred. The <code>0p5x0p5</code> board hasn't been run.</li>
+  <li><b><code>wbx.py</code> on these boards.</b> It needs <code>lxml</code>, which isn't installed. The prototype used a local copy of <code>wbx.loop</code>, which matched on 12 test cases.</li>
+  <li><b>Any bonder or assembly house.</b> Nothing here has been near a real machine.</li>
+</ul>
+</div>
+</details>
+
+<!-- 14 ======================================================== -->
+<details class="sec" id="decide" open>
+<summary><h2><span class="n">15</span>Still to decide</h2><p class="gist">Four questions, each with a box for your answer. Q2 is carried over, and the other three are new.</p></summary>
+<div class="secbody">
+<div class="qa" id="q-Q2">
+  <div class="qa-h"><span class="qa-id">Q2</span><b>Should wires be regenerated like zone fills, with coordinates never edited?</b><span class="pill open">Open</span></div>
+  <p class="qa-lean"><b>Lean:</b> Yes. Overrides store intent; geometry is always calculated.</p>
+  <textarea class="qa-input" id="a-Q2" data-q="Q2" rows="3" aria-label="Your answer to Q2" placeholder="Your answer…"></textarea>
+  <div class="qa-row"><button type="button" data-lean="Q2">Agree with the lean</button><a href="#wires">Read the section</a><a href="board.html#q-Q2">Discuss on the board</a></div>
+</div>
+<div class="qa" id="q-Q6">
+  <div class="qa-h"><span class="qa-id">Q6</span><b>What should "native" mean next: types held in ordinary KiCad objects, or a change to KiCad itself?</b><span class="pill open">Open</span></div>
+  <p class="qa-lean"><b>Lean:</b> Both, in that order. Use footprint fields now, since they work in KiCad 10 today and anyone can ignore them. Write up a real wire object once our fields settle, and take that to the KiCad developers.</p>
+  <textarea class="qa-input" id="a-Q6" data-q="Q6" rows="3" aria-label="Your answer to Q6" placeholder="Your answer…"></textarea>
+  <div class="qa-row"><button type="button" data-lean="Q6">Agree with the lean</button><a href="#types">Read the section</a><a href="board.html#q-Q6">Discuss on the board</a></div>
+</div>
+<div class="qa" id="q-Q7">
+  <div class="qa-h"><span class="qa-id">Q7</span><b>Should Europractice's published rules be our default wire checks?</b><span class="pill open">Open</span></div>
+  <p class="qa-lean"><b>Lean:</b> Yes, as warnings that name their source and can be changed per board, with your <code>wire_max_mm</code> values taking priority. A bonding partner's limits would replace them later.</p>
+  <textarea class="qa-input" id="a-Q7" data-q="Q7" rows="3" aria-label="Your answer to Q7" placeholder="Your answer…"></textarea>
+  <div class="qa-row"><button type="button" data-lean="Q7">Agree with the lean</button><a href="#exist">Read the section</a><a href="board.html#q-Q7">Discuss on the board</a></div>
+</div>
+<div class="qa" id="q-Q8">
+  <div class="qa-h"><span class="qa-id">Q8</span><b>Where on a land should a wire end by default?</b><span class="pill open">Open</span></div>
+  <p class="qa-lean"><b>Lean:</b> A per-board setting stored with the types, defaulting to 0.2 mm in from the land's inner end, because that gives the shorter wire. Your drawings use 0.2, 0.5 and about 0.16 mm.</p>
+  <textarea class="qa-input" id="a-Q8" data-q="Q8" rows="3" aria-label="Your answer to Q8" placeholder="Your answer…"></textarea>
+  <div class="qa-row"><button type="button" data-lean="Q8">Agree with the lean</button><a href="#wires">Read the section</a><a href="board.html#q-Q8">Discuss on the board</a></div>
+</div>
+<div class="qa" id="q-note">
+  <div class="qa-h"><b>Anything else?</b></div>
+  <textarea class="qa-input" id="a-note" data-q="__note" rows="3" aria-label="Anything else" placeholder="Corrections, things I missed, new questions…"></textarea>
+</div>
+<div class="qa-send">
+  <b data-answer-count>0 of 4 answered</b>
+  <span class="small muted embed-hide" data-answer-saved>Saved in this browser as you type.</span>
+  <button type="button" id="planCopy" class="embed-hide">📋 Copy answers for Claude</button>
+  <span class="small muted embed-hide">Then paste them into our Claude Code chat, and I'll fold them in as chapter 3.</span>
+  <span class="small muted embed-only">Saved as you type. Use <b>📋 Copy JSON for Claude</b> at the bottom of this board, then paste it into our Claude Code chat.</span>
+  <textarea id="planExport" hidden readonly aria-label="Answers to copy"></textarea>
+</div>
+<h3>Answered last round</h3>
+<div class="tw"><table>
+  <tr><th>Question</th><th>Your answer</th></tr>
+  <tr><td>Q1. Mechanical die pads, nets on the lands?</td><td><span class="pill dec">Decided</span> Yes, for now.</td></tr>
+  <tr><td>Q3. Pad numbers in the GDS?</td><td><span class="pill dec">Decided</span> No. It's a convention, kept light for people who don't want the whole stack.</td></tr>
+  <tr><td>Q4. Your bonding house's loop names?</td><td><span class="pill dec">Decided</span> There's no bonding house and no definitions yet. Use public sources, and see <a href="#exist">section 10</a>.</td></tr>
+  <tr><td>Q5. Type library in a project file?</td><td><span class="pill dec">Decided</span> No, in the board file, as a native feature. Q6 follows from this.</td></tr>
+</table></div>
+<h3>Sources</h3>
+<ul class="small">
+  <li><a href="https://ansyshelp.ansys.com/public/Views/Secured/Electronics/v252/en/Subsystems/HFSS/Content/HFSS/Bondwires.htm">Ansys bondwire notes</a> and <a href="https://github.com/Scio202/fusion-bond-wire">fusion-bond-wire</a>, for the JEDEC shapes</li>
+  <li><a href="https://europractice-ic.com/wp-content/uploads/2020/06/ASIC_Prototype_Packaging_Design_Rules_2024.pdf">Europractice ASIC packaging design rules, 2024</a></li>
+  <li><a href="https://www.knowlescapacitors.com/getmedia/ac00b9b6-b2a5-440e-a91f-c53bce40c7bd/Wirebonding-Application-Notes">Knowles wirebonding notes</a>, <a href="https://sst.semiconductor-digest.com/?p=36970">wire bonding tutorial</a> and <a href="https://www.eesemi.com/wirebond-loop-profiles.htm">eesemi on loop profiles</a></li>
+  <li><a href="https://search.isc.ac/inventory/49/2278927.htm">Kung et al. on Q, S and M loops</a>, listing only</li>
+  <li><a href="https://gitlab.com/kicad/code/kicad/-/issues/2272">KiCad #2272</a>, <a href="https://bugs.launchpad.net/kicad/+bug/1801131">its Launchpad original</a>, and forum threads on <a href="https://forum.kicad.info/t/chiplets-and-interposers/60987">chiplets and interposers</a> and a <a href="https://forum.kicad.info/t/feature-request-chip-on-board-addon/13367">chip on board add-on</a></li>
+  <li><a href="https://www.altium.com/documentation/altium-designer/pcb/wire-bonding">Altium wire bonding documentation</a></li>
+  <li><a href="https://patents.google.com/patent/US7262124">US 7,262,124</a>, <a href="https://patents.google.com/patent/US6343733">US 6,343,733</a>, <a href="https://patents.google.com/patent/US6112974">US 6,112,974</a> on loop shapes</li>
+  <li><a href="https://epjst.epj.org/articles/epjst/abs/first/11734_2025_Article_1553/11734_2025_Article_1553.html">Q-loop and M-loop fatigue study (2025)</a></li>
+  <li><a href="https://www.jedec.org/node/7486">JEDEC JESD59 listing</a></li>
+  <li><a href="https://github.com/MaxClerkwell/open.cob.json">open.cob.json</a>, which also has GDS import and KiCad symbol and footprint export</li>
+  <li><a href="https://dev-docs.kicad.org/en/apis-and-binding/ipc-api/for-addon-developers/">KiCad IPC API for add-on developers</a> and <a href="https://forum.kicad.info/t/ipc-api-creating-a-pad-with-copper/64104">forum thread on copper pads</a></li>
+  <li>Local: <code>chip-on-board-wire-bonded-pcbs/run-2</code>, <code>eurosynth/final_chip</code>, <code>ws-run1/layout/reticle.oas</code>, <code>ws-bonding-diagrams</code> (<code>boards.json</code>, <code>extract_dies.py</code>, <code>bonding-diagrams/ws-run2</code>), <code>examples/profiles.wb.svg</code></li>
+  <li>Prototype scripts: <code>planning/wire_bond_lifecycle/proto/</code></li>
+</ul>
+</div>
+</details>
+</main>
+
+<script>
+(function(){
+  // ---- partial data explorer
+  var INPUTS=[
+    ['geo','Die geometry','outline and pad openings, from GDS or a slot template'],
+    ['real','It is the real GDS','otherwise it is a stand-in from the slot template'],
+    ['anchor','Pin 1 marker','a QR cell in the GDS, or a corner in the overrides file'],
+    ['nets','Net names','GDS labels, or a list in the overrides file'],
+    ['art','Die render','from the GDS'],
+    ['lands','Bond ring on the board','lands with numbers in KiCad'],
+    ['types','Wire type library','otherwise one default type'],
+    ['stack','Stack heights','die thickness, attach, cap']
+  ];
+  var PRESETS={
+    plan:{geo:1,real:0,anchor:1,nets:1,art:0,lands:1,types:0,stack:0},
+    bare:{geo:1,real:1,anchor:0,nets:0,art:1,lands:0,types:0,stack:0},
+    real:{geo:1,real:1,anchor:1,nets:1,art:1,lands:1,types:0,stack:0},
+    all:{geo:1,real:1,anchor:1,nets:1,art:1,lands:1,types:1,stack:1}
+  };
+  var state=Object.assign({},PRESETS.real);
+  function evaluate(s){
+    var o=[];
+    function add(name,lv,why){o.push({name:name,lv:lv,why:why});}
+    var NOGEO='Needs die geometry.';
+    var standin=s.geo&&!s.real?' Marked as a stand-in until the real GDS arrives.':'';
+    add('Footprint',s.geo?(s.real?'full':'part'):'none',s.geo?('Outline and pad openings, no copper.'+standin):NOGEO);
+    if(!s.geo)add('Schematic symbol','none',NOGEO);
+    else if(s.nets&&s.anchor)add('Schematic symbol',s.real?'full':'part','Pins named and numbered from the marker.'+standin);
+    else add('Schematic symbol','part',(s.nets?'Named pins':'Pins named P0, P1…')+', '+(s.anchor?'numbered from the marker.':'pin 1 assumed at bottom-left, so confirm it.')+standin);
+    if(!s.geo)add('3D stand-in','none',NOGEO);
+    else add('3D stand-in',s.art&&s.stack?'full':'part',(s.art?'Die art on the top face':'Plain block with pad tiles')+', '+(s.stack?'real heights.':'assumed 280 µm die on 25 µm attach.'));
+    var wires=s.geo&&s.lands;
+    if(!wires)add('Generated wires','none',s.geo?'Needs a bond ring on the board.':NOGEO);
+    else add('Generated wires',s.anchor&&s.real?'full':'part',(s.anchor?'Pad n to land n+1.':'Pad n to land n+1, assuming the bottom-left corner.')+(s.nets?' Nets compared on both ends.':' No net comparison possible.')+standin);
+    if(!wires)add('Wire types','none','Needs generated wires.');
+    else add('Wire types',s.types?'full':'part',s.types?'Rules assign each wire a type.':'Every wire gets the default type until a library exists.');
+    if(!wires)add('3D wires and clearance checks','none','Needs generated wires.');
+    else add('3D wires and clearance checks',s.types&&s.stack?'full':'part',s.stack?'Height checks use real stack values.':'Runs on assumed heights, so treat results as a sketch.');
+    if(!wires)add('.wb.svg, bondlist, DXF','none','Needs generated wires.');
+    else if(s.stack&&s.real&&s.types)add('.wb.svg, bondlist, DXF','full','Ready to hand off.');
+    else add('.wb.svg, bondlist, DXF','part','Generated with a DRAFT mark'+(s.real?'':', because the die is a stand-in')+(s.stack?'':', because heights are assumed')+(s.types?'':', because types are defaults')+'.');
+    return o;
+  }
+  var inputs=document.getElementById('inputs'),outputs=document.getElementById('outputs');
+  INPUTS.forEach(function(i){
+    var l=document.createElement('label');
+    var c=document.createElement('input');c.type='checkbox';c.id='in-'+i[0];
+    c.addEventListener('change',function(){state[i[0]]=c.checked?1:0;setPreset(null);render();});
+    var t=document.createElement('span');t.textContent=i[1];
+    var m=document.createElement('small');m.textContent=i[2];
+    l.append(c,t,m);inputs.appendChild(l);
+  });
+  function setPreset(p){document.querySelectorAll('[data-preset]').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-preset')===p?'true':'false');});}
+  document.querySelectorAll('[data-preset]').forEach(function(b){b.addEventListener('click',function(){var p=b.getAttribute('data-preset');state=Object.assign({},PRESETS[p]);setPreset(p);render();});});
+  var LABEL={full:'Complete',part:'Works, with assumptions',none:'Blocked'};
+  function render(){
+    INPUTS.forEach(function(i){document.getElementById('in-'+i[0]).checked=!!state[i[0]];});
+    outputs.textContent='';
+    evaluate(state).forEach(function(r){
+      var d=document.createElement('div');d.className='out '+(r.lv==='part'?'partial':r.lv);
+      var b=document.createElement('b');b.textContent=r.name;
+      var s=document.createElement('span');s.className='st';s.textContent=LABEL[r.lv];
+      var w=document.createElement('div');w.className='why';w.textContent=r.why;
+      d.append(b,s,w);outputs.appendChild(d);
+    });
+  }
+  render();
+
+  // ---- real-geometry ring figure
+  var DIE={"w":3932.0,"h":5122.0,"rows":[[0,"clk_PAD",-1.44,2.503,-3.2,4.4,"STD25",-3.2,4.7,90],[1,"rst_n_PAD",-1.26,2.503,-2.8,4.4,"STD25",-2.8,4.7,90],[2,"bidir_PAD[0]",-1.08,2.503,-2.4,4.4,"STD25",-2.4,4.7,90],[3,"bidir_PAD[1]",-0.9,2.503,-2.0,4.4,"STD25",-2.0,4.7,90],[4,"bidir_PAD[2]",-0.72,2.503,-1.6,4.4,"STD25",-1.6,4.7,90],[5,"bidir_PAD[3]",-0.54,2.503,-1.2,4.4,"STD25",-1.2,4.7,90],[6,"bidir_PAD[4]",-0.36,2.503,-0.8,4.4,"STD25",-0.8,4.7,90],[7,"bidir_PAD[5]",-0.18,2.503,-0.4,4.4,"STD25",-0.4,4.7,90],[8,"DVSS",0.0,2.503,-0.0,4.4,"PWR33",-0.0,4.7,90],[9,"bidir_PAD[6]",0.18,2.503,0.4,4.4,"STD25",0.4,4.7,90],[10,"bidir_PAD[7]",0.36,2.503,0.8,4.4,"STD25",0.8,4.7,90],[11,"bidir_PAD[8]",0.54,2.503,1.2,4.4,"STD25",1.2,4.7,90],[12,"bidir_PAD[9]",0.72,2.503,1.6,4.4,"STD25",1.6,4.7,90],[13,"bidir_PAD[10]",0.9,2.503,2.0,4.4,"STD25",2.0,4.7,90],[14,"bidir_PAD[11]",1.08,2.503,2.4,4.4,"STD25",2.4,4.7,90],[15,"bidir_PAD[12]",1.26,2.503,2.8,4.4,"STD25",2.8,4.7,90],[16,"bidir_PAD[13]",1.44,2.503,3.2,4.4,"STD25",3.2,4.7,90],[17,"DVDD",1.908,2.005,4.0,3.8,"PWR33",4.3,3.8,0],[18,"DVSS",1.908,1.794,4.0,3.4,"PWR33",4.3,3.4,0],[19,"bidir_PAD[14]",1.908,1.583,4.0,3.0,"STD25",4.3,3.0,180],[20,"bidir_PAD[15]",1.908,1.371,4.0,2.6,"STD25",4.3,2.6,180],[21,"bidir_PAD[16]",1.908,1.161,4.0,2.2,"STD25",4.3,2.2,180],[22,"bidir_PAD[17]",1.908,0.95,4.0,1.8,"STD25",4.3,1.8,180],[23,"bidir_PAD[18]",1.908,0.739,4.0,1.4,"STD25",4.3,1.4,180],[24,"bidir_PAD[19]",1.908,0.527,4.0,1.0,"STD25",4.3,1.0,180],[25,"DVDD",1.908,0.317,4.0,0.6,"PWR33",4.3,0.6,0],[26,"DVSS",1.908,0.105,4.0,0.2,"PWR33",4.3,0.2,0],[27,"bidir_PAD[20]",1.908,-0.105,4.0,-0.2,"STD25",4.3,-0.2,180],[28,"bidir_PAD[21]",1.908,-0.317,4.0,-0.6,"STD25",4.3,-0.6,180],[29,"bidir_PAD[22]",1.908,-0.527,4.0,-1.0,"STD25",4.3,-1.0,180],[30,"bidir_PAD[23]",1.908,-0.739,4.0,-1.4,"STD25",4.3,-1.4,180],[31,"bidir_PAD[24]",1.908,-0.95,4.0,-1.8,"STD25",4.3,-1.8,180],[32,"bidir_PAD[25]",1.908,-1.161,4.0,-2.2,"STD25",4.3,-2.2,180],[33,"DVSS",1.908,-1.371,4.0,-2.6,"PWR33",4.3,-2.6,0],[34,"DVDD",1.908,-1.583,4.0,-3.0,"PWR33",4.3,-3.0,0],[35,"DVSS",1.908,-1.794,4.0,-3.4,"PWR33",4.3,-3.4,0],[36,"DVDD",1.908,-2.005,4.0,-3.8,"PWR33",4.3,-3.8,0],[37,"bidir_PAD[26]",1.44,-2.503,3.2,-4.4,"STD25",3.2,-4.7,270],[38,"bidir_PAD[27]",1.26,-2.503,2.8,-4.4,"STD25",2.8,-4.7,270],[39,"bidir_PAD[28]",1.08,-2.503,2.4,-4.4,"STD25",2.4,-4.7,270],[40,"bidir_PAD[29]",0.9,-2.503,2.0,-4.4,"STD25",2.0,-4.7,270],[41,"bidir_PAD[30]",0.72,-2.503,1.6,-4.4,"STD25",1.6,-4.7,270],[42,"bidir_PAD[31]",0.54,-2.503,1.2,-4.4,"STD25",1.2,-4.7,270],[43,"bidir_PAD[32]",0.36,-2.503,0.8,-4.4,"STD25",0.8,-4.7,270],[44,"bidir_PAD[33]",0.18,-2.503,0.4,-4.4,"STD25",0.4,-4.7,270],[45,"DVSS",0.0,-2.503,0.0,-4.4,"PWR33",0.0,-4.7,90],[46,"bidir_PAD[34]",-0.18,-2.503,-0.4,-4.4,"STD25",-0.4,-4.7,270],[47,"bidir_PAD[35]",-0.36,-2.503,-0.8,-4.4,"STD25",-0.8,-4.7,270],[48,"bidir_PAD[36]",-0.54,-2.503,-1.2,-4.4,"STD25",-1.2,-4.7,270],[49,"bidir_PAD[37]",-0.72,-2.503,-1.6,-4.4,"STD25",-1.6,-4.7,270],[50,"bidir_PAD[38]",-0.9,-2.503,-2.0,-4.4,"STD25",-2.0,-4.7,270],[51,"bidir_PAD[39]",-1.08,-2.503,-2.4,-4.4,"STD25",-2.4,-4.7,270],[52,"analog_PAD[0]",-1.26,-2.503,-2.8,-4.4,"STD25",-2.8,-4.7,270],[53,"analog_PAD[1]",-1.44,-2.503,-3.2,-4.4,"STD25",-3.2,-4.7,270],[54,"input_PAD[0]",-1.908,-2.005,-4.0,-3.8,"STD25",-4.3,-3.8,0],[55,"input_PAD[1]",-1.908,-1.794,-4.0,-3.4,"STD25",-4.3,-3.4,0],[56,"DVSS",-1.908,-1.583,-4.0,-3.0,"PWR33",-4.3,-3.0,0],[57,"DVDD",-1.908,-1.371,-4.0,-2.6,"PWR33",-4.3,-2.6,0],[58,"input_PAD[2]",-1.908,-1.161,-4.0,-2.2,"STD25",-4.3,-2.2,0],[59,"input_PAD[3]",-1.908,-0.95,-4.0,-1.8,"STD25",-4.3,-1.8,0],[60,"input_PAD[4]",-1.908,-0.739,-4.0,-1.4,"STD25",-4.3,-1.4,0],[61,"input_PAD[5]",-1.908,-0.527,-4.0,-1.0,"STD25",-4.3,-1.0,0],[62,"DVSS",-1.908,-0.317,-4.0,-0.6,"PWR33",-4.3,-0.6,0],[63,"DVDD",-1.908,-0.105,-4.0,-0.2,"PWR33",-4.3,-0.2,0],[64,"input_PAD[6]",-1.908,0.105,-4.0,0.2,"STD25",-4.3,0.2,0],[65,"input_PAD[7]",-1.908,0.317,-4.0,0.6,"STD25",-4.3,0.6,0],[66,"input_PAD[8]",-1.908,0.527,-4.0,1.0,"STD25",-4.3,1.0,0],[67,"input_PAD[9]",-1.908,0.739,-4.0,1.4,"STD25",-4.3,1.4,0],[68,"input_PAD[10]",-1.908,0.95,-4.0,1.8,"STD25",-4.3,1.8,0],[69,"input_PAD[11]",-1.908,1.161,-4.0,2.2,"STD25",-4.3,2.2,0],[70,"DVSS",-1.908,1.371,-4.0,2.6,"PWR33",-4.3,2.6,0],[71,"DVDD",-1.908,1.583,-4.0,3.0,"PWR33",-4.3,3.0,0],[72,"DVSS",-1.908,1.794,-4.0,3.4,"PWR33",-4.3,3.4,0],[73,"DVDD",-1.908,2.005,-4.0,3.8,"PWR33",-4.3,3.8,0]]};
+  var NS='http://www.w3.org/2000/svg';
+  function el(n,a,p,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;if(p)p.appendChild(e);return e;}
+  function col(t){return t==='PWR33'?'#f4744f':'#e9b949';}
+  (function(){
+    var svg=document.getElementById('ringFig');if(!svg||!DIE)return;
+    var W=DIE.w/1000,H=DIE.h/1000;
+    // left panel: die as drawn in GDS. Rows are board frame, y down; the die is at 0 on the board, so the two match
+    var L=el('g',{transform:'translate(240 262) scale(62)'},svg);
+    el('rect',{x:-W/2,y:-H/2,width:W,height:H,fill:'#12302b',stroke:'#7ba69c','stroke-width':.02},L);
+    var q=.143;el('rect',{x:-W/2+.026,y:H/2-.026-q,width:q,height:q,fill:'#d93aa7'},L);
+    DIE.rows.forEach(function(r){
+      var x=r[2],y=r[3],s=.06;
+      var o=el('rect',{x:x-s/2,y:y-s/2,width:s,height:s,fill:r[0]===0?'#fff':'#36d9bb',stroke:r[0]===0?'#d93aa7':'none','stroke-width':.02},L);
+      el('title',{},o,'Pad '+r[0]+' (KiCad pin '+(r[0]+1)+'): '+(r[1]||'no net'));
+    });
+    el('path',{d:'M'+(-W/2+.45)+','+(H/2-.42)+' H'+(W/2-.5),stroke:'#e9c46a','stroke-width':.035,fill:'none','marker-end':'url(#ay)'},L);
+    el('path',{d:'M'+(W/2-.42)+','+(H/2-.5)+' V'+(-H/2+.5),stroke:'#e9c46a','stroke-width':.035,fill:'none','marker-end':'url(#ay)'},L);
+    el('path',{d:'M'+(W/2-.5)+','+(-H/2+.42)+' H'+(-W/2+.5),stroke:'#e9c46a','stroke-width':.035,fill:'none','marker-end':'url(#ay)'},L);
+    el('path',{d:'M'+(-W/2+.42)+','+(-H/2+.5)+' V'+(H/2-.55),stroke:'#e9c46a','stroke-width':.035,fill:'none','marker-end':'url(#ay)'},L);
+    el('text',{x:240,y:30,'text-anchor':'middle','class':'s-tb'},svg,'As drawn in the GDS');
+    el('text',{x:240,y:524,'text-anchor':'middle','class':'s-m'},svg,'WSLG, 3932 × 5122 µm, 74 pads');
+    el('text',{x:78,y:452,'class':'s-m',style:'fill:#d93aa7'},svg,'QR corner');
+    el('text',{x:112,y:432,'class':'s-m',style:'fill:#fff'},svg,'pad 0: '+(DIE.rows[0][1]||''));
+    // right panel: on the COB, board coordinates y down
+    var R=el('g',{transform:'translate(720 262) scale(43)'},svg);
+    DIE.rows.forEach(function(r){
+      var lx=r[7],ly=r[8],rot=r[9],a=rot===270||rot===90;
+      var sw=a?.25:1,sh=a?1:.25;
+      var o=el('rect',{x:lx-sw/2,y:ly-sh/2,width:sw,height:sh,fill:r[0]===0?'#fff':'#c9a227',stroke:r[0]===0?'#d93aa7':'none','stroke-width':.04},R);
+      el('title',{},o,'COB pad '+(r[0]+1));
+    });
+    el('rect',{x:-W/2,y:-H/2,width:W,height:H,fill:'#12302b',stroke:'#7ba69c','stroke-width':.03},R);
+    el('rect',{x:-W/2+.026,y:H/2-.026-q,width:q,height:q,fill:'#d93aa7'},R);
+    DIE.rows.forEach(function(r){
+      var o=el('line',{x1:r[2],y1:r[3],x2:r[4],y2:r[5],stroke:r[0]===0?'#fff':col(r[6]),'stroke-width':r[0]===0?.05:.028},R);
+      el('title',{},o,'Wire '+(r[0]+1)+': pad '+r[0]+' '+(r[1]||'')+' to COB pad '+(r[0]+1)+', '+r[6]);
+      el('rect',{x:r[2]-.04,y:r[3]-.04,width:.08,height:.08,fill:'#36d9bb'},R);
+    });
+    el('text',{x:720,y:30,'text-anchor':'middle','class':'s-tb'},svg,'Same way up on the run 2 1x1 COB');
+    el('text',{x:720,y:524,'text-anchor':'middle','class':'s-m'},svg,'Lands to scale from the footprint. White: die pad 0 to land 1.');
+  })();
+
+  // ---- loop bench: same moves model as wbx.loop
+  var TYPES=[
+    {n:'STD25',m:'Au',d:25,st:'ball-wedge',dir:'forward',mv:'180/0 30/12% -20/35%',c:'#e9b949',i:'spline',fam:'Trapezoid'},
+    {n:'PWR33',m:'Au',d:33,st:'ball-wedge',dir:'forward',mv:'220/0 30/12% -30/40%',c:'#f4744f',i:'spline',fam:'Trapezoid'},
+    {n:'DOWN25',m:'Au',d:25,st:'ball-wedge',dir:'forward',mv:'110/0 25/20%',c:'#bee36d',i:'spline',fam:'Low, short'},
+    {n:'WEDGE25',m:'Al',d:25,st:'wedge-wedge',dir:'forward',mv:'70/6% 50/18% -10/30%',c:'#80b5f9',i:'polyline',fam:'Wedge'},
+    {n:'REV25',m:'Au',d:25,st:'ball-wedge',dir:'reverse',mv:'470/0 -30/78%',c:'#c5acfb',i:'spline',fam:'Reverse'},
+    {n:'JEDEC4',m:'Au',d:25,st:'ball-wedge',dir:'forward',mv:'200/0 0/12.5%',c:'#9df0db',i:'polyline',fam:'JESD59 4-point'},
+    {n:'Custom',m:'Au',d:25,st:'ball-wedge',dir:'forward',mv:'200/0 25/10% -45/25% 20/25%',c:'#d93aa7',i:'spline',fam:'Type your own',custom:true}
+  ];
+  function parseMoves(s,span){
+    var pts=[[0,0]],x=0,z=0,toks=s.trim().split(/\s+/);
+    for(var i=0;i<toks.length;i++){
+      var p=toks[i].split('/');
+      if(p.length!==2)return null;
+      var v=parseFloat(p[0]),hs=p[1],h=/%$/.test(hs)?parseFloat(hs)/100*span:parseFloat(hs);
+      if(!isFinite(v)||!isFinite(h))return null;
+      z+=v;x+=h;pts.push([x,z]);
+    }
+    return pts;
+  }
+  function smooth(pts,per){
+    var o=[],P=[pts[0]].concat(pts,[pts[pts.length-1]]);
+    for(var i=1;i<P.length-2;i++){var a=P[i-1],b=P[i],c=P[i+1],d=P[i+2];
+      for(var s=0;s<per;s++){var t=s/per,r=[0,1].map(function(j){return .5*((2*b[j])+(c[j]-a[j])*t+(2*a[j]-5*b[j]+4*c[j]-d[j])*t*t+(3*b[j]-a[j]-3*c[j]+d[j])*t*t*t);});o.push(r);}}
+    o.push(pts[pts.length-1]);return o;
+  }
+  function zAt(pts,x){
+    for(var i=0;i<pts.length-1;i++){var a=pts[i],b=pts[i+1];if(a[0]<=x&&x<=b[0]&&b[0]>a[0])return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]);}
+    return pts[pts.length-1][1];
+  }
+  var loopsEl=document.getElementById('loops'),spanEl=document.getElementById('span'),dieEl=document.getElementById('dieT');
+  var rows=TYPES.map(function(T){
+    var card=document.createElement('div');card.className='loop';
+    var h=document.createElement('h4');var nm=document.createElement('span');nm.textContent=T.n;nm.style.color=T.c;
+    var fam=document.createElement('span');fam.className='muted small';fam.style.fontWeight='400';fam.textContent=T.fam;h.append(nm,fam);
+    var svg=el('svg',{viewBox:'-180 -760 3400 880',role:'img','aria-label':T.n+' loop shape at the chosen span'});
+    var mv;
+    if(T.custom){mv=document.createElement('input');mv.id='customMoves';mv.value=T.mv;mv.setAttribute('aria-label','Custom moves string');mv.addEventListener('input',function(){T.mv=mv.value;draw();});}
+    else{mv=document.createElement('div');mv.className='mv';mv.textContent=T.mv;}
+    var meta=document.createElement('div');meta.className='mv';meta.textContent=T.m+' '+T.d+' µm · '+T.st+' · '+T.dir;
+    var res=document.createElement('div');res.className='res';
+    card.append(h,svg,mv,meta,res);loopsEl.appendChild(card);
+    return{T:T,svg:svg,res:res};
+  });
+  function draw(){
+    var span=+spanEl.value,dieH=+dieEl.value;
+    document.getElementById('spanV').textContent=span+' µm';document.getElementById('dieV').textContent=dieH+' µm';
+    rows.forEach(function(R){
+      var T=R.T,svg=R.svg,rev=T.dir==='reverse';svg.textContent='';
+      var edge=60; // first bond is about this far in from the die edge, on real pads
+      var startX=rev?span:0,sgn=rev?-1:1;
+      var die0=0; // die sits under the die-side end
+      var dieEdgeX=edge;
+      el('line',{x1:-180,y1:0,x2:3220,y2:0,stroke:'#7ba69c','stroke-width':6},svg);
+      el('rect',{x:-180,y:-dieH,width:180+dieEdgeX,height:dieH,fill:'#484848',stroke:'#7ba69c','stroke-width':4},svg);
+      var moves=parseMoves(T.mv,span);
+      if(!moves){R.res.textContent='Could not read that. Use vertical/horizontal steps, such as 200/0 25/10%.';R.res.className='res bad';return;}
+      var z0=rev?0:dieH,zEnd=(rev?dieH:0)-z0;
+      var pts=moves.concat([[span,zEnd]]);
+      var curve=T.i==='spline'?[pts[0]].concat(smooth(pts.slice(1),10)):pts;
+      var d=curve.map(function(p,i){var X=startX+sgn*p[0],Z=z0+p[1];return(i?'L':'M')+X.toFixed(1)+','+(-Z).toFixed(1);}).join(' ');
+      el('path',{d:d,fill:'none',stroke:T.c,'stroke-width':T.d*1.4,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
+      var peak=Math.max.apply(null,curve.map(function(p){return z0+p[1];}));
+      var clearX=rev?span-edge:edge;
+      var clear=z0+zAt(curve,clearX)-dieH;
+      var bad=clear<40;
+      R.res.textContent='Peak '+Math.round(peak)+' µm above board · clearance at die edge '+Math.round(clear)+' µm'+(bad?' (below the 40 µm rule)':'');
+      R.res.className='res'+(bad?' bad':'');
+    });
+  }
+  spanEl.addEventListener('input',draw);dieEl.addEventListener('input',draw);draw();
+})();
+</script>
+<script src="../_planning_tools/plan.doc.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wire Bond Bench</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="top">
+  <div class="brand"><span class="mark" aria-hidden="true"></span>Wire Bond Bench<span class="sub">try ways of building a bonded assembly for KiCad</span></div>
+  <div id="busy" hidden><span id="busyText"></span><span class="bar"><i id="busyBar"></i></span></div>
+  <div class="grow"></div>
+  <a class="btn ghost" href="../docs/primer/wire-bonding-primer.html" target="_blank" rel="noopener" data-tip="top:primer" style="text-decoration:none">Learn wire bonding</a>
+  <button class="btn" data-act="openDrc" id="drcBtn">DRC rules</button>
+  <div class="menuwrap">
+    <button class="btn" data-act="menu" data-menu="sampleMenu">Examples</button>
+    <div class="menu" id="sampleMenu" hidden>
+      <button data-act="sample" data-sample="gds">GDS die on a KiCad board<small>example.gds and example.kicad_pcb: 20 pads, discrete lands</small></button>
+      <button data-act="sample" data-sample="mods">Two footprints<small>A land ring and a die, both .kicad_mod, no GDS</small></button>
+    </div>
+  </div>
+  <div class="menuwrap">
+    <button class="btn primary" data-act="menu" data-menu="exportMenu" id="exportBtn">Put it in KiCad</button>
+    <div class="menu right" id="exportMenu" hidden>
+      <button data-act="export" data-what="board">Assembled board and 3D wires (.zip)<small>Your board plus the die, one footprint per wire, and the type library</small></button>
+      <button data-act="export" data-what="fp">Die footprint (.kicad_mod)<small>Outline, numbered Fab pads and the artwork image. No copper.</small></button>
+      <button data-act="export" data-what="kit">Die kit (.zip)<small>Footprint, schematic symbol, 3D stand-in and a JSON manifest</small></button>
+      <button data-act="export" data-what="bond">Bondlist (.csv)<small>Every wire: ends, heights, type, length</small></button>
+      <button data-act="export" data-what="svg">Bond diagram (.wb.svg)<small>True-scale drawing that is also the data: plan, side view, loop profiles</small></button>
+    </div>
+  </div>
+  <button class="btn ghost" data-act="reset">Start over</button>
+</header>
+
+<main id="layout">
+  <aside id="left"></aside>
+
+  <section id="centre">
+    <div id="toolbar">
+      <div class="seg" role="group" aria-label="View">
+        <button data-act="mode" data-mode="plan" class="on">Plan</button>
+        <button data-act="mode" data-mode="3d">3D</button>
+        <button data-act="mode" data-mode="diagram">Diagram</button>
+      </div>
+      <div class="seg" role="group" aria-label="Tool" id="tools">
+        <button data-act="tool" data-tool="select" class="on">Select<kbd>V</kbd></button>
+        <button data-act="tool" data-tool="wire">Wire<kbd>W</kbd></button>
+        <button data-act="tool" data-tool="move">Move die<kbd>M</kbd></button>
+      </div>
+      <button class="btn small" data-act="rotate">Turn die<kbd>R</kbd></button>
+      <button class="btn small" data-act="fit">Fit<kbd>F</kbd></button>
+      <span id="diagTools" hidden>
+        <span class="seg" role="group" aria-label="Diagram shows">
+          <button data-act="diagPane" data-tab="picture" class="on">Drawing</button>
+          <button data-act="diagPane" data-tab="both">Both</button>
+          <button data-act="diagPane" data-tab="code">Code</button>
+        </span>
+        <span data-show="picture"><button class="btn small" data-act="diagZoom" data-what="out" aria-label="Zoom out">−</button><button class="btn small" data-act="diagZoom" data-what="in" aria-label="Zoom in">+</button></span>
+        <label data-show="code" data-tip="diag:wrap"><input type="checkbox" id="diagWrap" data-tip="diag:wrap"> Wrap</label>
+        <button class="btn small" data-act="diagCopy" id="diagCopyBtn">Copy code</button>
+        <button class="btn small" data-act="diagDownload" id="diagDlBtn">Download .wb.svg</button>
+      </span>
+      <div class="grow"></div>
+      <div class="menuwrap">
+        <button class="btn small" data-act="menu" data-menu="showMenu">Show</button>
+        <div class="menu right pad" id="showMenu" hidden></div>
+      </div>
+    </div>
+    <div id="stage">
+      <div class="canvasbox" id="planBox"><canvas id="plan"></canvas></div>
+      <div class="canvasbox" id="tiltBox" hidden><canvas id="tilt"></canvas><div class="hint3d">Drag to orbit, right-drag to pan, scroll to zoom. Height <input id="zExag" type="range" min="1" max="5" step="0.5" value="1" aria-label="Height exaggeration" data-tip="zExag"> <output id="zExagOut" data-tip="zExagOut">1×</output></div></div>
+      <div class="canvasbox" id="diagBox" hidden>
+        <div id="diagPicture" class="diagpane"></div>
+        <pre id="diagCode" class="diagpane" tabindex="0" hidden></pre>
+        <div id="diagMsg" hidden></div>
+        <div id="diagMeta" data-tip="diag:meta"></div>
+      </div>
+      <div id="empty"></div>
+      <div id="coord"></div>
+      <div id="dropHint" hidden><div>Drop files anywhere<small>.kicad_pcb, .kicad_mod, .gds or .gds.gz</small></div></div>
+    </div>
+    <div id="bottom">
+      <div class="canvasbox" id="loopBox"><canvas id="loop"></canvas><span class="info loopinfo" role="button" tabindex="0" data-tip="loopView" aria-label="About the loop view">ⓘ</span></div>
+      <div id="inspector"></div>
+    </div>
+  </section>
+
+  <aside id="right">
+    <nav id="tabs">
+      <button data-act="tab" data-tab="regimes" class="on">Regimes</button>
+      <button data-act="tab" data-tab="checks">Checks</button>
+      <button data-act="tab" data-tab="wires">Wires</button>
+      <button data-act="tab" data-tab="types">Types</button>
+    </nav>
+    <div id="tabBody"></div>
+  </aside>
+</main>
+
+<div id="tip" hidden></div>
+<div id="uitip" popover="manual" role="tooltip"></div>
+<div id="toasts" role="status" aria-live="polite"></div>
+<input type="file" id="pickAny" hidden multiple accept=".kicad_pcb,.kicad_pro,.kicad_sch,.kicad_mod,.gds,.gds2,.gdsii,.gz">
+<a id="dl" hidden></a>
+<dialog id="drc" aria-labelledby="drcTitle"><div id="drcBody"></div></dialog>
+<input type="file" id="pickRules" hidden accept=".json,application/json">
+<script src="js/kicad.js"></script>
+<script src="js/gds.js"></script>
+<script src="js/rules.js"></script>
+<script src="js/model.js"></script>
+<script src="js/export.js"></script>
+<script src="js/view.js"></script>
+<script src="js/tips.js"></script>
+<script src="js/samples.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

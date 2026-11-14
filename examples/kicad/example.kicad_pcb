@@ -44,6 +44,7 @@
 	(property "wb_rule_wire_gap" "60")
 	(property "wb_rule_edge_clear" "40")
 	(property "wb_substrate_name" "SUB")
+	(property "wb_rule_fid_clear" "150")
 	(property "wb_profile_1_name" "STD25")
 	(property "wb_profile_1_material" "Au")
 	(property "wb_profile_1_d" "25")
@@ -5435,6 +5436,298 @@
 			)
 			(layer "User.1")
 			(uuid "b7f10d17-1261-5ed6-b10b-85cb0018a4df")
+		)
+		(embedded_fonts no)
+	)
+	(footprint "fiducial"
+		(layer "F.Cu")
+		(uuid "b38d5657-51ab-52d1-bb5f-84014f53ae1d")
+		(at 0.8 5.2)
+		(property "Reference" "F1"
+			(at 0 -0.5 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "2a45a0b9-4c6d-59a8-833d-e347f476d64f")
+			(effects
+				(font
+					(size 0.15 0.15)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "Value" "fiducial"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "8be2277e-df81-5434-9458-e33ab59486a9")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "24fb440c-1f70-5c5a-a919-97dc82a304cf")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "90119682-1368-53ed-9481-e6f6939094ee")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "wb_datum" "B"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "3bbb6ba4-bfdc-556f-9a74-1954f29fc5a7")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "wb_kind" "fiducial"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "19ea2f79-edcf-511b-af1b-ac3622ad0b09")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "wb_role" "align"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "457f0c28-69f2-5e3d-9024-12471717cf2b")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(attr smd board_only exclude_from_bom)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "" smd circle
+			(at 0 0)
+			(size 0.5 0.5)
+			(property pad_prop_fiducial_glob)
+			(layers "F.Cu" "F.Mask")
+			(solder_mask_margin 0.15)
+			(uuid "36c7c9d1-d5f8-50e0-a075-7ba1afd11a28")
+		)
+		(embedded_fonts no)
+	)
+	(footprint "fiducial"
+		(layer "F.Cu")
+		(uuid "8e9905df-f4a8-5462-967c-50773939de2f")
+		(at 5.2 0.8)
+		(property "Reference" "F2"
+			(at 0 -0.5 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "315cb255-844f-5a50-beb2-5f53cd31a290")
+			(effects
+				(font
+					(size 0.15 0.15)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "Value" "fiducial"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "74ec8fea-6780-5ed1-a3ae-47a868135d67")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "5608dd08-1307-58cd-8c09-6b9a33134704")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "5ccbc6b7-fe5d-5412-9961-db46fbb0991c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "wb_datum" "C"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a91d14bd-0854-5aa5-bc80-f9e2de06945c")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "wb_kind" "fiducial"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e8ebe52f-248d-5359-88f3-a97c103bbfca")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "wb_role" "align"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "7036e2d8-579f-56a3-91b3-5ad739f75f30")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(attr smd board_only exclude_from_bom)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "" smd circle
+			(at 0 0)
+			(size 0.5 0.5)
+			(property pad_prop_fiducial_glob)
+			(layers "F.Cu" "F.Mask")
+			(solder_mask_margin 0.15)
+			(uuid "2f31c3bf-f6bb-5c99-9ceb-e614e1c8f827")
+		)
+		(embedded_fonts no)
+	)
+	(footprint "fiducial"
+		(layer "F.Cu")
+		(uuid "a2112a38-3887-5dba-9e4e-9d64605cc3c1")
+		(at 1.45 4.6)
+		(property "Reference" "P1"
+			(at 0 -0.4 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "4d50442b-d32d-54fc-b52b-cfbe235ece0e")
+			(effects
+				(font
+					(size 0.15 0.15)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "Value" "fiducial"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "2dc9cde0-122e-53d0-918b-398d5a0f36f9")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "382b37ba-0f4b-5133-afec-eb5c33e3e80c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a4cdcdc7-af80-57cf-b6a1-91331b934306")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "wb_kind" "fiducial"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "069479cc-2712-5417-b94d-25b3e0c47f14")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(property "wb_role" "orient"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "6333299a-d6e1-5086-9f6f-df2cc5b1f020")
+			(effects
+				(font
+					(size 0.1 0.1)
+					(thickness 0.0125)
+				)
+			)
+		)
+		(attr smd board_only exclude_from_bom)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "" smd circle
+			(at 0 0)
+			(size 0.3 0.3)
+			(layers "F.Cu" "F.Mask")
+			(solder_mask_margin 0.15)
+			(uuid "977f4994-e64a-51cc-b3eb-f1f64131d18e")
 		)
 		(embedded_fonts no)
 	)

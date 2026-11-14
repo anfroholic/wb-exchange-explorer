@@ -8,7 +8,7 @@ Design report, November 2026. It records the reasoning behind this prototype.
 
 SVG works as a wire bond exchange format if the drawn shapes are the data and a small wb: namespace adds only what a 2D drawing cannot express. I built a prototype to test this: a GDS went in, a viewable SVG came out, and a parser rebuilt the same file byte for byte from the SVG alone (21 wires, 20 pads, 21 KB).
 
-The working name is WBX, with the extension .wb.svg. Five decisions define it:
+The format is now named wirebond.svg, with the extension .wb.svg. This report uses its earlier working name, WBX. Five decisions define it:
 
 - **The picture is the data.** One SVG unit is 1 µm, stroke-width is the wire diameter, and a rect is a pad opening.
 
@@ -83,11 +83,11 @@ I cloned the repository (latest commit 1 November 2026) and read its data model.
 | Need                                  | open.cob.json                                                       | WBX prototype                      |
 |---------------------------------------|---------------------------------------------------------------------|------------------------------------|
 | File is itself viewable               | No. A tool renders JSON to SVG; the demo SVG has no data attributes | Yes                                |
-| Demo size                             | 1,300 lines for 9 wires                                             | 301 lines for 21 wires             |
+| Demo size                             | 1,300 lines for 9 wires                                             | 352 lines for 21 wires, with the draft placement tolerance |
 | Die thickness, stack                  | Thickness with tolerance; bondline in assembly                      | Drawn section view                 |
 | Loop curve                            | Named shape, height, max height; explicit paths deferred past v1    | Parametric moves that fit any span |
 | Bond sequence and tier                | I found none per wire; sequence orders process steps                | wb:seq, wb:tier                    |
-| Tolerances                            | Nominal, tolerance or min/typ/max on any value                      | Rule limits only                   |
+| Tolerances                            | Nominal, tolerance or min/typ/max on any value                      | Rule limits, and a draft die placement tolerance |
 | Bond force, time, power, pull tests   | Yes                                                                 | No                                 |
 | Electrical limits, differential pairs | Yes                                                                 | No                                 |
 | none versus unspecified               | Explicit, and useful                                                | No                                 |
@@ -173,7 +173,8 @@ Seven element kinds cover a single-die assembly, and five more entries are neede
 | wire                              | line                 | name, from, to, profile, seq, tier, net                     | Built    |
 | layer (stack)                     | rect in section view | name, role, material                                        | Built    |
 | profile                           | g with polyline      | name, material, style, dir, moves, interp, ref-span         | Built    |
-| fiducial                          | circle or path       | name, role; machine alignment points                        | Proposed |
+| fiducial                          | circle/rect/path/g   | name, role, datum; board or die frame; see SPEC.md          | Draft    |
+| fcf, zone (placement tolerance)   | g, path              | applies-to, char, tol, datums; see SPEC.md                  | Draft    |
 | wire additions                    | line                 | via for stitch chains, security-bump                        | Proposed |
 | profile additions                 | g                    | min, max, vendor-name, certified-by                         | Proposed |
 | keepout                           | rect or path         | Tall-part and bondhead clearance, with a height             | Proposed |

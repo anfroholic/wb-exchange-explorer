@@ -86,11 +86,27 @@ def wire_fp(w):
                      [("wb_from", w["frm"]), ("wb_to", w["to"]), ("wb_profile", w["profile"]), ("wb_seq", w["seq"]),
                       ("wb_tier", w["tier"]), ("wb_net", w["net"])], [line])
 
+def fid_fp(f, clear):
+    """A board fiducial: one unnumbered pad at the reference point, with the mask opened by the clear distance.
+    align fiducials carry KiCad's own fiducial property, which goes into the Gerbers. Die fiducials stay with the GDS."""
+    if f.get("shape", "circle") not in ("circle", "rect"):
+        raise NotImplementedError(f"{f['name']}: only circle and rect board fiducials map to a KiCad pad so far")
+    x, y = wbx.fref(f, None)
+    w, h = (nm(f["d"]), nm(f["d"])) if f.get("shape", "circle") == "circle" else (nm(f["w"]), nm(f["h"]))
+    p = ["pad", Q(""), "smd", "circle" if f.get("shape", "circle") == "circle" else "rect", ["at", "0", "0"], ["size", mm(w), mm(h)],
+         *([["property", "pad_prop_fiducial_glob"]] if f.get("role", "align") == "align" else []),
+         ["layers", Q("F.Cu"), Q("F.Mask")], ["solder_mask_margin", mm(nm(clear))], uid(f["name"], "pad")]
+    props = [("wb_role", f.get("role", "align"))] + ([("wb_datum", f["datum"])] if f.get("datum") else [])
+    return footprint("fiducial", f["name"], "fiducial", nm(x), nm(y), ["smd", "board_only", "exclude_from_bom"], props, [p],
+                     ref_hide=False, ref_size=150_000, ref_at=(0, -w // 2 - 250_000))
+
 def board_props(m, extra):
     "Flat key/value text. KiCad stores these sorted by key, so records carry an index to keep their order."
     out = [("wb_version", extra["version"]), ("wb_units", extra["units"]), ("wb_design", m["design"]), ("wb_rev", m["rev"]),
            ("wb_rule_wire_gap", wbx.n(m["rules"]["gap"])), ("wb_rule_edge_clear", wbx.n(m["rules"]["edge"])),
            ("wb_substrate_name", extra["outline"]["name"])]
+    if "fid" in m["rules"]:
+        out.append(("wb_rule_fid_clear", wbx.n(m["rules"]["fid"])))
     for i, p in enumerate(m["prof"], 1):
         out += [(f"wb_profile_{i}_{k}", v) for k, v in (("name", p["name"]), ("material", p["material"]), ("d", wbx.n(p["d"])),
                  ("style", p["style"]), ("dir", p["dir"]), ("moves", p["moves"]), ("interp", p["interp"]), ("ref_span", wbx.n(p["refspan"])))]
@@ -126,6 +142,7 @@ def board(m, extra):
             ["layers", *map(layer_row, LAYERS)], ["setup", ["pad_to_mask_clearance", "0"]],
             *[["property", Q(k), Q(v)] for k, v in board_props(m, extra)],
             die_fp(m), *[land_fp(l, extra["finish"][l["name"]]) for l in m["lands"]], *[wire_fp(w) for w in m["wires"]],
+            *[fid_fp(f, m["rules"].get("fid", 0)) for f in m.get("fid", []) if f.get("frame", "board") == "board"],
             edge, ["embedded_fonts", "no"]]
 
 def project(props):

@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fiducials Primer</title>
+<style>
+/* Same house style as wire-bonding-primer.html: one reading column, Evezor palette, dark first. */
+:root{
+  color-scheme:dark;
+  --bg:#262c2a; --panel:#12302b; --panel2:#0c1311; --line:#1b5c50;
+  --txt:#e8eceb; --muted:#8fb5ac; --accent:#5bbbe6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#36d9bb; --green-bg:#0b3a31; --blue:#5bbbe6; --blue-bg:#10303f;
+  --magenta:#e660bd; --magenta-bg:#3a1832; --amber:#e9c46a; --amber-bg:#3b3115;
+  --si:#6d7a86; --si-edge:#9aa7b2; --board:#1d5a3a; --board-edge:#2f7d55; --gold:#e3b23c; --copper:#e07a4b;
+  --code-bg:#04130a; --code-txt:#aff5b4;
+  --f-body:Arial,Helvetica,sans-serif; --f-mono:ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f7f9f9; --panel:#ffffff; --panel2:#eef3f2; --line:#c9d3d1;
+  --txt:#14201d; --muted:#4d5c58; --accent:#1f78a6; --head:#0b6f5d; --head-txt:#ffffff; --head-sub:#d8f3ec;
+  --green:#068770; --green-bg:#e3f4ef; --blue:#1f78a6; --blue-bg:#e4f2f9;
+  --magenta:#b5288a; --magenta-bg:#fbe9f5; --amber:#8a6a10; --amber-bg:#fbf3dc;
+  --si:#9aa5ae; --si-edge:#6d7a86; --board:#cfe3dd; --board-edge:#7fb0a2; --gold:#c8961e; --copper:#c8602f;
+  --code-bg:#e9efed; --code-txt:#0b5a4b;
+}
+*{box-sizing:border-box}
+img{max-width:100%;height:auto}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 var(--f-body)}
+a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+code,.mono{font-family:var(--f-mono);font-size:.84em}
+code{background:var(--code-bg);color:var(--code-txt);border-radius:4px;padding:1px 5px}
+pre{background:var(--code-bg);color:var(--code-txt);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font:13px/1.5 var(--f-mono);margin:12px 0}
+pre code{background:none;padding:0;font-size:inherit}
+pre .c{color:var(--muted)}
+
+.mast{background:var(--head);color:var(--head-txt);border-bottom:4px solid #d93aa7}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast .wrap{padding-block:26px 22px}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--head-sub)}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:6px 0 8px;text-wrap:balance}
+.mast p{margin:0;color:var(--head-sub);max-width:680px;font-size:16.5px}
+.sitenav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-bottom:14px}
+.sitenav a{color:var(--head-sub);text-decoration:none}
+.sitenav a:hover{color:#fff;text-decoration:underline}
+
+main.wrap{padding-block:8px 96px}
+h2{font-size:24px;line-height:1.25;margin:56px 0 4px;padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{color:var(--muted);font-weight:400;margin-right:8px;font-size:18px}
+h3{font-size:17px;margin:26px 0 6px}
+p{margin:10px 0;max-width:72ch}
+.lede{font-size:17px}
+.muted{color:var(--muted)} .small{font-size:13.5px}
+figure{margin:16px 0}
+figcaption,.cap{font-size:13px;color:var(--muted);margin-top:7px;max-width:80ch}
+.tldr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;margin:18px 0}
+.tldr ul{margin:6px 0 0;padding-left:20px} .tldr li{margin:4px 0}
+.callout{border:1px solid var(--line);border-left:4px solid var(--amber);background:var(--amber-bg);border-radius:8px;padding:11px 15px;margin:14px 0;font-size:15px}
+.callout.info{border-left-color:var(--blue);background:var(--blue-bg)}
+.callout.good{border-left-color:var(--green);background:var(--green-bg)}
+.callout p{margin:4px 0}
+nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 18px;margin:18px 0;font-size:14.5px}
+nav.toc a{color:var(--txt);text-decoration:none} nav.toc a:hover{color:var(--accent)}
+nav.toc span{color:var(--muted);display:inline-block;width:22px}
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0}
+.fig img{display:block;width:100%;border-radius:8px}
+.scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto}
+.fig svg.wide{min-width:620px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px}
+.grid2>*{min-width:0}
+.dies{display:grid;grid-template-columns:minmax(0,3.2fr) minmax(0,.8fr) minmax(0,1fr);gap:12px;align-items:start}
+.dies img{display:block;width:100%;border-radius:6px}
+.dies .stack{display:grid;gap:12px}
+@media (max-width:640px){ .dies{grid-template-columns:1fr 1fr} .dies>figure:first-child{grid-column:1/-1} }
+
+.pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 9px;border:1px solid;white-space:nowrap;vertical-align:1px;line-height:1.6}
+.t-std{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.t-ven{color:var(--blue);border-color:var(--blue);background:var(--blue-bg)}
+.t-sec{color:var(--magenta);border-color:var(--magenta);background:var(--magenta-bg)}
+.t-ph{color:var(--amber);border-color:var(--amber);background:var(--amber-bg);border-style:dashed}
+.t-our{color:var(--muted);border-color:var(--line);background:var(--panel2)}
+.p-dec{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.p-lean{color:var(--blue);border-color:var(--blue);background:var(--blue-bg)}
+.p-open{color:var(--amber);border-color:var(--amber);background:var(--amber-bg)}
+
+dl.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:2px 26px;margin:12px 0}
+dl.gl div{padding:9px 0;border-bottom:1px solid var(--line);min-width:0}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:2px 0 0;font-size:14.5px}
+
+ol.steps{list-style:none;padding:0;margin:14px 0;display:grid;gap:10px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--head);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+ol.steps b{display:block}
+ol.steps span{font-size:14.5px;color:var(--muted)}
+
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;background:var(--panel2);white-space:nowrap}
+td.key{font-family:var(--f-mono);font-weight:700;color:var(--magenta);white-space:nowrap}
+td.val{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700}
+td .why{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+
+.ctl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:4px 0 12px}
+.ctl label,.ctl .lb{font-size:13.5px;color:var(--muted);font-weight:600}
+.ctl .one{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;background:var(--panel2);color:var(--txt);border:0;border-right:1px solid var(--line);padding:5px 12px;cursor:pointer;font-variant-numeric:tabular-nums}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--head);color:#fff;font-weight:700}
+input[type=range]{width:150px;accent-color:var(--green)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px;margin-top:12px}
+.ro{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:14px}
+.ro .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.ro .s{color:var(--muted);font-size:12.5px}
+
+.qs{display:grid;gap:10px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 15px}
+.q b{display:block;margin-bottom:2px}
+.q p{margin:4px 0;font-size:14.5px}
+ol.src{padding-left:22px;font-size:14.5px} ol.src li{margin:8px 0}
+
+svg text{font-family:var(--f-body);fill:var(--txt);font-size:13px}
+svg .lbl{font-size:12.5px} svg .lblm{fill:var(--muted);font-size:12px} svg .key{fill:var(--magenta);font-weight:700;font-size:12.5px}
+svg .board{fill:var(--board);stroke:var(--board-edge)}
+svg .ghost{fill:none;stroke:var(--muted);stroke-dasharray:5 4}
+svg .die{fill:var(--si);stroke:var(--si-edge)}
+svg .fid{fill:var(--magenta)}
+svg .land{fill:var(--gold)}
+svg .lead{stroke:var(--muted);stroke-width:1;fill:none;stroke-dasharray:3 3}
+svg .err0{stroke:var(--muted);stroke-width:2;fill:none;opacity:.7}
+svg .err1{stroke:var(--magenta);stroke-width:3;fill:none}
+svg .cam{fill:none;stroke:var(--accent);stroke-width:1.6}
+svg .frame{fill:none;stroke-width:1.6}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <nav class="sitenav" aria-label="Project pages">
+      <a href="../../app/index.html">← Wire Bond Bench</a>
+      <a href="wire-bonding-primer.html">Wire bonding primer</a>
+      <a href="../../planning/_planning_tools/index.html">Planning index</a>
+      <a href="../../planning/wire_bond_lifecycle/plan.html">Lifecycle plan</a>
+      <a href="../../SPEC.md">wirebond.svg spec</a>
+    </nav>
+    <div class="eyebrow">Wire Bond Bench · learning page and proposal · November 2026</div>
+    <h1>Fiducials: how machines find the board and the die</h1>
+    <p>What a fiducial is, how pick and place machines and wire bonders use them, what our run 2 boards and dies already carry, and how wirebond.svg could describe them.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<div class="tldr">
+  <b>The short version</b>
+  <ul>
+    <li><b>A fiducial is a feature whose design position is known and that a camera can find.</b> The machine finds two or three of them, works out how the real part differs from the drawing, and corrects every position it was programmed with.</li>
+    <li><b>Two fiducials fix shift and turn. Three also fix uneven stretch.</b> Put them far apart: an error in finding them grows with distance from them.</li>
+    <li><b>Pick and place machines use dedicated copper dots</b>, about 1 mm, with bare clearance around them, on the board and the panel.</li>
+    <li><b>Wire bonders use two frames.</b> They find the die by two taught "eye points" in its own artwork and correct the first bonds, and find the board to correct the second bonds. The eye points are often not dedicated marks at all.</li>
+    <li><b>Run 2 is already in good shape for bonding:</b> two copper crosses at opposite corners of the die cavity, and dies with a QR code and a different mark in opposite corners. It has <b>no</b> pick and place fiducials, and its SMT parts are on the back.</li>
+    <li><b>In the spec (draft):</b> one <code>wb:kind="fiducial"</code>, on the board or in a die group, any drawn shape, with a <code>wb:role</code>. Section 7 has the details; four questions are still open in <a href="#decide">section 8</a>.</li>
+  </ul>
+</div>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#what"><span>1</span>What a fiducial does</a>
+  <a href="#count"><span>2</span>How many, and how far apart</a>
+  <a href="#pnp"><span>3</span>Pick and place</a>
+  <a href="#attach"><span>4</span>Die attach</a>
+  <a href="#bonder"><span>5</span>Wire bonders</a>
+  <a href="#run2"><span>6</span>What run 2 already has</a>
+  <a href="#format"><span>7</span>Fiducials in wirebond.svg</a>
+  <a href="#decide"><span>8</span>Still to decide</a>
+  <a href="#sources"><span>9</span>Sources</a>
+</nav>
+
+<!-- 1 -->
+<h2 id="what"><span class="k">1</span>What a fiducial does</h2>
+<p class="lede">A machine is programmed in design coordinates: "put this part at x = 12.3 mm, y = 4.5 mm". But the real board never sits exactly where the drawing says. It's clamped a little off, turned a little, and the board itself may be slightly stretched by fabrication. A <b>fiducial</b> is a feature at a known design position that the machine's camera can find. Comparing where it was found with where the drawing put it gives a transform, and the machine applies that transform to every programmed position.</p>
+
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 315" role="img" aria-labelledby="whatT">
+  <title id="whatT">Left, a board as drawn with two fiducials. Right, the same board on the machine, shifted and turned, with a camera finding each fiducial and the programmed part position moved to match.</title>
+  <text x="20" y="22" class="lbl" font-weight="700">In the design</text>
+  <rect class="board" x="30" y="40" width="300" height="220" rx="4"/>
+  <circle class="fid" cx="60" cy="230" r="9"/><circle class="fid" cx="300" cy="70" r="9"/>
+  <text x="76" y="234" class="key">F1</text><text x="262" y="74" class="key">F2</text>
+  <rect class="land" x="170" y="140" width="30" height="20"/>
+  <text x="185" y="180" text-anchor="middle" class="lblm">part at (x, y)</text>
+  <path class="lead" d="M370,150 L470,150"/><path d="M462,144 L472,150 L462,156" fill="none" stroke="var(--muted)" stroke-width="1.4"/>
+  <text x="420" y="138" text-anchor="middle" class="lblm">on the machine</text>
+
+  <text x="500" y="22" class="lbl" font-weight="700">On the machine</text>
+  <rect class="ghost" x="510" y="40" width="300" height="220" rx="4"/>
+  <g transform="rotate(-4 660 150) translate(18 10)">
+    <rect class="board" x="510" y="40" width="300" height="220" rx="4" opacity=".92"/>
+    <circle class="fid" cx="540" cy="230" r="9"/><circle class="fid" cx="780" cy="70" r="9"/>
+    <circle class="cam" cx="540" cy="230" r="20"/><circle class="cam" cx="780" cy="70" r="20"/>
+    <rect class="land" x="650" y="140" width="30" height="20"/>
+  </g>
+  <rect x="650" y="140" width="30" height="20" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/>
+  <text x="660" y="305" text-anchor="middle" class="lblm"><tspan style="fill:var(--accent)">Rings: the camera finds F1, F2.</tspan> Dashed: where the program says.</text>
+</svg>
+<div class="cap">Schematic. The machine never sees the dashed board; it only knows the design positions of F1 and F2 and where its camera found them. Those two pairs are enough to move the part's programmed position onto the real board.</div>
+</div>
+
+<h3>Words you'll meet</h3>
+<dl class="gl">
+  <div><dt>Fiducial, fiducial mark</dt><dd>A feature with a known design position that a vision system can find. On boards, usually a round copper dot.</dd></div>
+  <div><dt>Global fiducial</dt><dd>One of the fiducials that locate a whole board. Usually three.</dd></div>
+  <div><dt>Local fiducial</dt><dd>A pair placed close to one fine-pitch part, so the machine can correct for that small area just before placing it.</dd></div>
+  <div><dt>Panel fiducial</dt><dd>On the rails of a panel of boards. The machine finds these first for a rough fit, then each board's own for a fine one.</dd></div>
+  <div><dt>Eye point, reference point</dt><dd>The wire bonder's word. A region of the die's own artwork, taught once, that the bonder finds on every unit. Two per die.</dd></div>
+  <div><dt>PRS, pattern recognition</dt><dd>The bonder's vision system. It compares what it sees with a stored image and reports where the best match is and how good it is.</dd></div>
+  <div><dt>Teach</dt><dd>Showing the machine a reference unit once, by framing each eye point or fiducial in a window, so it stores the pictures and positions.</dd></div>
+  <div><dt>Frame, reference system</dt><dd>A coordinate system that one set of fiducials locates. A bonded board has two: the die's and the board's.</dd></div>
+  <div><dt>Similarity, affine</dt><dd>Kinds of fit. A similarity is shift, turn and one scale. An affine adds separate X and Y scale and a bit of skew.</dd></div>
+  <div><dt>Assist</dt><dd>When the vision score falls below a threshold, the machine stops and waits for an operator. Bad fiducials mean more assists.</dd></div>
+</dl>
+
+<!-- 2 -->
+<h2 id="count"><span class="k">2</span>How many, and how far apart</h2>
+<p>Each fiducial gives two numbers, an X and a Y. Each kind of error you want to remove costs at least one number. OpenPnP's documentation spells out what each count buys, and commercial machines work the same way.</p>
+<div class="tw"><table>
+  <thead><tr><th>Fiducials</th><th>What the machine can remove</th><th>Fit</th></tr></thead>
+  <tbody>
+    <tr><td class="val">1</td><td>Shift only. Any turn is left in, and grows with distance from the fiducial.</td><td>Translation</td></tr>
+    <tr><td class="val">2</td><td>Shift, turn, and one average scale for both axes.</td><td>Similarity</td></tr>
+    <tr><td class="val">3</td><td>Shift, turn, separate X and Y scale, and non-squareness.</td><td>Affine</td></tr>
+    <tr><td class="val">4 or more</td><td>The same as three, averaged, with something left over to judge the fit by. OpenPnP recommends at least four where possible.</td><td>Affine, least squares</td></tr>
+  </tbody>
+</table></div>
+<p class="small muted">From the <a href="https://github.com/openpnp/openpnp/wiki/Fiducials">OpenPnP Fiducials page</a>. Evezor's own <code>WaferspaceAligner</code> does the same: a similarity from two taught fiducials, an affine from three, and a fourth to check the teach.</p>
+
+<p>Try it. The board below is the run 2 size, 14 × 16 mm. Push it off its drawn position, then see how far off the machine would still be at the far corner land and at the die, depending on how many fiducials it used and where they are. Arrows are magnified.</p>
+
+<div class="fig">
+  <div class="ctl">
+    <div class="one"><span class="lb" id="nLbl">Fiducials used</span>
+      <div class="seg" role="group" aria-labelledby="nLbl" id="nSeg">
+        <button type="button" data-n="1" aria-pressed="false">1</button>
+        <button type="button" data-n="2" aria-pressed="true">2</button>
+        <button type="button" data-n="3" aria-pressed="false">3</button>
+      </div></div>
+    <div class="one"><span class="lb" id="layLbl">Placed</span>
+      <div class="seg" role="group" aria-labelledby="layLbl" id="laySeg">
+        <button type="button" data-l="far" aria-pressed="true">Far apart</button>
+        <button type="button" data-l="near" aria-pressed="false">Close together</button>
+      </div></div>
+  </div>
+  <div class="ctl">
+    <div class="one"><label for="sh">Shift</label><input type="range" id="sh" min="0" max="500" step="10" value="200"><span class="mono num" id="shO"></span></div>
+    <div class="one"><label for="tu">Turn</label><input type="range" id="tu" min="-1.5" max="1.5" step="0.05" value="0.5"><span class="mono num" id="tuO"></span></div>
+    <div class="one"><label for="st">Stretch in X</label><input type="range" id="st" min="0" max="0.2" step="0.01" value="0.05"><span class="mono num" id="stO"></span></div>
+    <div class="one"><label for="fe">Camera find error</label><input type="range" id="fe" min="0" max="20" step="1" value="5"><span class="mono num" id="feO"></span></div>
+  </div>
+  <div class="scroll"><svg id="fitSvg" class="wide" viewBox="0 0 860 420" role="img" aria-label="Board with fiducials, a far land and the die, with arrows showing the error left after the fit"></svg></div>
+  <div class="cap">Grey arrows: how far each point is from its drawn place before correction. Magenta arrows: what's left after the fit. The find error pushes each fiducial's found position a fixed amount in a different direction, a deliberately unlucky case. Stretch values are for illustration, not a claim about any board house.</div>
+  <div class="readout" id="fitRead"></div>
+</div>
+
+<div class="callout info"><p><b>Why far apart.</b> With two fiducials, the turn is worked out from the line between them. A camera error of <i>e</i> at each end tilts that line by about 2<i>e</i> divided by their spacing, and that tilt shows up at every bond, multiplied by the bond's distance from them. In the explorer above, with nothing but a 5 µm find error, a pair 17.0 mm apart leaves at most about 8 µm anywhere on the board. A pair 4.2 mm apart leaves up to about 29 µm, more than half a ball. Set "Close together" to see it.</p></div>
+
+<!-- 3 -->
+<h2 id="pnp"><span class="k">3</span>Pick and place</h2>
+<p>This is the case most people mean by "fiducials". The SMT line's machines (stencil printer, pick and place, optical inspection) all look for the same dots.</p>
+<ol class="steps">
+  <li><div><b>The board comes in on a conveyor and is clamped.</b><span>Clamping holds it near a known place, but only to within a fraction of a millimetre, and its edges are gripped. That's why fiducials keep away from the edge.</span></div></li>
+  <li><div><b>A camera on the head looks down and finds the fiducials.</b><span>Panel fiducials first for a rough fit, then each board's own for a precise one.</span></div></li>
+  <li><div><b>The machine fits a transform</b><span>from the design positions to the found ones, as in section 2.</span></div></li>
+  <li><div><b>For each part, it picks, centres and places.</b><span>The part is centred on the nozzle by a camera or sensor looking at the part itself. Fiducials don't help with that; they only say where on the board to put it.</span></div></li>
+  <li><div><b>Before a fine-pitch part, it may check two local fiducials</b><span>and correct again for just that area.</span></div></li>
+</ol>
+
+<h3>Design rules, and how sure they are</h3>
+<div class="callout"><p><b>We couldn't read the standard itself.</b> SMEMA 3.1, the Fiducial Mark Standard, is cited everywhere but we didn't find the document. The numbers below come from articles that quote it and from board house guides, and they disagree on clearance and edge distance. Your assembler's requirement wins.</p></div>
+<div class="tw"><table>
+  <thead><tr><th>Rule</th><th>Value</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Shape<span class="why">A solid filled circle is the common default. Crosses, squares and diamonds are also used.</span></td><td class="val">Solid circle</td><td><span class="pill t-ven">Vendor guide</span> Atlas PCB</td></tr>
+    <tr><td>Diameter<span class="why">Big enough to find at the camera's magnification, small enough to fit.</span></td><td class="val">1 to 3 mm</td><td><span class="pill t-sec">Quotes SMEMA 3.1</span> Cadence</td></tr>
+    <tr><td>Common size<span class="why">Panel fiducials are often larger, 1.5 to 2 mm.</span></td><td class="val">1.0 mm</td><td><span class="pill t-ven">Vendor guide</span> Atlas PCB</td></tr>
+    <tr><td>Clear area around it<span class="why">No copper, mask or silk, so the edge has contrast. Sources give a radius of 1, 2 or 3 times the dot's.</span></td><td class="val">r to 3r</td><td><span class="pill t-sec">Disagree</span> Cadence, NextPCB, Atlas PCB</td></tr>
+    <tr><td>From the board edge<span class="why">Clear of conveyor rails and clamps. Figures range from 4.75 mm to 7.62 mm plus the clear area, or a flat 5 mm.</span></td><td class="val">~5 to 8 mm</td><td><span class="pill t-sec">Disagree</span> Cadence, Atlas PCB</td></tr>
+    <tr><td>How many, where<span class="why">Three in an L, as far apart as the board allows, not symmetric, so a board loaded turned round is caught.</span></td><td class="val">3, in an L</td><td><span class="pill t-ven">Vendor guide</span> Atlas PCB, Cadence</td></tr>
+    <tr><td>Local fiducials<span class="why">Two, at opposite corners of a fine-pitch part. Thresholds vary by house; ask before adding them.</span></td><td class="val">2 per part</td><td><span class="pill t-ven">Vendor guide</span> Atlas PCB, JLCPCB</td></tr>
+    <tr><td>Surface finish<span class="why">Flat and evenly reflective. Bare copper with OSP or ENIG are good; HASL leaves a solder dome that differs from board to board.</span></td><td class="val">Flat</td><td><span class="pill t-ven">Vendor guide</span> Atlas PCB</td></tr>
+  </tbody>
+</table></div>
+
+<h3>In KiCad</h3>
+<p>KiCad has a pad <b>fabrication property</b> with the values <i>Fiducial, global to board</i> and <i>Fiducial, local to footprint</i>. It changes nothing in the editor; it's written into the Gerber files as an attribute, so the board and assembly houses can tell which copper is a fiducial (Jean-Pierre Charras, kicad-developers, January 2020). The standard library has ready-made fiducial footprints. Copper drawn as a graphic rather than a pad, like run 2's crosses, doesn't carry the property.</p>
+
+<!-- 4 -->
+<h2 id="attach"><span class="k">4</span>Die attach</h2>
+<p>A die bonder is a pick and place machine for bare dies. It has to locate two things: the board, from fiducials or other copper near the die site, and the die, from features in its own artwork, often its corners or alignment marks. It then places the die so the two line up. Research die bonders quote placement accuracy of a few µm or better; Finetech states 2.0 µm at 3σ for its FINEPLACER femtoblu, a vendor figure measured their way.</p>
+<p>By hand, the same job is done by eye. Our bonding diagrams already carry the instruction: <b>"Align die QR code with copper circle next to pad 0"</b>, in English and Chinese. That copper circle is a fiducial for people: it fixes the die's orientation, not its position to the µm.</p>
+
+<!-- 5 -->
+<h2 id="bonder"><span class="k">5</span>Wire bonders</h2>
+<p class="lede">An automatic wire bonder is programmed once, on a reference unit, and then bonds hundreds of units that each differ slightly. Its fiducials work the same way as a pick and place machine's, with two differences: there are two things to find, and the die's "fiducials" are usually just recognisable parts of its artwork.</p>
+
+<div class="fig scroll">
+<svg class="wide" viewBox="0 0 860 330" role="img" aria-labelledby="frT">
+  <title id="frT">Plan view of a bonded die showing two frames: eye points E1 and E2 on the die locate the die frame, which carries the first bonds; fiducials B1 and B2 on the board locate the board frame, which carries the second bonds.</title>
+  <rect class="board" x="20" y="20" width="560" height="290" rx="4"/>
+  <rect class="die" x="200" y="90" width="200" height="150"/>
+  <g id="frWires"></g>
+  <rect x="216" y="216" width="18" height="18" fill="none" stroke="var(--green)" stroke-width="2"/>
+  <text x="225" y="229" text-anchor="middle" class="lbl" style="font-size:9px;fill:var(--green)">QR</text>
+  <path d="M374,98 L392,98 L392,116 Z" fill="none" stroke="var(--green)" stroke-width="2"/>
+  <text x="242" y="230" class="key" style="fill:var(--green)">E1</text>
+  <text x="352" y="112" class="key" style="fill:var(--green)">E2</text>
+  <path d="M60,40 h8 v8 h8 v8 h-8 v8 h-8 v-8 h-8 v-8 h8 z" class="fid" transform="translate(0,0)"/>
+  <path d="M520,262 h8 v8 h8 v8 h-8 v8 h-8 v-8 h-8 v-8 h8 z" class="fid"/>
+  <text x="84" y="60" class="key">B1</text><text x="494" y="282" class="key">B2</text>
+  <text x="610" y="50" class="lbl" font-weight="700" style="fill:var(--green)">Die frame</text>
+  <text x="610" y="70" class="lbl">Found from eye points E1, E2</text>
+  <text x="610" y="88" class="lblm">in the die's own artwork.</text>
+  <text x="610" y="106" class="lblm">Carries every first bond (ball).</text>
+  <text x="610" y="160" class="lbl" font-weight="700" style="fill:var(--magenta)">Board frame</text>
+  <text x="610" y="180" class="lbl">Found from B1, B2, or from lands</text>
+  <text x="610" y="198" class="lblm">Carries every second bond (stitch).</text>
+  <text x="610" y="250" class="lblm">Each wire spans both frames, so a</text>
+  <text x="610" y="268" class="lblm">die that sits off-centre changes every</text>
+  <text x="610" y="286" class="lblm">wire's length and angle a little.</text>
+</svg>
+<div class="cap">Schematic. The QR and corner triangle stand for the marks real wafer.space dies carry; see section 6. B1 and B2 are run 2's copper crosses.</div>
+</div>
+
+<ol class="steps">
+  <li><div><b>Teach, once per design.</b><span>On a reference unit, the operator frames two eye points on the die in a teach window, and the bond positions. The bonder stores the images and the positions relative to the eye points. Kulicke &amp; Soffa describe the stored image being scored by normalised grey-scale correlation or edge matching.</span></div></li>
+  <li><div><b>Find the die, on every unit.</b><span>The bonder looks near where each eye point should be, finds the best match, and fits the die frame from the two. "Once the pattern recognition system locates the two eye points, the bonder is able to transform the bond locations" (Levine).</span></div></li>
+  <li><div><b>Find the leads or lands.</b><span>For fine pitch lead frames, a video lead locator finds each lead. On a board, the substrate is found the same way from its own reference features. Our sources describe lead frames; that the board side works the same way is our inference.</span></div></li>
+  <li><div><b>Bond.</b><span>First bonds go to transformed die positions, second bonds to transformed board positions. If the score falls below the threshold, the machine stops for an assist. One patent describes falling back to reference bond pads when die recognition fails.</span></div></li>
+</ol>
+
+<h3>What makes a good eye point</h3>
+<div class="grid2">
+  <div class="callout good" style="margin:0"><p><b>Unique in its search window.</b> A pad in a row of identical pads matches in several places. A logo, QR code or corner shape matches in one.</p><p><b>The same on every die.</b> K&amp;S's patent leaves out regions whose colour or texture varies, and masks pad centres that carry probe marks.</p></div>
+  <div class="callout good" style="margin:0"><p><b>Far apart,</b> for the reason in section 2. Diagonally opposite corners are the usual choice.</p><p><b>Different from each other.</b> A Texas Instruments patent puts top-metal marks in opposite corners and turns the second one 90° so the two corners can't be confused, which also tells a die turned 180°. Its marks are 50 to 75 µm.</p></div>
+</div>
+
+<div class="callout info"><p><b>Eye points from design data.</b> Normally eye points are taught at the machine. Kulicke &amp; Soffa patented a "visionless teach": building them from the die's CAD data in an offline tool and only confirming them on a sample unit. We already have the GDS, so a file that names good eye points in die coordinates is exactly the input that kind of tool wants.</p></div>
+
+<p class="small muted">What we still don't know: how far from its expected place a bonder will search (its capture range), how well it finds a feature (its find error), and how big its field of view is. The checker's placement analysis in the <a href="../../SPEC.md">spec</a> needs the first; section 2's arithmetic needs the second. Both are questions for a bonding house, and we haven't got one yet.</p>
+
+<!-- 6 -->
+<h2 id="run2"><span class="k">6</span>What run 2 already has</h2>
+<p>Read straight from <code>run-2/1x1-cob/1x1-mezzanine.kicad_pcb</code> in chip-on-board-wire-bonded-pcbs. The die is a stand-in drawn around the footprint's reference pads.</p>
+<figure class="fig" style="padding:8px">
+  <img src="img/run2-fiducials.svg" alt="The run 2 1x1 board drawn to scale from its KiCad file. Two small magenta copper crosses sit at the top-left and bottom-right corners of the die cavity, 13 mm apart. A copper dot sits beside pad 0 at bottom left, and a plated hole in the board's bottom-left corner. Capacitors and the connector are dashed because they are on the back." width="1320" height="700">
+  <figcaption>Generated by <code>make_fiducial_figures.py</code> in this folder. A and B are the padring footprint's copper crosses, inside the cavity's mask opening. C is the same footprint's copper circle. D is the <code>WaferSpace:pin1_fiducial</code> footprint.</figcaption>
+</figure>
+
+<div class="tw"><table>
+  <thead><tr><th>Mark</th><th>What it is</th><th>Good for</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="key">A, B</td><td>0.45 mm copper crosses, 0.15 mm arms, in opposite corners of the die cavity, 13.0 mm apart</td><td>Die attach and bonder board frame</td><td>Close to the die and far apart, which is ideal. They're graphics, not pads, so KiCad's fiducial property can't be set on them. Same shape and nearly point-symmetric about the cavity, so on their own they can't tell 0° from 180°.</td></tr>
+    <tr><td class="key">C</td><td>0.8 mm copper dot beside pad 0</td><td>People: orientation</td><td>The die's QR code goes toward it. Below the 1 mm usually asked for pick and place.</td></tr>
+    <tr><td class="key">D</td><td>1.4 mm plated hole, 1 mm drill, on GND, called <code>pin1_fiducial</code></td><td>People: pin 1</td><td>A hole, not a solid copper dot, so it isn't a fiducial in the SMEMA sense. Seen from both sides.</td></tr>
+    <tr><td class="key">none</td><td>Pick and place fiducials</td><td>&nbsp;</td><td>All eight 0201 capacitors and the 0.4 mm pitch, 70-pin connector are on the <b>back</b>. Neither side has a fiducial pad, and the 24-up panel has none on its rails. The assembler may add their own or use other copper; that's a question for them.</td></tr>
+  </tbody>
+</table></div>
+
+<h3>The dies</h3>
+<p>Both wafer.space dies we looked at have a QR code in the bottom-left corner. Each also has a different-looking mark in the opposite corner, but which mark varies: eurosynth has a triangle top right and a rocket top left; HZ80 has the rocket top right. A QR code and the opposite corner's mark make the pair the TI patent describes: far apart, and impossible to confuse.</p>
+<div class="dies">
+  <figure style="margin:0"><img src="img/die-eurosynth.jpg" alt="The eurosynth die from its GDS, with magenta rings around the QR code at bottom left and the triangle at top right, and a blue ring around the small rocket at top left." width="1400" height="901" loading="lazy"><figcaption><b>eurosynth</b>, 3932 × 2531 µm. Magenta: the QR and the far-corner triangle, a good eye point pair. Blue: the rocket.</figcaption></figure>
+  <figure style="margin:0"><img src="img/die-hz80.jpg" alt="The tall, narrow HZ80 die with magenta rings at its bottom-left and top-right corners." width="340" height="900" loading="lazy"><figcaption><b>HZ80</b>, a 0.5 × 1 die.</figcaption></figure>
+  <div class="stack">
+    <figure style="margin:0"><img src="img/die-zoom-qr.jpg" alt="Close view of HZ80's bottom-left corner showing the QR code built from top metal squares." width="300" height="300" loading="lazy"><figcaption>HZ80 bottom left: the QR, about 140 µm.</figcaption></figure>
+    <figure style="margin:0"><img src="img/die-zoom-rocket.jpg" alt="Close view of HZ80's top-right corner showing the wafer.space rocket logo in top metal." width="300" height="300" loading="lazy"><figcaption>HZ80 top right: the rocket.</figcaption></figure>
+  </div>
+</div>
+<p class="small muted">Renders of top metal from the GDS, not photos. Through a bonder's camera, under glass, contrast will differ; whether these read well is something to try on a real die. A QR that encodes something different on each design is fine, since a bonder is taught once per design anyway.</p>
+
+<div class="tw"><table>
+  <thead><tr><th>Step</th><th>Side</th><th>What it can find on run 2</th></tr></thead>
+  <tbody>
+    <tr><td>1. SMT, usually first because the die can't go through reflow</td><td>Back</td><td>No fiducial. Ask the assembler.</td></tr>
+    <tr><td>2. Die attach</td><td>Front</td><td>Crosses A and B by machine, or dot C by eye. The die by its corners or QR.</td></tr>
+    <tr><td>3. Wire bond</td><td>Front</td><td>Die frame: QR plus the far-corner mark. Board frame: crosses A and B, or the lands themselves.</td></tr>
+  </tbody>
+</table></div>
+
+<!-- 7 -->
+<h2 id="format"><span class="k">7</span>Fiducials in wirebond.svg</h2>
+<div class="callout good"><p><b>Now in the spec, as a draft.</b> This section was a proposal and has gone into <a href="../../SPEC.md">SPEC.md</a> under "Fiducials (draft)". <code>wbx.py</code> reads, writes and checks it, and the example in <code>examples/</code> carries board fiducials and two die eye points. Before this, the spec had only round board fiducials, used as GD&amp;T datums.</p></div>
+
+<h3>What the spec says</h3>
+<div class="tw"><table>
+  <thead><tr><th>Part</th><th>Rule</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Kind</td><td>Keep one <code>wb:kind="fiducial"</code></td><td>Board dots, board crosses and die eye points all do the same job: a known point in a frame.</td></tr>
+    <tr><td>Frame</td><td>Set by where it sits. Inside a <code>die</code> group, it's in that die's frame and in GDS coordinates, like a pad. Outside, it's on the board.</td><td>No new attribute, and it follows the die when the die moves, which is exactly what the checker's placement analysis needs.</td></tr>
+    <tr><td>Shape</td><td><code>circle</code>, <code>rect</code>, <code>path</code>, or a <code>g</code> of shapes</td><td>Crosses are paths. A QR eye point is a group, outlined from the GDS so a person can see what to teach.</td></tr>
+    <tr><td>Point</td><td>The centre of the drawn shape's bounding box</td><td>Rule 1: the point comes from what's drawn. For a circle it's the centre; for a cross or QR, its middle.</td></tr>
+    <tr><td>Role</td><td>New <code>wb:role</code>: <code>align</code>, the default, or <code>orient</code></td><td><code>align</code>: a machine may fit to it. <code>orient</code>: a mark for people, such as dot C or hole D; no tool fits to it.</td></tr>
+    <tr><td>Datum</td><td><code>wb:datum</code> as now, optional</td><td>One fiducial can be both a datum and an alignment point.</td></tr>
+    <tr><td>Left to KiCad</td><td>Mask clearance, global or local, the back side</td><td>Pick and place reads Gerbers and position files, not our file. KiCad already has a fiducial property for that.</td></tr>
+  </tbody>
+</table></div>
+
+<p>Run 2 in that form, board coordinates in µm from the board's top-left corner, and the eurosynth die's eye points in GDS coordinates. The die numbers are illustrative; real ones would come from the GDS. The repo's own example, with checked numbers, is <code>examples/example.wb.svg</code>.</p>
+<pre><code><span class="c">&lt;!-- board frame: run 2 crosses A and B --&gt;</span>
+&lt;path wb:kind="fiducial" wb:name="A" wb:role="align" class="cu"
+      d="M2550,2965 h150 v150 h150 v150 h-150 v150 h-150 v-150 h-150 v-150 h150 z"/&gt;
+&lt;path wb:kind="fiducial" wb:name="B" wb:role="align" class="cu"
+      d="M11300,12565 h150 v150 h150 v150 h-150 v150 h-150 v-150 h-150 v-150 h150 z"/&gt;
+<span class="c">&lt;!-- for people: dot C and hole D --&gt;</span>
+&lt;circle wb:kind="fiducial" wb:role="orient" wb:name="C" cx="3100" cy="12615" r="400" class="cu"/&gt;
+&lt;circle wb:kind="fiducial" wb:role="orient" wb:name="D" cx="1350" cy="14650" r="700" class="cu"/&gt;
+
+&lt;g transform="translate(5034 9231) scale(1 -1)" wb:kind="die" wb:name="U1" ...&gt;
+  <span class="c">&lt;!-- die frame, GDS coordinates: eurosynth's QR and far-corner triangle --&gt;</span>
+  &lt;g wb:kind="fiducial" wb:name="QR" wb:role="align"&gt;
+    &lt;rect x="28" y="30" width="143" height="143" class="mark"/&gt;
+  &lt;/g&gt;
+  &lt;path wb:kind="fiducial" wb:name="TRI" wb:role="align" class="mark"
+        d="M3700,2500 L3900,2500 L3900,2300 Z"/&gt;
+  ...pads...
+&lt;/g&gt;</code></pre>
+
+<h3>What the checker does</h3>
+<p><code>wbx.py check</code> runs these. Only F2 and F3 make a file invalid; the rest print as <code>WARN</code> or <code>NOTE</code> lines, or appear in the JSON summary. F3's clear distance is <code>wb:rule-fid-clear</code> on the root, a placeholder of ours.</p>
+<div class="tw"><table>
+  <thead><tr><th>Key</th><th>Check</th><th>Level</th></tr></thead>
+  <tbody>
+    <tr><td class="key">F1</td><td>Each die and the board has at least two <code>align</code> fiducials.<span class="why">Otherwise the bonding house picks its own; say so rather than fail.</span></td><td>Warn</td></tr>
+    <tr><td class="key">F2</td><td>A die fiducial lies inside its die outline; a board fiducial inside the board and not under a die or its attach fillet.</td><td>Error</td></tr>
+    <tr><td class="key">F3</td><td>No land or wire, in plan, covers a board fiducial or comes within a clear margin of it.<span class="why">Margin is a placeholder; we have no bonder source for it.</span></td><td>Error</td></tr>
+    <tr><td class="key">F4</td><td>Report the lever ratio: the farthest bond's distance from the pair over the pair's spacing.<span class="why">Times the find error, it's the error at that bond. No limit until we know a bonder's find error.</span></td><td>Info</td></tr>
+    <tr><td class="key">F5</td><td>A die's two eye points have the same shape and sit point-symmetric about its centre.<span class="why">Then a die turned 180° looks the same to them.</span></td><td>Warn</td></tr>
+    <tr><td class="key">F6</td><td>An eye point overlaps a pad that gets a ball.<span class="why">Fine for the first find, but the ball hides it from inspection or a re-teach.</span></td><td>Info</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Getting them in and out</h3>
+<ul>
+  <li><b>KiCad:</b> the example board now has F1, F2 and P1 as fiducial footprints. F1 and F2 carry KiCad's <code>pad_prop_fiducial_glob</code>, which KiCad keeps on re-save and writes into the Gerbers. The app skips fiducial pads when it looks for lands. No importer reads them into a <code>.wb.svg</code> yet. Graphics like run 2's crosses don't carry the property, so either the padring footprint makes them pads, or the app lets someone pick them.</li>
+  <li><b>GDS:</b> there's no fiducial layer. The example's die has its eye points in top metal, named by labels. Real wafer.space QR and corner marks are unlabelled template artwork; the app could find them by cell name if those names are stable (not checked), or let someone draw a box round them.</li>
+  <li><b>Out:</b> <code>wbx.py export</code> writes <code>&lt;base&gt;.fiducials.csv</code>: frame, name, role, datum and the reference point in the bond list's coordinates, so the bonding house sees what we'd suggest teaching. The drawn file shows the same thing to a person. The app's own <code>.wb.svg</code> export doesn't write fiducials yet.</li>
+</ul>
+
+<!-- 8 -->
+<h2 id="decide"><span class="k">8</span>Still to decide</h2>
+<div class="qs">
+  <div class="q"><b>Q1. One kind with a frame from its parent, or a separate <code>eyepoint</code> kind for the die? <span class="pill p-dec">Decided: one kind</span></b><p>One kind keeps the checker and importers simple. A separate word would match bonder vocabulary.</p></div>
+  <div class="q"><b>Q2. Is the bounding-box centre the right reference point? <span class="pill p-dec">Decided: yes</span></b><p>The other choice is a small drawn crosshair inside each fiducial group, which is more explicit but one more thing to keep in step.</p></div>
+  <div class="q"><b>Q3. Are <code>align</code> and <code>orient</code> enough, or should a fiducial say which step uses it (attach, bond)? <span class="pill p-dec">Decided: role only, for now</span></b><p>Add per-step use when a bonding house asks for it.</p></div>
+  <div class="q"><b>Q4. Should the run 2 padring make crosses A and B pads with KiCad's fiducial property? <span class="pill p-open">Open</span></b><p>A change in chip-on-board-wire-bonded-pcbs, not this repo. It would make them importable and visible to the board house as fiducials.</p></div>
+  <div class="q"><b>Q5. Does the back-side SMT pass need fiducials? <span class="pill p-open">Open</span></b><p>A question for whoever assembles run 2. Outside wirebond.svg, but nobody has asked yet.</p></div>
+  <div class="q"><b>Q6. Should the file say "the die's QR goes toward dot C"? <span class="pill p-lean">Lean: yes</span></b><p>For example <code>wb:match="U1.QR"</code> on dot C. The bonding diagrams already print this; as data, the checker could catch a die placed turned round.</p></div>
+  <div class="q"><b>Q7. Which eye points by default? <span class="pill p-lean">Lean: QR plus far corner</span></b><p>The QR and whatever mark is in the opposite corner, when one is found; otherwise two corner pads, with an F5 warning.</p></div>
+</div>
+
+<!-- 9 -->
+<h2 id="sources"><span class="k">9</span>Sources</h2>
+<p>Read in November 2026. Patents describe what a company built or claimed, not necessarily what today's machines do.</p>
+<ol class="src">
+  <li><a href="https://github.com/openpnp/openpnp/wiki/Fiducials">OpenPnP wiki, Fiducials</a>. What 2, 3 and 4 or more fiducials let the machine estimate; panel fiducials first, then board.</li>
+  <li><a href="https://resources.pcb.cadence.com/blog/2024-pcb-fiducial-guidelines-improve-assembly-outcomes">Cadence, PCB fiducial guidelines, 2024</a>. <span class="pill t-sec">Quotes SMEMA 3.1</span> Diameter 1 to 3 mm, clearance, edge distance. Read through search excerpts; the page didn't load in full.</li>
+  <li><a href="https://atlaspcb.com/blog/pcb-fiducial-mark-design-placement-pick-and-place">Atlas PCB, Fiducial mark design and placement</a>. <span class="pill t-ven">Vendor guide</span> 1 mm dot, 2 mm clear area, 5 mm from edge, three in an L, local pairs, panel sizes, finish.</li>
+  <li><a href="https://www.nextpcb.com/blog/the-essential-guide-to-pcb-fiducial-marks-enhancing-precision-in-pcb-assembly">NextPCB, Guide to PCB fiducial marks</a>. <span class="pill t-ven">Vendor guide</span> Clear area of 1, 2 or 3 times the radius.</li>
+  <li><a href="https://jlcpcb.com/blog/fiducial-marks">JLCPCB, Fiducial marks</a>. <span class="pill t-ven">Vendor guide</span> Local fiducials in diagonal pairs for fine-pitch parts.</li>
+  <li><a href="https://archive.lists.launchpad.net/kicad-developers/msg43203.html">Jean-Pierre Charras, kicad-developers, 6 January 2020</a>. The pad fabrication property, including fiducial global and local, written as Gerber attributes.</li>
+  <li><a href="https://sst.semiconductor-digest.com/2000/04/wire-bonding/">Lee Levine, Wire bonding, Semiconductor Digest</a>. Two taught eye points per die; video lead locator for fine-pitch leads.</li>
+  <li><a href="https://patents.google.com/patent/US8100317B2/en">US 8,100,317, Kulicke &amp; Soffa, 2012</a>. What an eye point is, how it's taught and scored, and visionless teach from CAD data.</li>
+  <li><a href="https://patents.google.com/patent/US6465898B1/en">US 6,465,898, Texas Instruments, 2002</a>. Bonding alignment marks in opposite die corners, the second turned 90°, 50 to 75 µm.</li>
+  <li><a href="https://patents.google.com/patent/US5119436A/en">US 5,119,436</a>. The bonder's pattern recognition relocating each taught bond point on production parts.</li>
+  <li><a href="https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7817846">US 7,817,846</a>. Correcting bond coordinates from reference bond pads when die recognition fails.</li>
+  <li><a href="https://finetech.de/?p=10895">Finetech, FINEPLACER</a> product pages. <span class="pill t-ven">Vendor claim</span> Die bonder accuracy figures.</li>
+  <li>chip-on-board-wire-bonded-pcbs, <code>run-2/1x1-cob/1x1-mezzanine.kicad_pcb</code> and its 24-up panel; ws-bonding-diagrams, <code>make_bonding_diagrams.py</code> for the QR alignment callouts; GDS renders of eurosynth and HZ80.</li>
+</ol>
+<p class="small muted">Looked for and not found: the SMEMA 3.1 document itself, an IPC fiducial rule we could read directly, and any bonder maker's published capture range or find error.</p>
+
+</main>
+
+<script>
+(function(){
+/* ---- frames figure: a few wires from die pads to lands ---- */
+(function(){
+  var h="";
+  for(var i=0;i<6;i++){
+    var py=125+i*18, ly=60+i*40;
+    h+='<rect x="388" y="'+(py-4)+'" width="8" height="8" fill="var(--si-edge)"/>';
+    h+='<rect class="land" x="470" y="'+(ly-6)+'" width="26" height="12"/>';
+    h+='<path d="M392,'+py+' L476,'+ly+'" stroke="var(--gold)" stroke-width="2" fill="none"/>';
+    h+='<rect x="204" y="'+(py-4)+'" width="8" height="8" fill="var(--si-edge)"/>';
+    h+='<rect class="land" x="104" y="'+(ly-6)+'" width="26" height="12"/>';
+    h+='<path d="M208,'+py+' L124,'+ly+'" stroke="var(--gold)" stroke-width="2" fill="none"/>';
+  }
+  document.getElementById("frWires").innerHTML=h;
+})();
+
+/* ---- fit explorer ---- */
+var N=2, LAY="far";
+var BW=14, BH=16;                       // run 2 board, mm; origin at centre, y down
+var FID={
+  far: [[-5.5,6.5],[5.5,-6.5],[5.5,6.5]],
+  near:[[-5.5,6.5],[-2.5,3.5],[-2.5,6.5]]
+};
+var U=[[1,0],[0,1],[-0.7071,-0.7071]];  // direction of each fiducial's find error
+var PTS={land:[-6.2,-7.2], die:[0,0]};
+function $(i){return document.getElementById(i);}
+function truth(p,s){                    // the real board: stretch, turn, shift
+  var x=p[0]*(1+s.st), y=p[1], c=Math.cos(s.th), n=Math.sin(s.th);
+  return [x*c-y*n+s.tx, x*n+y*c+s.ty];
+}
+function fit(fs,ms,n){                   // design -> estimated, from n fiducial pairs
+  if(n===1){var dx=ms[0][0]-fs[0][0],dy=ms[0][1]-fs[0][1];return function(p){return [p[0]+dx,p[1]+dy];};}
+  if(n===2){
+    var fx=fs[1][0]-fs[0][0], fy=fs[1][1]-fs[0][1], mx=ms[1][0]-ms[0][0], my=ms[1][1]-ms[0][1];
+    var d=fx*fx+fy*fy, ar=(mx*fx+my*fy)/d, ai=(my*fx-mx*fy)/d;
+    return function(p){var px=p[0]-fs[0][0],py=p[1]-fs[0][1];return [ms[0][0]+ar*px-ai*py, ms[0][1]+ai*px+ar*py];};
+  }
+  // affine through three points: solve [x y 1] * M = m
+  var a=fs, det=a[0][0]*(a[1][1]-a[2][1])-a[0][1]*(a[1][0]-a[2][0])+(a[1][0]*a[2][1]-a[2][0]*a[1][1]);
+  function solve(k){
+    var b=[ms[0][k],ms[1][k],ms[2][k]];
+    var c1=(b[0]*(a[1][1]-a[2][1])-a[0][1]*(b[1]-b[2])+(b[1]*a[2][1]-b[2]*a[1][1]))/det;
+    var c2=(a[0][0]*(b[1]-b[2])-b[0]*(a[1][0]-a[2][0])+(a[1][0]*b[2]-a[2][0]*b[1]))/det;
+    var c3=(a[0][0]*(a[1][1]*b[2]-a[2][1]*b[1])-a[0][1]*(a[1][0]*b[2]-a[2][0]*b[1])+b[0]*(a[1][0]*a[2][1]-a[2][0]*a[1][1]))/det;
+    return [c1,c2,c3];
+  }
+  var X=solve(0), Y=solve(1);
+  return function(p){return [X[0]*p[0]+X[1]*p[1]+X[2], Y[0]*p[0]+Y[1]*p[1]+Y[2]];};
+}
+function um(v){return Math.round(v*1000);}
+function draw(){
+  var sh=+$("sh").value, tu=+$("tu").value, st=+$("st").value, fe=+$("fe").value;
+  $("shO").textContent=sh+" µm"; $("tuO").textContent=tu.toFixed(2)+"°"; $("stO").textContent=st.toFixed(2)+"%"; $("feO").textContent=fe+" µm";
+  var ang=Math.PI/6, s={tx:sh/1000*Math.cos(ang), ty:sh/1000*Math.sin(ang), th:tu*Math.PI/180, st:st/100};
+  var fs=FID[LAY].slice(0,N), ms=fs.map(function(f,i){var t=truth(f,s);return [t[0]+fe/1000*U[i][0], t[1]+fe/1000*U[i][1]];});
+  var est=fit(fs,ms,N);
+  var K=22, ox=40+BW*K/2, oy=30+BH*K/2;           // 22 px per mm
+  function P(p){return [ox+p[0]*K, oy+p[1]*K];}
+  var o='<rect class="board" x="'+(ox-BW*K/2)+'" y="'+(oy-BH*K/2)+'" width="'+BW*K+'" height="'+BH*K+'" rx="4"/>';
+  o+='<rect class="die" x="'+(ox-2*K)+'" y="'+(oy-2.6*K)+'" width="'+4*K+'" height="'+5.2*K+'"/>';
+  var LP=P(PTS.land); o+='<rect class="land" x="'+(LP[0]-6)+'" y="'+(LP[1]-10)+'" width="12" height="20"/>';
+  FID[LAY].forEach(function(f,i){var q=P(f);o+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="7" class="fid" opacity="'+(i<N?1:.25)+'"/><text x="'+(q[0]+10)+'" y="'+(q[1]-8)+'" class="key">F'+(i+1)+'</text>';});
+  // error arrows, magnified
+  var res={}, mag=0.5;                               // px per µm
+  ["land","die"].forEach(function(k){
+    var p=PTS[k], t=truth(p,s), e=est(p), q=P(p);
+    var d0=[t[0]-p[0],t[1]-p[1]], d1=[t[0]-e[0],t[1]-e[1]];
+    res[k]={before:Math.hypot(d0[0],d0[1]), after:Math.hypot(d1[0],d1[1])};
+    o+='<path class="err0" d="M'+q[0]+','+q[1]+' l'+(d0[0]*1000*mag)+','+(d0[1]*1000*mag)+'"/>';
+    o+='<path class="err1" d="M'+q[0]+','+q[1]+' l'+(d1[0]*1000*mag*4)+','+(d1[1]*1000*mag*4)+'"/>';
+    o+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="3" fill="var(--txt)"/>';
+  });
+  o+='<text x="'+(LP[0]+12)+'" y="'+(LP[1]+4)+'" class="lbl">far land</text>';
+  o+='<text x="'+ox+'" y="'+(oy+2.6*K+16)+'" text-anchor="middle" class="lbl">die</text>';
+  // legend
+  var lx=430;
+  o+='<text x="'+lx+'" y="50" class="lbl" font-weight="700">Arrows, magnified</text>';
+  o+='<path class="err0" d="M'+lx+',72 h50"/><text x="'+(lx+60)+'" y="76" class="lblm">before correction, 1 px = 2 µm</text>';
+  o+='<path class="err1" d="M'+lx+',96 h50"/><text x="'+(lx+60)+'" y="100" class="lblm">left after the fit, 1 px = 0.5 µm</text>';
+  var can={1:"shift only",2:"shift, turn, one scale",3:"shift, turn, X and Y scale, skew"}[N];
+  o+='<text x="'+lx+'" y="150" class="lbl" font-weight="700">'+N+' fiducial'+(N>1?'s':'')+': removes '+can+'</text>';
+  var spacing=N>1?Math.hypot(fs[1][0]-fs[0][0],fs[1][1]-fs[0][1]):0;
+  if(N>1)o+='<text x="'+lx+'" y="172" class="lblm">F1 to F2: '+spacing.toFixed(1)+' mm apart</text>';
+  o+='<text x="'+lx+'" y="380" class="lblm">Board 14 × 16 mm, the run 2 size. Not to scale with the arrows.</text>';
+  $("fitSvg").innerHTML=o;
+  function card(t,v,s){return '<div class="ro"><div class="s">'+t+'</div><div class="v">'+v+'</div><div class="s">'+s+'</div></div>';}
+  $("fitRead").innerHTML=
+    card("Far land, before correction",um(res.land.before)+" µm","How far it is from where the program says, with no fiducials at all.")+
+    card("Far land, after the fit",um(res.land.after)+" µm",(N===1?"A turn left in grows with distance from F1.":N===2&&st>0?"Uneven stretch is left in; two fiducials can't see it.":"What's left is the find error, levered out to the land."))+
+    card("Die centre, after the fit",um(res.die.after)+" µm","Compare a 55 µm pad opening and a 50 µm ball for 25 µm wire.");
+}
+["sh","tu","st","fe"].forEach(function(id){$(id).addEventListener("input",draw);});
+function seg(id,attr,set){$(id).addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});set(b.getAttribute(attr));draw();});}
+seg("nSeg","data-n",function(v){N=+v;});
+seg("laySeg","data-l",function(v){LAY=v;});
+draw();
+})();
+</script>
+</body>
+</html>

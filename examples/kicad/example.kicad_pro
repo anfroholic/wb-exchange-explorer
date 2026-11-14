@@ -56,6 +56,7 @@
     "wb_profile_3_style": "ball-wedge",
     "wb_rev": "A",
     "wb_rule_edge_clear": "40",
+    "wb_rule_fid_clear": "150",
     "wb_rule_wire_gap": "60",
     "wb_stack_1_material": "FR4/ENIG",
     "wb_stack_1_name": "substrate",

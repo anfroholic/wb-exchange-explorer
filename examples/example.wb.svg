@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbx:0.1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="-300 -500 12000 9100" width="1200" height="910" wb:version="0.1" wb:units="um" wb:design="WBX example" wb:rev="A" wb:rule-wire-gap="60" wb:rule-edge-clear="40">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:wb="urn:wbx:0.1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="-300 -500 12000 9100" width="1200" height="910" wb:version="0.1" wb:units="um" wb:design="WBX example" wb:rev="A" wb:rule-wire-gap="60" wb:rule-edge-clear="40" wb:rule-fid-clear="150">
   <title>Wire bond diagram: WBX example rev A</title>
-  <style>text{font-family:Helvetica,Arial,sans-serif;fill:#222}.h{font-size:150px;font-weight:bold}.t{font-size:105px}.s{font-size:78px;fill:#555}.sub{fill:#eef3ea;stroke:#9aa;stroke-width:8}.cu{fill:#d9a441}.die{fill:#c9ccd6;stroke:#667;stroke-width:6}.pad{fill:#f7f7fa;stroke:#445;stroke-width:4}.w{fill:none;stroke-linecap:round}.sig{stroke:#b8860b}.pwr{stroke:#c0392b}.gnd{stroke:#2e7d32}.lab{font-size:62px;fill:#333}</style>
+  <style>text{font-family:Helvetica,Arial,sans-serif;fill:#222}.h{font-size:150px;font-weight:bold}.t{font-size:105px}.s{font-size:78px;fill:#555}.sub{fill:#eef3ea;stroke:#9aa;stroke-width:8}.cu{fill:#d9a441}.die{fill:#c9ccd6;stroke:#667;stroke-width:6}.pad{fill:#f7f7fa;stroke:#445;stroke-width:4}.w{fill:none;stroke-linecap:round}.sig{stroke:#b8860b}.pwr{stroke:#c0392b}.gnd{stroke:#2e7d32}.lab{font-size:62px;fill:#333}.zone{fill:#e67e22;fill-opacity:.45}.gd{fill:none;stroke:#222;stroke-width:8}.gdb{fill:#fff;stroke:#222;stroke-width:8}.mark{fill:#7b4fa0}</style>
   <text x="0" y="-220" class="h">WBX example rev A: top view (1 unit = 1 um, true scale)</text>
   <g inkscape:groupmode="layer" inkscape:label="substrate">
     <rect x="0" y="0" width="6000" height="6000" class="sub" wb:kind="outline" wb:name="SUB"/>
@@ -65,8 +65,17 @@
     <rect x="1797.8" y="4790" width="170" height="420" class="cu" wb:kind="land" wb:name="L20" wb:net="D3" wb:finish="ENIG">
       <title>L20 net D3</title>
     </rect>
+    <circle cx="800" cy="5200" r="250" class="cu" wb:kind="fiducial" wb:name="F1" wb:role="align" wb:datum="B">
+      <title>F1 fiducial, align: a machine may fit to it, datum B</title>
+    </circle>
+    <circle cx="5200" cy="800" r="250" class="cu" wb:kind="fiducial" wb:name="F2" wb:role="align" wb:datum="C">
+      <title>F2 fiducial, align: a machine may fit to it, datum C</title>
+    </circle>
+    <circle cx="1450" cy="4600" r="150" class="cu" wb:kind="fiducial" wb:name="P1" wb:role="orient">
+      <title>P1 fiducial, orient: a mark for people</title>
+    </circle>
   </g>
-  <g transform="translate(1750 4250) scale(1 -1)" wb:kind="die" wb:name="U1" wb:gds-cell="EXAMPLE_DIE" wb:pad-layer="37/0" inkscape:groupmode="layer" inkscape:label="die">
+  <g transform="translate(1750 4250) scale(1 -1)" wb:kind="die" wb:name="U1" wb:gds-cell="EXAMPLE_DIE" wb:pad-layer="37/0" wb:place-tol="50" wb:datums="A B C" inkscape:groupmode="layer" inkscape:label="die">
     <rect x="0" y="0" width="2500" height="2500" class="die" wb:kind="outline"/>
     <rect x="60" y="360" width="100" height="100" class="pad" wb:kind="pad" wb:name="1" wb:net="GND">
       <title>U1 pad 1 net GND</title>
@@ -128,6 +137,49 @@
     <rect x="360" y="60" width="100" height="100" class="pad" wb:kind="pad" wb:name="20" wb:net="D3">
       <title>U1 pad 20 net D3</title>
     </rect>
+    <g wb:kind="fiducial" wb:name="QR" wb:role="align">
+      <title>QR fiducial, align: a machine may fit to it</title>
+      <rect x="30" y="30" width="42" height="42" class="mark"/>
+      <rect x="156" y="30" width="14" height="14" class="mark"/>
+      <rect x="100" y="58" width="14" height="14" class="mark"/>
+      <rect x="128" y="72" width="14" height="14" class="mark"/>
+      <rect x="86" y="86" width="14" height="14" class="mark"/>
+      <rect x="142" y="100" width="14" height="14" class="mark"/>
+      <rect x="30" y="128" width="42" height="42" class="mark"/>
+      <rect x="128" y="128" width="42" height="42" class="mark"/>
+    </g>
+    <path d="M2470,2470 L2330,2470 L2470,2330 Z" class="mark" wb:kind="fiducial" wb:name="TRI" wb:role="align">
+      <title>TRI fiducial, align: a machine may fit to it</title>
+    </path>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="placement tolerance">
+    <path d="M1725 1725 H4275 V4275 H1725 Z M1775 1775 H4225 V4225 H1775 Z" fill-rule="evenodd" class="zone" wb:kind="zone" wb:applies-to="U1" wb:datums="A B C">
+      <title>Placement zone for U1: its outline stays inside this 50 um band, datums A B C</title>
+    </path>
+    <g wb:kind="fcf" wb:applies-to="U1" wb:char="profile" wb:tol="50" wb:datums="A B C">
+      <title>Profile of a surface, 50 um total, datums A | B | C, all around U1</title>
+      <rect x="150" y="230" width="920" height="180" class="gdb"/>
+      <line x1="350" y1="230" x2="350" y2="410" class="gd"/>
+      <line x1="590" y1="230" x2="590" y2="410" class="gd"/>
+      <line x1="750" y1="230" x2="750" y2="410" class="gd"/>
+      <line x1="910" y1="230" x2="910" y2="410" class="gd"/>
+      <path d="M190 355 A60 60 0 0 1 310 355 Z" class="gd"/>
+      <text x="470" y="357" text-anchor="middle" class="t">50</text>
+      <text x="670" y="357" text-anchor="middle" class="t">A</text>
+      <text x="830" y="357" text-anchor="middle" class="t">B</text>
+      <text x="990" y="357" text-anchor="middle" class="t">C</text>
+      <polyline points="1070,320 1800,320 1800,1670" class="gd"/>
+      <circle cx="1800" cy="320" r="30" class="gd"/>
+      <path d="M1800 1750 l-30 -80 h60 Z" fill="#222"/>
+    </g>
+    <path d="M1050 5260 L1050 5140 L1130 5200 Z" fill="#222"/>
+    <line x1="1130" y1="5200" x2="1210" y2="5200" class="gd"/>
+    <rect x="1210" y="5120" width="160" height="160" class="gdb"/>
+    <text x="1290" y="5237" text-anchor="middle" class="t">B</text>
+    <path d="M4950 740 L4950 860 L4870 800 Z" fill="#222"/>
+    <line x1="4870" y1="800" x2="4790" y2="800" class="gd"/>
+    <rect x="4630" y="720" width="160" height="160" class="gdb"/>
+    <text x="4710" y="837" text-anchor="middle" class="t">C</text>
   </g>
   <g inkscape:groupmode="layer" inkscape:label="wires">
     <line x1="1860" y1="3840" x2="1530" y2="3840" stroke-width="25" class="w gnd" wb:kind="wire" wb:name="W01" wb:from="U1.1" wb:to="L1" wb:profile="DOWN25" wb:seq="1" wb:tier="2" wb:net="GND">
@@ -241,8 +293,8 @@
   </g>
   <text x="0" y="6500" class="h">Section through die centre (true scale, z up)</text>
   <g transform="translate(0 7500)" wb:kind="stack" inkscape:groupmode="layer" inkscape:label="stack">
-    <rect x="0" y="0" width="6000" height="400" style="fill:#eef3ea;stroke:#9aa;stroke-width:6" wb:kind="layer" wb:name="substrate" wb:role="substrate" wb:material="FR4/ENIG">
-      <title>substrate: FR4/ENIG, 400 um thick</title>
+    <rect x="0" y="0" width="6000" height="400" style="fill:#eef3ea;stroke:#9aa;stroke-width:6" wb:kind="layer" wb:name="substrate" wb:role="substrate" wb:material="FR4/ENIG" wb:datum="A">
+      <title>substrate: FR4/ENIG, 400 um thick; its top face is datum A</title>
     </rect>
     <rect x="1730" y="-25" width="2540" height="25" style="fill:#888" wb:kind="layer" wb:name="attach" wb:role="attach" wb:material="Ag epoxy">
       <title>attach: Ag epoxy, 25 um thick</title>
@@ -256,6 +308,10 @@
     <polyline points="1860,-305 1860,-485 1756.8,-515 1455.8,-495 1000,0" stroke-width="25" class="w sig"/>
     <polyline points="4140,-305 4140,-485 4243.2,-515 4544.2,-495 5000,0" stroke-width="25" class="w sig"/>
   </g>
+  <path d="M510 7500 L390 7500 L450 7420 Z" fill="#222"/>
+  <line x1="450" y1="7420" x2="450" y2="7340" class="gd"/>
+  <rect x="370" y="7180" width="160" height="160" class="gdb"/>
+  <text x="450" y="7297" text-anchor="middle" class="t">A</text>
   <text x="3000" y="6800" text-anchor="middle" class="s">glob top envelope</text>
   <text x="6500" y="-220" class="h">Loop profiles (drawn at reference span)</text>
   <g transform="translate(6500 670)" wb:kind="profile" wb:name="STD25" wb:material="Au" wb:style="ball-wedge" wb:dir="forward" wb:moves="180/0 30/12% -20/35%" wb:interp="spline" wb:ref-span="1000" inkscape:groupmode="layer" inkscape:label="profile STD25">
@@ -298,4 +354,16 @@
   <line x1="6500" y1="3680" x2="6800" y2="3680" stroke-width="25" class="w gnd"/>
   <text x="6880" y="3710" class="t">Down bond to ground land, tier 2</text>
   <text x="6500" y="3910" class="s">Illustrative data only. Hover any wire, pad or layer for details.</text>
+  <text x="6500" y="4210" class="h">Die placement (proposed)</text>
+  <text x="6500" y="4440" class="t">One rule, written three ways:</text>
+  <text x="6500" y="4590" class="s">A. wb:place-tol="50" wb:datums="A B C" on the die group</text>
+  <text x="6500" y="4710" class="s">B. Feature control frame, top left: profile 50 | A | B | C, all around</text>
+  <text x="6500" y="4830" class="s">C. Orange band, 50 um wide: the die outline stays inside it</text>
+  <text x="6500" y="4950" class="s">Datums: A top of substrate (section), B fiducial F1, C fiducial F2</text>
+  <text x="6500" y="5130" class="t">Checked at the edges of the band</text>
+  <text x="6500" y="5280" class="s">Die moved 25 um eight ways, and turned 1.16 deg each way</text>
+  <text x="6500" y="5400" class="s">Worst die edge clearance 47 um (rule 40), wire gap 347 um (rule 60)</text>
+  <text x="6500" y="5580" class="t">Largest error the checks allow</text>
+  <text x="6500" y="5730" class="s">Bonder finds the die: 34.9 um or 2.30 deg, then W12: die edge clearance 39</text>
+  <text x="6500" y="5850" class="s">Bonder doesn't: 10.1 um, then W08: ball leaves its pad</text>
 </svg>
